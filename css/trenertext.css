@@ -1,0 +1,310 @@
+* {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: linear-gradient(145deg, #1e4f1e 0%, #2d6a2d 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .game-container {
+            max-width: 1000px;
+            width: 100%;
+            background-color: #fffaf0;
+            border-radius: 40px 40px 20px 20px;
+            box-shadow: 0 10px 0 #0f3f0f, 0 20px 25px rgba(0,0,0,0.5);
+            padding: 20px 18px 25px 18px;
+            border: 4px solid #c7b57b;
+        }
+        /* Контейнер заголовка с областью для учителя */
+        .title-wrapper {
+            position: relative;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        h1 {
+            color: #3c2f1a;
+            font-size: 2rem;
+            margin: 0;
+            text-shadow: 3px 3px 0 #c7b57b;
+            font-weight: 900;
+            letter-spacing: 1px;
+            line-height: 1.3;
+        }
+        /* Невидимая кнопка для учителя (справа от заголовка) */
+        .teacher-trigger {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 90px;          /* достаточно большая для нажатия */
+            height: 100%;
+            cursor: pointer;
+            background: transparent;
+            z-index: 50;
+        }
+        .instruction {
+            text-align: center;
+            background-color: #e7dbaa;
+            padding: 12px 10px;
+            margin: 5px 5px 20px 5px;
+            border-radius: 60px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1f431f;
+            border: 3px solid #8b6e4b;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .instruction span {
+            display: inline-block;
+            background: white;
+            padding: 5px 15px;
+            border-radius: 40px;
+            margin: 0 5px;
+        }
+        .sentence-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .sentence-item {
+            background: #e9f0d9;
+            border: 3px solid #5a7a3a;
+            border-radius: 50px;
+            padding: 12px 15px 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 5px 0 #2d4a1e;
+            transition: all 0.1s ease;
+            font-size: 1.1rem;
+            gap: 10px;
+        }
+        .sentence-item.error {
+            background: #ffb3b3;
+            border-color: #b33f3f;
+            box-shadow: 0 5px 0 #7a2e2e;
+        }
+        .sentence-text {
+            flex: 1;
+            margin-right: 8px;
+            font-weight: 500;
+            color: #1f3a1f;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        .button-group {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .move-btn {
+            background: #f5e56b;
+            border: none;
+            font-size: 2rem;
+            width: 54px;
+            height: 54px;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #b38f2d;
+            transition: 0.05s linear;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2b421b;
+            font-weight: bold;
+            border: 2px solid #e8b12c;
+            line-height: 1;
+            touch-action: manipulation;
+        }
+        .move-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0 10px;
+        }
+        .primary-btn {
+            background: #3ea63e;
+            border: none;
+            font-size: 1.6rem;
+            padding: 14px 28px;
+            border-radius: 60px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 0 #1e4f1e;
+            box-shadow: 0 6px 0 #1b4b1b;
+            cursor: pointer;
+            transition: 0.05s linear;
+            border: 3px solid #9edf9e;
+            letter-spacing: 1px;
+            flex: 0 1 auto;
+            min-width: 200px;
+            touch-action: manipulation;
+        }
+        .primary-btn:active {
+            transform: translateY(6px);
+            box-shadow: none;
+        }
+        .primary-btn.reset {
+            background: #f0a14b;
+            box-shadow: 0 6px 0 #b16f2a;
+            text-shadow: 2px 2px 0 #7b4e1e;
+        }
+        /* Панель с правильным ответом */
+        .answer-panel {
+            position: fixed;
+            bottom: 130px;
+            right: 20px;
+            left: 20px;
+            margin: 0 auto;
+            max-width: 400px;
+            background: #2c442c;
+            border: 5px solid #e7d68c;
+            border-radius: 40px;
+            padding: 20px 20px;
+            color: #f9f2cf;
+            box-shadow: 0 15px 0 #1d311d, 0 20px 25px black;
+            z-index: 200;
+            transition: 0.2s;
+        }
+        .answer-panel.hidden {
+            display: none;
+        }
+        .answer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #ffd966;
+            border-bottom: 3px solid #9eaf6e;
+            padding-bottom: 8px;
+        }
+        .close-btn {
+            background: #c94f4f;
+            color: white;
+            border: none;
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 0 #712e2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+        }
+        .close-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+        .correct-order-list {
+            margin: 0;
+            padding-left: 25px;
+            font-size: 1.2rem;
+        }
+        .correct-order-list li {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        /* Тоast-сообщение для похвалы */
+        .praise-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ffec9e;
+            border: 5px solid #f0b34b;
+            border-radius: 60px;
+            padding: 18px 35px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3a5e1e;
+            box-shadow: 0 10px 0 #b47d2e, 0 15px 25px rgba(0,0,0,0.3);
+            z-index: 300;
+            text-align: center;
+            white-space: nowrap;
+            transition: opacity 0.3s, visibility 0.3s;
+            max-width: 90%;
+        }
+        .praise-toast.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .praise-toast span {
+            display: inline-block;
+            margin: 0 8px;
+        }
+        /* Адаптация для узких экранов */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .teacher-trigger { width: 70px; } /* чуть меньше, но достаточно */
+            .instruction { font-size: 1rem; padding: 10px 8px; }
+            .instruction span { padding: 3px 10px; }
+            .sentence-item { 
+                padding: 10px 12px; 
+                flex-wrap: wrap; 
+            }
+            .sentence-text {
+                width: 100%;
+                margin-bottom: 8px;
+                margin-right: 0;
+            }
+            .button-group {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            .move-btn {
+                width: 52px;
+                height: 52px;
+                font-size: 2rem;
+            }
+            .primary-btn {
+                font-size: 1.4rem;
+                padding: 12px 18px;
+                min-width: 160px;
+            }
+            .answer-panel {
+                left: 10px;
+                right: 10px;
+                bottom: 120px;
+                padding: 15px;
+            }
+            .praise-toast {
+                font-size: 1.5rem;
+                padding: 15px 25px;
+                white-space: normal;
+                width: 90%;
+            }
+        }
+        @media (max-width: 380px) {
+            .move-btn {
+                width: 48px;
+                height: 48px;
+                font-size: 1.8rem;
+            }
+            .primary-btn {
+                font-size: 1.2rem;
+                padding: 10px 12px;
+                min-width: 140px;
+            }
+        }
+    
+.author-footer { text-align: center; margin-top: 16px; font-size: 1rem; color: #3c2f1a; }
+.author-footer a { color: inherit; font-weight: 600; text-decoration: none; }

@@ -1,0 +1,13 @@
+.portfolio-item { overflow: hidden; display: flex; flex-direction: column; margin: 0; }
+.image-placeholder {
+    aspect-ratio: 3 / 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .4rem;
+    border-bottom: 1px dashed rgba(255, 255, 255, .14); color: #7d8796; font-size: .9rem; text-align: center; padding: 1rem;
+    background: repeating-linear-gradient(135deg, rgba(255, 255, 255, .03) 0 12px, transparent 12px 24px);
+}
+body.light .image-placeholder {
+    border-color: rgba(0, 0, 0, .14); color: #6b7280;
+    background: repeating-linear-gradient(135deg, rgba(0, 0, 0, .035) 0 12px, transparent 12px 24px);
+}
+.image-placeholder svg { width: 40px; height: 40px; opacity: .75; }
+.image-placeholder small { font-size: .75rem; opacity: .75; }
+.nav-active { color: #00f0ff !important; }
