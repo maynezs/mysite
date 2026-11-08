@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12151b">
+<meta name="description" content="Интерактивные тренажёры по математике и чтению для начальной и средней школы">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Тренажёры">
+<title>Тренажёры – Арчи‑GPT</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@200;300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/trainers.css">
+<script src="https://st.max.ru/js/max-web-app.js" defer></script>
+<script src="js/trainers.js" defer></script>
+</head>
+<body>
+<div class="page">
+  <header class="hero">
+    <div class="hero__mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M3 13h3l3.5 7L15 4h6"/><path d="M15.5 10l4.5 6M20 10l-4.5 6"/></svg>
+    </div>
+    <div class="hero__info">
+      <h1 class="hero__title">Тренажёры</h1>
+      <p class="hero__text">Интерактивные тренажёры по математике и чтению для школьников</p>
+    </div>
+    <button class="install" id="installButton" type="button" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+      Установить
+    </button>
+  </header>
+
+  <p class="hint" id="iosHint" hidden>Чтобы установить тренажёры на экран, нажми «Поделиться» и выбери «На экран „Домой“»</p>
+
+  <main>
+    <section class="group" aria-labelledby="primaryTitle">
+      <div class="group__head">
+        <h2 class="group__title" id="primaryTitle">Начальная школа</h2>
+        <span class="group__count">2 тренажёра</span>
+        <span class="group__line" aria-hidden="true"></span>
+      </div>
+      <div class="grid">
+        <a class="card card--green" href="trainers/trenertext.html" style="--i:0">
+          <span class="card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v14H6.5A1.5 1.5 0 0 0 5 18.5z"/><path d="M5 18.5A1.5 1.5 0 0 0 6.5 20H19v-3"/><path d="M9 7h6M9 10.5h4"/></svg></span>
+          <span class="card__body">
+            <span class="card__title">Minecraft-истории</span>
+            <span class="card__text">30 историй: расставь предложения по порядку и собери связный рассказ</span>
+            <span class="card__tags"><span class="tag tag--accent">1–4 класс</span><span class="tag">Чтение</span><span class="tag">Логика</span></span>
+          </span>
+          <span class="card__arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="card card--yellow" href="trainers/mathcheburashka.html" style="--i:1">
+          <span class="card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7"/><path d="M12 6.5c0-2 1.2-3.3 3.5-3.5"/><path d="M9 12.5h.01M15 12.5h.01M9.5 16c1.4 1.2 3.6 1.2 5 0"/></svg></span>
+          <span class="card__body">
+            <span class="card__title">Чебурашка и Гена: математика</span>
+            <span class="card__text">Текстовые задачи на сложение, вычитание, умножение и деление с любимыми героями</span>
+            <span class="card__tags"><span class="tag tag--accent">1–4 класс</span><span class="tag">Текстовые задачи</span></span>
+          </span>
+          <span class="card__arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+    </section>
+
+    <section class="group" aria-labelledby="middleTitle">
+      <div class="group__head">
+        <h2 class="group__title" id="middleTitle">Средняя школа</h2>
+        <span class="group__count">4 тренажёра</span>
+        <span class="group__line" aria-hidden="true"></span>
+      </div>
+      <div class="grid">
+        <a class="card" href="trainers/mathkvadrat.html" style="--i:2">
+          <span class="card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 13h3l3.5 7L15 4h6"/><path d="M15.5 10l4.5 6M20 10l-4.5 6"/></svg></span>
+          <span class="card__body">
+            <span class="card__title">Квадратные корни</span>
+            <span class="card__text">Вычисление и упрощение корней, уравнения с корнями: 10 заданий с выбором ответа</span>
+            <span class="card__tags"><span class="tag tag--accent">8 класс</span><span class="tag">Корни</span></span>
+          </span>
+          <span class="card__arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="card card--violet" href="trainers/mathtrener8-8.html" style="--i:3">
+          <span class="card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 12.5l9 5 9-5"/><path d="M3 16.5l9 5 9-5"/></svg></span>
+          <span class="card__body">
+            <span class="card__title">Алгебра 8–9 класс</span>
+            <span class="card__text">11 глав: тренировка, теория, контрольные с оценкой, калькулятор и доска</span>
+            <span class="card__tags"><span class="tag tag--accent">8–9 класс</span><span class="tag">Алгебра</span></span>
+          </span>
+          <span class="card__arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="card card--green" href="trainers/kvadraturv.html" style="--i:4">
+          <span class="card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12h18M12 3v18"/><path d="M5 4c2 9 5 12 7 12s5-3 7-12"/></svg></span>
+          <span class="card__body">
+            <span class="card__title">Квадратные уравнения</span>
+            <span class="card__text">Дискриминант и целые корни: 5 уравнений с подсказками и проверкой</span>
+            <span class="card__tags"><span class="tag tag--accent">8 класс</span><span class="tag">Уравнения</span></span>
+          </span>
+          <span class="card__arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="card card--yellow" href="trainers/ogemathtouch.html" style="--i:5">
+          <span class="card__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/><path d="M22 9v6"/></svg></span>
+          <span class="card__body">
+            <span class="card__title">ОГЭ по математике</span>
+            <span class="card__text">Все 25 заданий по образцу банка ФИПИ, пробный вариант с таймером и оценкой</span>
+            <span class="card__tags"><span class="tag tag--accent">9 класс</span><span class="tag">ОГЭ</span></span>
+          </span>
+          <span class="card__arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">Автор: <a href="https://vk.ru/archigpt" target="_blank" rel="noopener">vk.ru/archigpt</a></footer>
+</div>
+</body>
+</html>

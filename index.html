@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <title>Арчи‑GPT — Александр Шебалков</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js">
+    </script>
+    <script src="js/tailwind-config.js"></script>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dark font-sans antialiased">
+
+    <!-- Three.js Background -->
+    <div id="three-bg" aria-hidden="true"></div>
+
+    <!-- Sticky Header -->
+    <header class="sticky-header scrolled" id="header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+            <a href="#hero" class="text-xl font-bold tracking-tight flex items-center gap-2 select-none">
+                <span class="text-neon-cyan">⟨</span>
+                <span class="dark:text-white text-gray-900">Арчи‑GPT</span>
+                <span class="text-neon-purple">/⟩</span>
+            </a>
+            <nav class="nav-links flex items-center gap-5 text-sm font-medium" id="navLinks">
+                <a href="#about" class="hover:text-neon-cyan transition-colors duration-200 dark:text-gray-300 text-gray-700">Обо мне</a>
+                <a href="#expertise" class="hover:text-neon-cyan transition-colors duration-200 dark:text-gray-300 text-gray-700">Экспертиза</a>
+                <a href="#community" class="hover:text-neon-cyan transition-colors duration-200 dark:text-gray-300 text-gray-700">VK</a>
+                <a href="trainers.html" class="hover:text-neon-cyan transition-colors duration-200 dark:text-gray-300 text-gray-700">Тренажёры</a>
+                <a href="portfolio.html" class="hover:text-neon-cyan transition-colors duration-200 dark:text-gray-300 text-gray-700">Портфолио</a>
+                <a href="#stats" class="hover:text-neon-cyan transition-colors duration-200 dark:text-gray-300 text-gray-700">Статистика</a>
+                <a href="#contact" class="hover:text-neon-cyan transition-colors duration-200 dark:text-gray-300 text-gray-700">Контакты</a>
+                <button id="themeToggle" class="ml-2 p-2 rounded-full transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-neon-cyan focus:ring-offset-2 dark:focus:ring-offset-gray-900" aria-label="Переключить тему">
+                    <span id="themeIcon" class="text-xl">🌙</span>
+                </button>
+            </nav>
+            <button class="hamburger" id="hamburger" aria-label="Меню" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="relative z-[1]">
+        <!-- Hero Section -->
+        <section id="hero" class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative">
+            <div class="text-center max-w-4xl mx-auto">
+                <div class="inline-block mb-4 px-4 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase badge-neon">
+                    Мульти-эксперт • Преподаватель • Креатор
+                </div>
+                <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-6">
+                    <span class="dark:text-white text-gray-900">Александр</span>
+                    <br class="sm:hidden">
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink">Шебалков</span>
+                </h1>
+                <div class="text-xl sm:text-2xl md:text-3xl font-medium h-16 sm:h-20 flex items-center justify-center">
+                    <span id="typedText" class="dark:text-gray-300 text-gray-600"></span>
+                    <span class="typed-cursor" id="typedCursor"></span>
+                </div>
+                <p class="mt-8 dark:text-gray-400 text-gray-500 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
+                    Педагог математики и информатики, автор методик для детской IT-школы, промпт-инженер, 3D-моделлер и руководитель медиацентра «Луч».
+                </p>
+                <div class="mt-10 flex flex-wrap gap-4 justify-center">
+                    <a href="#about" class="px-7 py-3 rounded-full font-semibold text-sm transition-all duration-300 bg-gradient-to-r from-neon-cyan to-neon-blue text-gray-900 hover:shadow-lg hover:scale-105 hover:shadow-neon-cyan/30">
+                        Узнать больше
+                    </a>
+                    <a href="#contact" class="px-7 py-3 rounded-full font-semibold text-sm transition-all duration-300 border dark:border-white/30 border-gray-400 dark:text-white text-gray-800 hover:border-neon-cyan hover:text-neon-cyan hover:shadow-lg">
+                        Связаться
+                    </a>
+                </div>
+            </div>
+            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce opacity-60">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="dark:text-gray-400 text-gray-500">
+                    <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+                </svg>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-20 sm:py-28 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-14">
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold dark:text-white text-gray-900 mb-3">Обо мне</h2>
+                    <div class="section-accent-line"></div>
+                </div>
+                <div class="glass-card p-8 sm:p-10 lg:p-12 fade-in">
+                    <div class="flex flex-wrap items-start gap-6 mb-6">
+                        <span class="badge-neon-gold text-sm">⭐ Автор собственных методик преподавания</span>
+                        <span class="badge-neon text-sm">🎓 Педагог математики и информатики</span>
+                    </div>
+                    <p class="dark:text-gray-300 text-gray-700 text-lg leading-relaxed mb-5">
+                        Я объединяю глубокие знания в точных науках с творческим подходом к образованию. Как <strong>педагог математики и информатики</strong>, я разработал <strong class="text-neon-cyan">авторские методики преподавания для детской IT-школы</strong>, которые помогают детям осваивать сложные концепции через игру и проектную деятельность.
+                    </p>
+                    <p class="dark:text-gray-300 text-gray-700 text-lg leading-relaxed mb-5">
+                        Моя экспертиза также охватывает <strong>промпт-инжиниринг</strong> — создание эффективных промптов прикладного использования, и <strong>3D-моделирование</strong> — от концептов до готовых ассетов. Я возглавляю <strong>медиацентр «Луч»</strong>, где мы создаём образовательный и вдохновляющий контент, и веду сообщество <strong>VK</strong>, посвящённое AI и образовательным технологиям.
+                    </p>
+                    <div class="flex flex-wrap gap-3 mt-6">
+                        <span class="text-xs font-mono px-3 py-1.5 rounded-full dark:bg-white/5 bg-gray-200/70 dark:text-gray-300 text-gray-600">#Педагогика</span>
+                        <span class="text-xs font-mono px-3 py-1.5 rounded-full dark:bg-white/5 bg-gray-200/70 dark:text-gray-300 text-gray-600">#АвторскиеМетодики</span>
+                        <span class="text-xs font-mono px-3 py-1.5 rounded-full dark:bg-white/5 bg-gray-200/70 dark:text-gray-300 text-gray-600">#ПромптИнжиниринг</span>
+                        <span class="text-xs font-mono px-3 py-1.5 rounded-full dark:bg-white/5 bg-gray-200/70 dark:text-gray-300 text-gray-600">#3DМоделирование</span>
+                        <span class="text-xs font-mono px-3 py-1.5 rounded-full dark:bg-white/5 bg-gray-200/70 dark:text-gray-300 text-gray-600">#МедиацентрЛуч</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Expertise Grid -->
+        <section id="expertise" class="py-20 sm:py-28 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-14">
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold dark:text-white text-gray-900 mb-3">Экспертиза</h2>
+                    <div class="section-accent-line"></div>
+                    <p class="dark:text-gray-400 text-gray-500 max-w-xl mx-auto">Шесть направлений, в которых я работаю и развиваюсь</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                    <!-- Card 1: Math & CS Teacher + Author badge -->
+                    <div class="gradient-border-card fade-in">
+                        <div class="inner p-6 sm:p-7 flex flex-col h-full">
+                            <div class="text-4xl mb-4">📐</div>
+                            <h3 class="text-xl font-bold dark:text-white text-gray-900 mb-2">Педагог математики и информатики</h3>
+                            <span class="badge-neon-gold text-xs mb-3 self-start">🏆 Автор методик для детской IT-школы</span>
+                            <p class="dark:text-gray-400 text-gray-600 text-sm leading-relaxed mt-auto">Преподаю математику и информатику с использованием собственных методических разработок. Создаю образовательные программы, которые делают сложное — понятным и увлекательным для детей.</p>
+                        </div>
+                    </div>
+                    <!-- Card 2: Prompt Engineer -->
+                    <div class="gradient-border-card fade-in">
+                        <div class="inner p-6 sm:p-7 flex flex-col h-full">
+                            <div class="text-4xl mb-4">🤖</div>
+                            <h3 class="text-xl font-bold dark:text-white text-gray-900 mb-2">Промпт-инженер</h3>
+                            <p class="dark:text-gray-400 text-gray-600 text-sm leading-relaxed mt-auto">Разрабатываю эффективные промпты для упрощения работы. Оптимизирую взаимодействие с AI для образовательных и творческих задач. Делюсь опытом в сообществе.</p>
+                        </div>
+                    </div>
+                    <!-- Card 3: 3D Modeler -->
+                    <div class="gradient-border-card fade-in">
+                        <div class="inner p-6 sm:p-7 flex flex-col h-full">
+                            <div class="text-4xl mb-4">🎨</div>
+                            <h3 class="text-xl font-bold dark:text-white text-gray-900 mb-2">3D-моделлер</h3>
+                            <p class="dark:text-gray-400 text-gray-600 text-sm leading-relaxed mt-auto">Создаю 3D-модели и ассеты для образовательных проектов, игр и визуализаций. Владею современными инструментами и пайплайнами 3D-графики.</p>
+                        </div>
+                    </div>
+                    <!-- Card 4: Head of Media Center "Luch" -->
+                    <div class="gradient-border-card fade-in">
+                        <div class="inner p-6 sm:p-7 flex flex-col h-full">
+                            <div class="text-4xl mb-4">🎬</div>
+                            <h3 class="text-xl font-bold dark:text-white text-gray-900 mb-2">Руководитель медиацентра «Луч»</h3>
+                            <p class="dark:text-gray-400 text-gray-600 text-sm leading-relaxed mt-auto">Возглавляю Медиацентр «Луч» — управляю командой, координирую проекты, создаю образовательный и просветительский медиаконтент. Более 90 реализованных сюжетов.</p>
+                        </div>
+                    </div>
+                    <!-- Card 5: Educational Content Creator -->
+                    <div class="gradient-border-card fade-in">
+                        <div class="inner p-6 sm:p-7 flex flex-col h-full">
+                            <div class="text-4xl mb-4">📱</div>
+                            <h3 class="text-xl font-bold dark:text-white text-gray-900 mb-2">Образовательный контент-креатор</h3>
+                            <p class="dark:text-gray-400 text-gray-600 text-sm leading-relaxed mt-auto">Веду сообщество VK, создаю авторские материалы по AI, программированию и современным технологиям. Регулярные публикации, гайды, туториалы и лайфхаки.</p>
+                        </div>
+                    </div>
+                    <!-- Card 6: Methods Author (standalone highlight) -->
+                    <div class="gradient-border-card fade-in" style="border: 2px solid rgba(255,180,0,0.5);">
+                        <div class="inner p-6 sm:p-7 flex flex-col h-full" style="background: rgba(255,180,0,0.04);">
+                            <div class="text-4xl mb-4">✨</div>
+                            <h3 class="text-xl font-bold dark:text-white text-gray-900 mb-2">Автор методик преподавания</h3>
+                            <span class="badge-neon-gold text-xs mb-3 self-start">Уникальная разработка</span>
+                            <p class="dark:text-gray-400 text-gray-600 text-sm leading-relaxed mt-auto">Создал и внедрил собственные методики обучения для детской IT-школы. Мои программы помогают детям от 7 до 16 лет осваивать математику, алгоритмику и основы программирования с увлечением.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VK Community Section -->
+        <section id="community" class="py-20 sm:py-28 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-14">
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold dark:text-white text-gray-900 mb-3">Сообщества VK</h2>
+                    <div class="section-accent-line"></div>
+                    <p class="dark:text-gray-400 text-gray-500">Образовательный контент и новости AI — <a href="https://vk.com/archigpt" target="_blank" rel="noopener noreferrer" class="text-neon-cyan hover:underline font-semibold">vk.com/archigpt</a></p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-5">
+                    <!-- Post 1 -->
+                    <a href="https://vk.com/archigpt" target="_blank" rel="noopener noreferrer" class="vk-post-card glass-card p-5 block no-underline dark:text-gray-200 text-gray-800 dark:border-white/10 border-gray-300/50">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center text-white font-bold text-sm">А</div>
+                            <div>
+                                <div class="font-semibold text-sm">archigpt</div>
+                                <div class="text-xs dark:text-gray-500 text-gray-400">2 дня назад</div>
+                            </div>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-3 line-clamp-3">🤖 Как правильно составлять промпты для ChatGPT: 5 ключевых принципов, которые повысят качество ответов. Читайте в новом посте!</p>
+                       
+                    </a>
+                    <!-- Post 2 -->
+                    <a href="https://vk.com/media_centr_oc" target="_blank" rel="noopener noreferrer" class="vk-post-card glass-card p-5 block no-underline dark:text-gray-200 text-gray-800 dark:border-white/10 border-gray-300/50">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-neon-cyan to-neon-green flex items-center justify-center text-white font-bold text-sm">А</div>
+                            <div>
+                                <div class="font-semibold text-sm">media_centr_oc</div>
+                                <div class="text-xs dark:text-gray-500 text-gray-400">1 неделю назад</div>
+                            </div>
+                        </div>
+                        <p class="text-sm leading-relaxed mb-3 line-clamp-3">🏆Медиацентр «Луч» - победитель региональной премии «Медиасреда»!🏆 Загляните, чтобы увидеть, над чем мы работали последние месяцы.</p>
+                       
+                    </a>
+          
+                </div>
+                <div class="text-center mt-8">
+                    <a href="https://vk.com/archigpt" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all duration-300 bg-[#0077FF] text-white hover:bg-[#0066dd] hover:shadow-lg hover:scale-105">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21.579 6.855c.14-.465 0-.806-.662-.806h-2.193c-.558 0-.813.295-.953.619 0 0-1.115 2.719-2.695 4.482-.51.513-.743.675-1.021.675-.139 0-.341-.162-.341-.627V6.855c0-.558-.161-.806-.626-.806H9.842c-.348 0-.558.258-.558.504 0 .528.79.65.871 2.138v3.228c0 .707-.127.836-.407.836-.743 0-2.551-2.729-3.624-5.853-.209-.607-.42-.853-.98-.853H.95c-.627 0-.752.295-.752.619 0 .582.743 3.462 3.462 7.271 1.812 2.601 4.363 4.011 6.687 4.011 1.393 0 1.565-.313 1.565-.85v-1.96c0-.626.133-.752.574-.752.324 0 .882.164 2.183 1.417 1.486 1.486 1.732 2.153 2.567 2.153h2.192c.628 0 .942-.313.76-.93-.197-.615-.906-1.51-1.846-2.57-.51-.6-1.273-1.245-1.505-1.568-.324-.418-.232-.604 0-.976.001-.001 2.661-3.75 2.938-5.023z"/></svg>
+                        Перейти в сообщество VK
+                    </a>
+                </div>
+            </div>
+        </section>
+
+       
+
+        <!-- Stats / Testimonials -->
+        <section id="stats" class="py-20 sm:py-28 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-14">
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold dark:text-white text-gray-900 mb-3">Достижения в цифрах</h2>
+                    <div class="section-accent-line"></div>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-5 lg:gap-8">
+                    <div class="glass-card p-6 text-center fade-in">
+                        <div class="text-4xl sm:text-5xl font-extrabold stat-number text-neon-cyan" data-target="90" data-suffix="+">0</div>
+                        <p class="text-sm dark:text-gray-400 text-gray-600 mt-2 font-medium">Видеосюжетов<br>от Медиацентра «Луч»</p>
+                    </div>
+                    <div class="glass-card p-6 text-center fade-in">
+                        <div class="text-4xl sm:text-5xl font-extrabold stat-number text-neon-purple" data-target="200" data-suffix="+">0</div>
+                        <p class="text-sm dark:text-gray-400 text-gray-600 mt-2 font-medium">Учеников<br>обучено</p>
+                    </div>
+                    <div class="glass-card p-6 text-center fade-in">
+                        <div class="text-4xl sm:text-5xl font-extrabold stat-number text-neon-pink" data-target="500" data-suffix="+">0</div>
+                        <p class="text-sm dark:text-gray-400 text-gray-600 mt-2 font-medium">Публикаций<br>в сообществах VK</p>
+                    </div>
+                    <div class="glass-card p-6 text-center fade-in">
+                        <div class="text-4xl sm:text-5xl font-extrabold stat-number text-neon-green" data-target="4" data-suffix="+">0</div>
+                        <p class="text-sm dark:text-gray-400 text-gray-600 mt-2 font-medium">Года опыта<br>в IT-образовании</p>
+                    </div>
+                </div>
+                <div class="mt-10 glass-card p-7 fade-in text-center">
+                    <p class="dark:text-gray-300 text-gray-700 text-lg italic leading-relaxed">
+                        «Образование — это не передача информации, а создание среды, в которой ребёнку самому интересно  открывать знания. Мои методики построены именно на этом принципе.»
+                    </p>
+                    <p class="text-neon-cyan font-semibold mt-3">— Александр Шебалков</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact & Social -->
+        <section id="contact" class="py-20 sm:py-28 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-14">
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold dark:text-white text-gray-900 mb-3">Связаться</h2>
+                    <div class="section-accent-line"></div>
+                    <p class="dark:text-gray-400 text-gray-500">Буду рад новым проектам, коллаборациям и вопросам</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-1 gap-8">
+                    <!-- Contact Info -->
+                    <div class="glass-card p-7 fade-in flex items-center flex-col gap-5">
+                        <h3 class="text-xl font-bold dark:text-white text-gray-900">Контакты</h3>
+                        <a href="https://vk.com/archigpt" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 dark:text-gray-300 text-gray-700 hover:text-neon-cyan transition-colors group">
+                            <span class="w-10 h-10 rounded-full flex items-center justify-center bg-[#0077FF]/15 text-[#0077FF] text-lg group-hover:scale-110 transition-transform">📌</span>
+                            <span class="font-medium">vk.com/archigpt</span>
+                        </a>
+                        <a href="mailto:vegduh@gmail.com" class="flex items-center gap-3 dark:text-gray-300 text-gray-700 hover:text-neon-cyan transition-colors group">
+                            <span class="w-10 h-10 rounded-full flex items-center justify-center dark:bg-white/5 bg-gray-200 text-lg group-hover:scale-110 transition-transform">✉️</span>
+                            <span class="font-medium">vegduh@gmail.com</span>
+                        </a>
+                        <div class="flex items-center gap-3 dark:text-gray-300 text-gray-700">
+                            <span class="w-10 h-10 rounded-full flex items-center justify-center dark:bg-white/5 bg-gray-200 text-lg">📍</span>
+                            <span class="font-medium">Россия, онлайн</span>
+                        </div>
+                    </div>                
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-[1] py-8 px-4 text-center dark:text-gray-500 text-gray-400 text-sm border-t dark:border-white/5 border-gray-300/50">
+        <p>© 2026 Александр Шебалков. Все права защищены.</p>
+        <p class="mt-1">
+            <a href="https://vk.com/archigpt" target="_blank" rel="noopener noreferrer" class="hover:text-neon-cyan transition-colors">VK: archigpt</a>
+        </p>
+    </footer>
+
+    <script src="js/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портфолио – Александр Шебалков</title>
+    <meta name="description" content="Портфолио Александра Шебалкова: педагогика, тренажёры, промпт-инжиниринг, 3D и медиацентр «Луч»">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/tailwind-config.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/portfolio.css">
+</head>
+<body class="dark font-sans antialiased">
+    <header class="sticky-header scrolled" id="header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between relative">
+            <a href="index.html" class="text-xl font-bold tracking-tight flex items-center gap-2 select-none">
+                <span class="text-neon-cyan">⟨</span>
+                <span class="dark:text-white text-gray-900">Арчи‑GPT</span>
+                <span class="text-neon-purple">/⟩</span>
+            </a>
+            <nav class="nav-links flex items-center gap-5 text-sm font-medium" id="navLinks">
+                <a href="index.html" class="hover:text-neon-cyan transition-colors duration-200 dark:text-gray-300 text-gray-700">Главная</a>
+                <a href="#teaching" class="hover:text-neon-cyan transition-colors duration-200 dark:text-gray-300 text-gray-700">Педагогика</a>
+                <a href="#trainers" class="hover:text-neon-cyan transition-colors duration-200 dark:text-gray-300 text-gray-700">Тренажёры</a>
+                <a href="#prompts" class="hover:text-neon-cyan transition-colors duration-200 dark:text-gray-300 text-gray-700">Промпты</a>
+                <a href="#modeling" class="hover:text-neon-cyan transition-colors duration-200 dark:text-gray-300 text-gray-700">3D</a>
+                <a href="#media" class="hover:text-neon-cyan transition-colors duration-200 dark:text-gray-300 text-gray-700">Медиацентр</a>
+                <button id="themeToggle" class="ml-2 p-2 rounded-full transition-all duration-300 hover:scale-110 focus:outline-none" aria-label="Переключить тему">
+                    <span id="themeIcon" class="text-xl">🌙</span>
+                </button>
+            </nav>
+            <button class="hamburger" id="hamburger" aria-label="Меню" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="relative z-[1]">
+        <section class="pt-20 sm:pt-28 pb-6 px-4 sm:px-6 lg:px-8 text-center">
+            <div class="max-w-4xl mx-auto">
+                <div class="inline-block mb-4 px-4 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase badge-neon">Портфолио</div>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
+                    <span class="dark:text-white text-gray-900">Мои</span>
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink">проекты</span>
+                </h1>
+                <p class="dark:text-gray-400 text-gray-500 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
+                    Педагогика, образовательные тренажёры, промпт-инжиниринг, 3D-моделирование и медиацентр «Луч» – всё, чем я занимаюсь, на одной странице
+                </p>
+            </div>
+        </section>
+
+        <section id="teaching" class="py-16 sm:py-20 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <div class="text-4xl mb-3">📐</div>
+                    <h2 class="text-3xl sm:text-4xl font-bold dark:text-white text-gray-900 mb-3">Педагогика и авторские методики</h2>
+                    <div class="section-accent-line"></div>
+                    <p class="dark:text-gray-400 text-gray-500 max-w-2xl mx-auto">Преподаю математику и информатику, разработал собственные методики для детской IT-школы: дети от 7 до 16 лет осваивают алгоритмику и программирование через игру и проекты</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: Урок-проект">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">Урок-проект</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">Занятие, где ученики решают задачу командой и защищают результат</p>
+                        </figcaption>
+                    </figure>
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: Авторская программа">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">Авторская программа</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">Методическое пособие для детской IT-школы</p>
+                        </figcaption>
+                    </figure>
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: Ученики на занятии">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">Ученики на занятии</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">Живой процесс обучения: от идеи до работающего проекта</p>
+                        </figcaption>
+                    </figure>
+                </div>
+            </div>
+        </section>
+        <section id="trainers" class="py-16 sm:py-20 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <div class="text-4xl mb-3">🧩</div>
+                    <h2 class="text-3xl sm:text-4xl font-bold dark:text-white text-gray-900 mb-3">Образовательные тренажёры</h2>
+                    <div class="section-accent-line"></div>
+                    <p class="dark:text-gray-400 text-gray-500 max-w-2xl mx-auto">Шесть интерактивных тренажёров для начальной и средней школы: от текстовых задач до подготовки к ОГЭ</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: ОГЭ по математике">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">ОГЭ по математике</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">Все 25 заданий по образцу банка ФИПИ, пробный вариант с таймером</p>
+                        </figcaption>
+                    </figure>
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: Алгебра 8–9 класс">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">Алгебра 8–9 класс</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">11 глав с теорией, тренировкой и контрольными</p>
+                        </figcaption>
+                    </figure>
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: Чебурашка и Гена">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">Чебурашка и Гена</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">Текстовые задачи для 1–4 класса с любимыми героями</p>
+                        </figcaption>
+                    </figure>
+                </div>
+                <div class="text-center mt-8">
+                    <a href="trainers.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all duration-300 bg-gradient-to-r from-neon-cyan to-neon-blue text-gray-900 hover:shadow-lg hover:scale-105">Все тренажёры</a>
+                </div>
+            </div>
+        </section>
+        <section id="prompts" class="py-16 sm:py-20 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <div class="text-4xl mb-3">🤖</div>
+                    <h2 class="text-3xl sm:text-4xl font-bold dark:text-white text-gray-900 mb-3">Промпт-инжиниринг</h2>
+                    <div class="section-accent-line"></div>
+                    <p class="dark:text-gray-400 text-gray-500 max-w-2xl mx-auto">Разрабатываю промпты прикладного использования для образовательных и творческих задач</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: Библиотека промптов">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">Библиотека промптов</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">Готовые шаблоны для учителей и авторов контента</p>
+                        </figcaption>
+                    </figure>
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: Гайд по промптам">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">Гайд по промптам</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">Принципы, которые повышают качество ответов нейросети</p>
+                        </figcaption>
+                    </figure>
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: Кейс автоматизации">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">Кейс автоматизации</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">Как промпты экономят часы рутинной работы</p>
+                        </figcaption>
+                    </figure>
+                </div>
+            </div>
+        </section>
+        <section id="modeling" class="py-16 sm:py-20 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <div class="text-4xl mb-3">🎨</div>
+                    <h2 class="text-3xl sm:text-4xl font-bold dark:text-white text-gray-900 mb-3">3D-моделирование</h2>
+                    <div class="section-accent-line"></div>
+                    <p class="dark:text-gray-400 text-gray-500 max-w-2xl mx-auto">Создаю 3D-модели и ассеты для образовательных проектов, игр и визуализаций</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: Модель персонажа">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">Модель персонажа</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">От концепта до готового ассета</p>
+                        </figcaption>
+                    </figure>
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: Учебный ассет">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">Учебный ассет</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">Наглядная модель для объяснения сложной темы</p>
+                        </figcaption>
+                    </figure>
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: Визуализация">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">Визуализация</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">Рендер сцены для презентации проекта</p>
+                        </figcaption>
+                    </figure>
+                </div>
+            </div>
+        </section>
+        <section id="media" class="py-16 sm:py-20 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <div class="text-4xl mb-3">🎬</div>
+                    <h2 class="text-3xl sm:text-4xl font-bold dark:text-white text-gray-900 mb-3">Медиацентр «Луч»</h2>
+                    <div class="section-accent-line"></div>
+                    <p class="dark:text-gray-400 text-gray-500 max-w-2xl mx-auto">Руковожу медиацентром: более 90 видеосюжетов и победа в региональной премии «Медиасреда»</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: Премия «Медиасреда»">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">Премия «Медиасреда»</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">Медиацентр «Луч» – победитель региональной премии</p>
+                        </figcaption>
+                    </figure>
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: Видеосюжет">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">Видеосюжет</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">Образовательный и просветительский медиаконтент</p>
+                        </figcaption>
+                    </figure>
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: Команда за работой">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">Команда за работой</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">Съёмка, монтаж и подготовка выпусков</p>
+                        </figcaption>
+                    </figure>
+                </div>
+            </div>
+        </section>
+        <section id="community" class="py-16 sm:py-20 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <div class="text-4xl mb-3">📱</div>
+                    <h2 class="text-3xl sm:text-4xl font-bold dark:text-white text-gray-900 mb-3">Сообщество VK</h2>
+                    <div class="section-accent-line"></div>
+                    <p class="dark:text-gray-400 text-gray-500 max-w-2xl mx-auto">Веду сообщество об AI и образовательных технологиях: гайды, туториалы и лайфхаки</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: Публикация">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">Публикация</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">Пример поста с разбором нейросетевого инструмента</p>
+                        </figcaption>
+                    </figure>
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: Туториал">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">Туториал</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">Пошаговая инструкция для начинающих</p>
+                        </figcaption>
+                    </figure>
+                    <figure class="portfolio-item glass-card fade-in">
+                        <div class="image-placeholder" role="img" aria-label="Место для изображения: Обложка рубрики">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 9"/></svg><span>Место для изображения</span><small>1200 × 800</small>
+                        </div>
+                        <figcaption class="p-5 sm:p-6">
+                            <h3 class="text-lg font-bold dark:text-white text-gray-900 mb-1">Обложка рубрики</h3>
+                            <p class="text-sm dark:text-gray-400 text-gray-600 leading-relaxed">Визуальный стиль сообщества</p>
+                        </figcaption>
+                    </figure>
+                </div>
+                <div class="text-center mt-8">
+                    <a href="https://vk.ru/archigpt" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all duration-300 bg-gradient-to-r from-neon-cyan to-neon-blue text-gray-900 hover:shadow-lg hover:scale-105">Перейти в сообщество</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="relative z-[1] py-8 px-4 text-center dark:text-gray-500 text-gray-400 text-sm border-t dark:border-white/5 border-gray-300/50">
+        <p>© 2026 Александр Шебалков</p>
+        <p class="mt-1"><a href="https://vk.ru/archigpt" target="_blank" rel="noopener noreferrer" class="hover:text-neon-cyan transition-colors">VK: archigpt</a></p>
+    </footer>
+
+    <script src="js/portfolio.js"></script>
+</body>
+</html>
