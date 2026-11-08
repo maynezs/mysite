@@ -1,6 +1,6 @@
 {
   "name": "Тренажёры Арчи-GPT",
-  "short_name": "Тренажёры",
+  "short_name": "Арчи‑GPT",
   "description": "Интерактивные тренажёры по математике и чтению для школьников",
   "lang": "ru",
   "start_url": "./trainers.html",
