@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>Тренажёр: 30 историй Minecraft</title>
+    <link rel="stylesheet" href="../css/trenertext.css">
+<script src="https://st.max.ru/js/max-web-app.js" defer></script>
+<script src="../js/app-shell.js" defer></script>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Заголовок с невидимой областью для учителя -->
+        <div class="title-wrapper">
+            <h1>⛏️ MINECRAFT ИСТОРИИ ⛏️</h1>
+            <div class="teacher-trigger" id="teacherTrigger" title="Для учителя (показать ответ)"></div>
+        </div>
+
+        <div class="instruction">
+            <span>🔹</span> Расставь предложения по порядку кнопками ▲ и ▼ <span>🔹</span>
+        </div>
+
+        <!-- Список предложений -->
+        <ul class="sentence-list" id="sentenceList"></ul>
+
+        <!-- Кнопки управления -->
+        <div class="control-panel">
+            <button class="primary-btn" id="checkBtn">✅ Проверить</button>
+            <button class="primary-btn reset" id="newStoryBtn">🔄 Новая история</button>
+        </div>
+        <div class="author-footer">Автор: <a href="https://vk.ru/archigpt" target="_blank" rel="noopener">vk.ru/archigpt</a></div>
+    </div>
+
+    <!-- Панель с правильным ответом (скрыта) -->
+    <div class="answer-panel hidden" id="answerPanel">
+        <div class="answer-header">
+            <span>📜 Правильный порядок</span>
+            <button class="close-btn" id="closeAnswerBtn">✖</button>
+        </div>
+        <ol class="correct-order-list" id="correctOrderList">
+            <!-- заполняется скриптом -->
+        </ol>
+    </div>
+
+    <!-- Тоast с похвалой (скрыт изначально) -->
+    <div class="praise-toast hidden" id="praiseToast">
+        <span>🎉</span> Молодец! Всё верно! <span>🎉</span>
+    </div>
+
+    <script src="../js/trenertext.js"></script>
+</body>
+</html>

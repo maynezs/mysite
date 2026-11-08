@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#141824">
+<title>Алгебра · тренажёр 8–9 класс</title>
+<script src="https://st.max.ru/js/max-web-app.js"></script>
+<link rel="stylesheet" href="../css/mathtrener8-9.css">
+<script src="../js/app-shell.js" defer></script>
+</head>
+<body>
+<div class="app">
+<header class="top">
+<div class="logo" id="logo" onclick="onLogoTap()"></div>
+<button class="tool" id="themeBtn" title="Тема" onclick="toggleTheme()"></button>
+<button class="tool" id="touchBtn" title="Режим тач-панели" onclick="toggleTouch()"></button>
+</header>
+<main id="view"></main>
+<footer class="footer">Автор: <a id="author" href="https://vk.ru/archigpt" target="_blank" rel="noopener">vk.ru/archigpt</a></footer>
+</div>
+<nav class="dock">
+<button class="tool" id="homeBtn" title="Главная" onclick="showHome()"></button>
+<button class="tool" id="calcBtn" title="Калькулятор" onclick="openCalculator()"></button>
+<button class="tool" id="refBtn" title="Справочник" onclick="openReference()"></button>
+<button class="tool" id="boardBtn" title="Доска" onclick="openBoard()"></button>
+</nav>
+<div class="board" id="board"><canvas id="boardCanvas"></canvas><div class="board-bar" id="boardBar"></div></div>
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeSheet()">
+<div class="sheet">
+<div class="sheet-head"><h3 id="sheetTitle"></h3><button class="tool" id="closeBtn" onclick="closeSheet()"></button></div>
+<div id="sheetBody"></div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="print" id="print"></div>
+
+<script src="../js/mathtrener8-9.js"></script>
+</body>
+</html>

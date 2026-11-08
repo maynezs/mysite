@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>√ МатТренажёр — квадратные корни</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/mathkvadrat.css">
+<script src="https://st.max.ru/js/max-web-app.js" defer></script>
+<script src="../js/app-shell.js" defer></script>
+</head>
+<body>
+
+<main class="app">
+
+  <!-- ================= СТАРТ ================= -->
+  <section id="screen-start" class="screen active">
+    <header class="hero">
+      <div class="hero-badge">MATH TRAINER · v1.0</div>
+      <h1>КВАДРАТНЫЕ КОРНИ</h1>
+      <p class="subtitle">Тренажёр по математике · 10 заданий · 4 варианта ответа</p>
+    </header>
+
+    <div class="panel theory">
+      <h2>📘 ТЕОРИЯ (КОРОТКО)</h2>
+      <ul>
+        <li><b>Определение:</b> √a = b, если b ≥ 0 и b² = a. Под корнем не может быть отрицательного числа.</li>
+        <li><b>Вынесение множителя:</b> √(a²·b) = a·√b, например √72 = √(36·2) = 6√2.</li>
+        <li><b>Внесение множителя:</b> a·√b = √(a²·b), например 3√5 = √45.</li>
+        <li><b>Действия:</b> √a · √b = √(ab); (√a)² = a при a ≥ 0.</li>
+        <li><b>Уравнение √x = a</b> имеет решение x = a² (при a ≥ 0).</li>
+        <li><b>Уравнение √(x + b) = a:</b> возводим обе части в квадрат → x + b = a² → x = a² − b.</li>
+      </ul>
+    </div>
+
+    <h2 class="choose">Выбери тему</h2>
+    <div class="themes">
+      <button class="theme-card" data-theme="roots">
+        <span class="theme-ico">√x</span>
+        <span class="theme-name">Квадратные корни</span>
+        <span class="theme-desc">Вычисление, упрощение, вынесение и внесение множителя</span>
+      </button>
+      <button class="theme-card" data-theme="equations">
+        <span class="theme-ico">√x = a</span>
+        <span class="theme-name">Уравнения с корнями</span>
+        <span class="theme-desc">Решение уравнений вида √(x + b) = a и подобных</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ================= ВИКТОРИНА ================= -->
+  <section id="screen-quiz" class="screen">
+    <div class="topbar">
+      <button class="btn-ghost" id="btn-exit">← В меню</button>
+      <div class="theme-tag" id="quiz-theme">Квадратные корни</div>
+      <div class="score-tag">⭐ <span id="score">0</span></div>
+    </div>
+
+    <div class="progress">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-label">Задание <span id="q-num">1</span> / 10</div>
+    </div>
+
+    <div class="panel question-panel">
+      <div class="q-label">РЕШИ ЗАДАНИЕ</div>
+      <div class="question" id="question-text">√144</div>
+    </div>
+
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+
+    <div class="actions">
+      <button class="btn btn-refresh" id="btn-refresh">🔄 Другие варианты</button>
+      <button class="btn btn-next" id="btn-next" disabled>Дальше →</button>
+    </div>
+  </section>
+
+  <!-- ================= ИТОГИ ================= -->
+  <section id="screen-end" class="screen">
+    <div class="panel result">
+      <div class="result-emoji" id="result-emoji">🏆</div>
+      <h2 id="result-title">Отлично!</h2>
+      <div class="result-score"><span id="final-score">0</span> / 10</div>
+      <p id="result-text"></p>
+      <div class="actions center">
+        <button class="btn btn-next" id="btn-again">Играть снова</button>
+        <button class="btn btn-refresh" id="btn-menu">Выбрать тему</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  Автор: <a href="https://vk.ru/archigpt" target="_blank" rel="noopener">vk.ru/archigpt</a>
+</footer>
+
+<script src="../js/mathkvadrat.js"></script>
+</body>
+</html>

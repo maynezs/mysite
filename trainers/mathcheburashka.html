@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>Чебурашка и Гена: Математика</title>
+    <link rel="stylesheet" href="../css/mathcheburashka.css">
+<script src="https://st.max.ru/js/max-web-app.js" defer></script>
+<script src="../js/app-shell.js" defer></script>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Шапка: слева Чебурашка, справа Гена (с подсказкой) -->
+        <div class="header-cheb">
+            <div class="title-section">
+                <div class="cheb-decor" title="Чебурашка">🍊</div>
+                <div class="title">ЧЕБУРАШКА И ГЕНА: МАТЕМАТИКА</div>
+            </div>
+            <div class="gift-eye" id="giftEye" title="Подарок от Гены (только для учителя)">🐊</div>
+        </div>
+
+        <!-- Классы -->
+        <div class="class-selector" id="classSelector">
+            <div class="class-btn" data-class="1">I</div>
+            <div class="class-btn" data-class="2">II</div>
+            <div class="class-btn" data-class="3">III</div>
+            <div class="class-btn" data-class="4">IV</div>
+        </div>
+
+        <!-- Панель скрытых ответов (сверху) -->
+        <div id="secretPanel" class="secret-answers"></div>
+
+        <!-- Контейнер для вопросов -->
+        <div id="questionsArea" style="min-height: 200px;">
+            <div style="text-align: center; color: #a7773a; font-size: 2rem; padding: 40px;">⟡ Выбери класс, друг ⟡</div>
+        </div>
+
+        <!-- Кнопки действий -->
+        <div class="action-bar">
+            <button class="btn" id="checkBtn">📝 ПРОВЕРИТЬ</button>
+            <button class="btn small" id="newQuestBtn">🔄 НОВЫЕ ЗАДАЧИ</button>
+        </div>
+
+        <!-- Панель похвалы -->
+        <div id="praisePanel" class="praise-panel">✨ МОЛОДЕЦ, ЧЕБУРАШКА! ✨<br>Все ответы верны! Гена гордится тобой!</div>
+
+        <div class="footer-note">
+            «Учись считать — поможет в жизни!»
+        </div>
+    </div>
+
+    <!-- Разработчик -->
+    <div class="developer-footer">Автор: <a href="https://vk.ru/archigpt" target="_blank" rel="noopener">vk.ru/archigpt</a></div>
+
+    <script src="../js/mathcheburashka.js"></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тренажёр: квадратные уравнения (целые корни)</title>
+  <link rel="stylesheet" href="../css/kvadraturv.css">
+<script src="https://st.max.ru/js/max-web-app.js" defer></script>
+<script src="../js/app-shell.js" defer></script>
+</head>
+<body>
+<div class="container">
+  <h1>Квадратный тренажёр</h1>
+
+  <!-- ТЕОРИЯ И ПОДСКАЗКИ -->
+  <div class="theory">
+    <h3>📘 Теория за 5 секунд</h3>
+    <p>Уравнение: <strong>ax² + bx + c = 0</strong> (a ≠ 0).<br>
+      Дискриминант: <strong>D = b² – 4ac</strong>.<br>
+      • Если D > 0 — два различных корня: x₁,₂ = (–b ± √D) / (2a).<br>
+      • Если D = 0 — один корень (два равных): x = –b/(2a).<br>
+      • Если D < 0 — действительных корней нет (в тесте таких не будет).</p>
+    <p class="hint-global">💡 Подсказка: нажми на синий кружок «?» рядом с уравнением — увидишь дискриминант.</p>
+    <p><i>Все корни в тесте — целые числа. Ответы записаны как «x₁, x₂» (например «-2, 5»).</i></p>
+  </div>
+
+  <!-- КОНТЕЙНЕР ДЛЯ 5 УРАВНЕНИЙ -->
+  <div id="test-container"></div>
+
+  <!-- КНОПКИ УПРАВЛЕНИЯ -->
+  <div class="controls">
+    <button id="checkBtn">✅ Проверить ответы</button>
+    <button id="showAnswersBtn">🔍 Показать правильные</button>
+    <button id="newTestBtn">🔄 Новый тест</button>
+  </div>
+
+  <!-- ПОЛЕ ДЛЯ ВЫВОДА РЕЗУЛЬТАТА -->
+  <div id="result">→ Выберите ответы и нажмите «Проверить»</div>
+  <div class="footer-note">* варианты генерируются случайно, ответы только целые</div>
+  <div class="author-footer">Автор: <a href="https://vk.ru/archigpt" target="_blank" rel="noopener">vk.ru/archigpt</a></div>
+</div>
+
+<script src="../js/kvadraturv.js"></script>
+</body>
+</html>
