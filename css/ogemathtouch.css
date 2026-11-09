@@ -27,8 +27,8 @@ body {
     background-attachment: fixed; color: var(--text); transition: background-color .3s, color .3s;
 }
 button, input { font: inherit; color: inherit; }
-.app { max-width: 980px; margin: 0 auto; padding: 14px 16px 90px; }
-body.touch .app { max-width: 1500px; padding: 24px 40px 110px; }
+.app { max-width: 980px; margin: 0 auto; padding: calc(14px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(90px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left)); }
+body.touch .app { max-width: 1500px; padding: calc(24px + env(safe-area-inset-top)) calc(40px + env(safe-area-inset-right)) calc(110px + env(safe-area-inset-bottom)) calc(40px + env(safe-area-inset-left)); }
 
 .top { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
 .logo { display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; flex: 1; min-width: 0; }
