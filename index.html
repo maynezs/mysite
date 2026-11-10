@@ -180,27 +180,39 @@
             <div class="max-w-5xl mx-auto">
                 <div class="text-center mb-14">
                     <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold dark:text-white text-gray-900 mb-3">Сообщества VK</h2>
-                    <div class="section-accent-line"></div>
-                    <p class="dark:text-gray-400 text-gray-500">Образовательный контент и новости AI — <a href="https://vk.com/archigpt" target="_blank" rel="noopener noreferrer" class="text-neon-cyan hover:underline font-semibold">vk.com/archigpt</a></p>
+                    <div class="section-accent-line"></div>                    
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-5">
-                    <div class="flex items-center gap-3 mb-3">
-                    <!-- Post 1 -->
-<!-- Put this div tag to the place, where the Group block will be -->
-<div id="vk_groups"></div>
-<script type="text/javascript">
-  VK.Widgets.Group("vk_groups", {mode: 4, wide: 1, height: 600, color1: "FFFFFF", color2: "000000", color3: "5181B8"}, 237731387);
-</script>
-                    </div>
-                    <div class="flex items-center gap-3 mb-3">
-                    <!-- Post 2 -->
-<!-- Put this div tag to the place, where the Group block will be -->
-<div id="vk_groups"></div>
-<script type="text/javascript">
-  VK.Widgets.Group("vk_groups", {mode: 4, wide: 1, height: 600, color1: "FFFFFF", color2: "000000", color3: "5181B8"}, 217061770);
-</script>
-          
-                </div>
+ <div class="grid grid-cols-1 xl:grid-cols-2 gap-5 items-stretch">
+    <!-- ==================== ВИДЖЕТ 1 ==================== -->
+    <div class="vk-post-card glass-card p-5 dark:text-gray-200 text-gray-800 dark:border-white/10 border-gray-300/50 overflow-hidden min-w-0">
+        <div id="vk_groups_1" class="w-full"></div>
+        <script type="text/javascript">
+            VK.Widgets.Group("vk_groups_1", {
+                mode: 4,
+                wide: 1,           // ← узкий режим (min-width 300px) — не ломает grid
+                height: 500,
+                color1: "FFFFFF",
+                color2: "000000",
+                color3: "5181B8"
+            }, 237731387);
+        </script>
+    </div>
+
+    <!-- ==================== ВИДЖЕТ 2 ==================== -->
+    <div class="vk-post-card glass-card p-5 dark:text-gray-200 text-gray-800 dark:border-white/10 border-gray-300/50 overflow-hidden min-w-0">
+        <div id="vk_groups_2" class="w-full"></div>
+        <script type="text/javascript">
+            VK.Widgets.Group("vk_groups_2", {
+                mode: 4,
+                wide: 1,
+                height: 500,       // ← выровнял высоту с первой карточкой
+                color1: "FFFFFF",
+                color2: "000000",
+                color3: "5181B8"
+            }, 217061770);
+        </script>
+    </div>
+</div>
 
             </div>
         </section>
