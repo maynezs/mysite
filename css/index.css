@@ -49,6 +49,32 @@
             opacity: 0.45;
         }
 
+/* Контейнер виджета — на случай, если ВК вставит обёртку */
+#vk_groups_1,
+#vk_groups_2 {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+}
+
+/* На случай, если ВК создаёт промежуточный <div> — растягиваем и его */
+#vk_groups_1 > div,
+#vk_groups_2 > div {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+}
+
+/* Сам iframe — центрируем всеми способами сразу */
+#vk_groups_1 iframe,
+#vk_groups_2 iframe {
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: 100% !important;
+}
+
         /* Glass card */
         .glass-card {
             backdrop-filter: blur(16px);
