@@ -410,7 +410,7 @@ body.embedded .install-banner{display:none!important}
       </div>
       <div class="task-text" id="taskText">Загрузка...</div>
       <form id="answerForm" autocomplete="off">
-        <input id="answerInput" type="text" inputmode="decimal" enterkeyhint="go" placeholder="Ответ..." autocomplete="off" autocapitalize="off" spellcheck="false">
+        <input id="answerInput" type="text" inputmode="text" enterkeyhint="go" placeholder="Ответ..." autocomplete="off" autocapitalize="off" spellcheck="false">
         <button type="submit">Ответить</button>
       </form>
     </div>
@@ -607,7 +607,15 @@ const GEN = {
     (d=0)=>{const a1 = D(2, 9, d), dd = D(2, 6, d);return {q:`aₙ = ${a1} + ${dd}(n−1). Найди a₅`, a:a1 + dd*4};},
   ],
 };
+/* =========================================================
+   Расширение пула задач для старших классов
+   ========================================================= */
+// Добавляем задачи из 6 и 7 класса в 8 класс
+GEN[8] = GEN[8].concat(GEN[6], GEN[7]);
 
+// Добавляем задачи из 6, 7 и 8 класса в 9 класс
+GEN[9] = GEN[9].concat(GEN[6], GEN[7], GEN[8]);
+    
 function getProblem(cls, extraLevel){
   extraLevel = extraLevel || 0;
   const size = prog().size;
