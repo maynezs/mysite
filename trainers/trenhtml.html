@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Тренажёр по HTML</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: radial-gradient(circle at 20% 0%, #1e3a5f 0%, #0f172a 55%, #0b1120 100%);
+    color: #e2e8f0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 14px 0;
+  }
+  .app { width: 100%; max-width: 820px; flex: 1; display: flex; flex-direction: column; }
+  .screen { display: none; animation: fade .35s ease; }
+  .screen.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  .card {
+    background: rgba(30, 41, 59, .92);
+    border: 1px solid #334155;
+    border-radius: 18px;
+    padding: 26px 30px 30px;
+    box-shadow: 0 24px 60px rgba(0,0,0,.45);
+    backdrop-filter: blur(6px);
+  }
+  h1 { margin: 0 0 6px; font-size: 27px; letter-spacing: .3px; }
+  h2 { margin: 0 0 16px; font-size: 22px; }
+  h3 { margin: 26px 0 12px; font-size: 16px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+  .sub { color: #94a3b8; font-size: 14px; margin-bottom: 22px; line-height: 1.5; }
+
+  label { display: block; font-size: 13px; color: #94a3b8; margin-bottom: 6px; letter-spacing: .4px; }
+  input[type=text] {
+    width: 100%; padding: 13px 15px; border-radius: 11px;
+    border: 1px solid #3b4c66; background: #0f172a; color: #e2e8f0;
+    font-size: 16px; outline: none; transition: .2s; font-family: inherit;
+  }
+  input[type=text]:focus { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56,189,248,.18); }
+  input[type=text]:disabled { opacity: .85; }
+
+  .field { margin-bottom: 16px; }
+
+  .btn {
+    border: none; border-radius: 11px; padding: 13px 22px;
+    font-size: 15px; font-weight: 600; cursor: pointer;
+    font-family: inherit; transition: .18s;
+  }
+  .btn.primary { background: linear-gradient(135deg,#38bdf8,#0ea5e9); color: #06263a; }
+  .btn.primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(56,189,248,.35); }
+  .btn.primary:disabled { opacity: .45; cursor: not-allowed; }
+  .btn.ghost {
+    background: transparent; color: #94a3b8;
+    border: 1px solid #3b4c66; font-size: 13px; padding: 10px 16px;
+  }
+  .btn.ghost:hover:not(:disabled) { color: #e2e8f0; border-color: #64748b; }
+  .btn.ghost:disabled { opacity: .4; cursor: default; }
+  .btn.theory {
+    background: rgba(168,85,247,.15); color: #d8b4fe;
+    border: 1px solid rgba(168,85,247,.45);
+    font-size: 13px; padding: 9px 15px;
+  }
+  .btn.theory:hover { background: rgba(168,85,247,.25); color: #e9d5ff; }
+
+  .row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; align-items: center; }
+  .row .btn.primary { flex: 1; min-width: 180px; }
+
+  /* ---------- Вопрос ---------- */
+  .topbar { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #94a3b8; margin-bottom: 10px; letter-spacing: .4px; gap: 10px; flex-wrap: wrap; }
+  .topbar .right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .progress { height: 7px; background: #0f172a; border-radius: 99px; overflow: hidden; margin-bottom: 22px; }
+  #progressBar { height: 100%; width: 0; background: linear-gradient(90deg,#38bdf8,#22d3ee); border-radius: 99px; transition: width .35s ease; }
+
+  .qtype {
+    display: inline-block; font-size: 11.5px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 99px; margin-bottom: 14px;
+  }
+  .qtype.mc { background: rgba(56,189,248,.15); color: #7dd3fc; border: 1px solid rgba(56,189,248,.35); }
+  .qtype.fill { background: rgba(251,191,36,.13); color: #fcd34d; border: 1px solid rgba(251,191,36,.35); }
+
+  .qtext { font-size: 18px; line-height: 1.55; margin-bottom: 16px; }
+
+  pre.code {
+    background: #0b1120; border: 1px solid #334155;
+    border-left: 4px solid #38bdf8; border-radius: 10px;
+    padding: 14px 16px; font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 14.5px; line-height: 1.6; color: #a5f3fc;
+    white-space: pre-wrap; word-break: break-word;
+    margin: 0 0 18px; overflow-x: auto;
+  }
+
+  .options { display: grid; gap: 10px; }
+  .option {
+    text-align: left; padding: 14px 18px; border-radius: 11px;
+    border: 1px solid #3b4c66; background: #16233a; color: #e2e8f0;
+    font-size: 15.5px; cursor: pointer;
+    font-family: 'Consolas', 'Courier New', monospace; transition: .15s;
+  }
+  .option:hover:not(:disabled) { border-color: #38bdf8; background: #1b2f4d; transform: translateX(3px); }
+  .option:disabled { cursor: default; }
+  .option.correct { border-color: #22c55e; background: rgba(34,197,94,.16); color: #bbf7d0; }
+  .option.wrong { border-color: #ef4444; background: rgba(239,68,68,.15); color: #fecaca; }
+
+  .fillwrap { display: flex; gap: 12px; flex-wrap: wrap; }
+  .fillwrap input { flex: 1; min-width: 180px; font-family: 'Consolas', 'Courier New', monospace; }
+  .fillwrap input.correct { border-color: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.18); }
+  .fillwrap input.wrong { border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.18); }
+
+  .feedback { margin-top: 20px; border-radius: 12px; padding: 16px 18px; font-size: 14.5px; line-height: 1.6; display: none; }
+  .feedback.ok, .feedback.bad, .feedback.info { display: block; }
+  .feedback.ok { background: rgba(34,197,94,.12); border: 1px solid rgba(34,197,94,.4); }
+  .feedback.bad { background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.4); }
+  .feedback.info { background: rgba(168,85,247,.12); border: 1px solid rgba(168,85,247,.4); }
+  .fb-title { font-weight: 700; margin-bottom: 8px; font-size: 15.5px; }
+  .fb-correct { margin-bottom: 8px; }
+  .fb-explain { color: #cbd5e1; }
+  .feedback code, .res-item code, .history-item code {
+    background: #0b1120; padding: 2px 7px; border-radius: 6px;
+    font-family: 'Consolas', 'Courier New', monospace; color: #7dd3fc; font-size: 14px;
+  }
+
+  .actions { display: flex; gap: 12px; align-items: center; margin-top: 18px; flex-wrap: wrap; }
+  .actions .btn.primary { margin-left: auto; }
+  .hidden { display: none !important; }
+
+  /* ---------- Результат ---------- */
+  .res-name { font-size: 17px; color: #7dd3fc; margin-bottom: 14px; font-weight: 600; }
+  .attempt-badge {
+    display: inline-block; background: rgba(251,191,36,.14);
+    border: 1px solid rgba(251,191,36,.45); color: #fde68a;
+    padding: 7px 14px; border-radius: 99px; font-size: 13px;
+    margin-bottom: 20px; letter-spacing: .4px; font-weight: 600;
+  }
+  .res-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .res-box { background: #0f172a; border: 1px solid #334155; border-radius: 14px; padding: 18px 10px; text-align: center; }
+  .res-val { font-size: 30px; font-weight: 800; color: #38bdf8; line-height: 1.1; }
+  .res-lbl { font-size: 12px; color: #94a3b8; margin-top: 6px; letter-spacing: .5px; text-transform: uppercase; }
+  #resGrade { color: #fbbf24; }
+
+  .history-item {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 10px; padding: 10px 14px; border-radius: 10px;
+    background: #0f172a; border: 1px solid #334155;
+    margin-bottom: 8px; font-size: 13.5px; flex-wrap: wrap;
+  }
+  .history-item.current { border-color: #38bdf8; box-shadow: 0 0 0 2px rgba(56,189,248,.15); }
+  .history-item .h-date { color: #94a3b8; }
+  .history-item .h-score { color: #7dd3fc; font-weight: 600; }
+  .history-item .h-grade { color: #fbbf24; font-weight: 700; }
+  .history-item .h-num { color: #64748b; font-weight: 600; min-width: 28px; }
+  .no-history { color: #64748b; font-size: 13.5px; padding: 10px 0; }
+
+  .res-item {
+    background: #0f172a; border: 1px solid #334155;
+    border-left: 4px solid #ef4444; border-radius: 10px;
+    padding: 13px 16px; margin-bottom: 11px; font-size: 14px; line-height: 1.6;
+  }
+  .res-item .ri-q { font-weight: 600; margin-bottom: 6px; color: #e2e8f0; }
+  .res-item .ri-line { color: #94a3b8; }
+  .res-item .ri-line b { color: #fca5a5; font-weight: 600; }
+  .res-item .ri-line b.good { color: #86efac; }
+  .perfect { color: #86efac; font-size: 15px; padding: 14px 0; }
+
+  .badge {
+    display: inline-block; background: rgba(168,85,247,.18);
+    border: 1px solid rgba(168,85,247,.5); color: #d8b4fe;
+    font-size: 12px; padding: 6px 12px; border-radius: 99px;
+    margin-bottom: 16px; letter-spacing: .5px;
+  }
+
+  /* ---------- Футер ---------- */
+  .footer {
+    width: 100%; max-width: 820px; text-align: center;
+    padding: 26px 14px 22px; margin-top: auto;
+    color: #64748b; font-size: 13.5px; letter-spacing: .3px;
+  }
+  .footer a {
+    color: #7dd3fc; text-decoration: none;
+    border-bottom: 1px dashed rgba(125,211,252,.4); transition: .2s;
+  }
+  .footer a:hover { color: #bae6fd; border-bottom-color: #bae6fd; }
+  .footer-stats {
+    margin-top: 10px; display: flex; gap: 16px;
+    justify-content: center; align-items: center;
+    flex-wrap: wrap; font-size: 12.5px;
+  }
+  .footer-stats .sep { color: #334155; }
+  .link-btn {
+    background: none; border: none; color: #7dd3fc;
+    cursor: pointer; font-family: inherit; font-size: inherit; padding: 0;
+    border-bottom: 1px dashed rgba(125,211,252,.4); transition: .2s;
+  }
+  .link-btn:hover { color: #f87171; border-bottom-color: #f87171; }
+
+  /* ---------- Модальное окно теории ---------- */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(2, 6, 23, .8); backdrop-filter: blur(4px);
+    z-index: 1000; padding: 24px 14px; overflow-y: auto;
+  }
+  .modal-overlay.active { display: flex; align-items: flex-start; justify-content: center; }
+  .modal {
+    background: #1e293b; border: 1px solid #334155; border-radius: 18px;
+    width: 100%; max-width: 760px; box-shadow: 0 30px 80px rgba(0,0,0,.6);
+    animation: modalIn .3s ease;
+  }
+  @keyframes modalIn { from { opacity: 0; transform: translateY(20px) scale(.98); } to { opacity: 1; transform: none; } }
+  .modal-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 26px; border-bottom: 1px solid #334155;
+    position: sticky; top: 0; background: #1e293b;
+    border-radius: 18px 18px 0 0; z-index: 2;
+  }
+  .modal-head h2 { margin: 0; font-size: 20px; }
+  .modal-close {
+    background: transparent; border: 1px solid #3b4c66; color: #94a3b8;
+    width: 36px; height: 36px; border-radius: 10px; font-size: 20px;
+    line-height: 1; cursor: pointer; transition: .2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-close:hover { color: #f87171; border-color: #f87171; }
+  .modal-body { padding: 20px 26px 28px; }
+
+  .theory-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .ttab {
+    background: #0f172a; border: 1px solid #3b4c66; color: #94a3b8;
+    padding: 8px 15px; border-radius: 99px; font-size: 13px;
+    cursor: pointer; font-family: inherit; transition: .15s;
+  }
+  .ttab:hover { color: #e2e8f0; border-color: #64748b; }
+  .ttab.active { background: rgba(56,189,248,.18); color: #7dd3fc; border-color: rgba(56,189,248,.5); }
+
+  .theory-pane { display: none; }
+  .theory-pane.active { display: block; animation: fade .25s ease; }
+
+  .theory-item {
+    background: #0f172a; border: 1px solid #334155;
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 11px;
+  }
+  .theory-item .ti-tag {
+    font-family: 'Consolas', 'Courier New', monospace;
+    color: #7dd3fc; font-weight: 700; font-size: 15px; margin-bottom: 5px;
+  }
+  .theory-item .ti-desc { font-size: 14px; color: #cbd5e1; line-height: 1.55; }
+  .theory-item .ti-desc code {
+    background: #1e293b; padding: 1px 6px; border-radius: 5px;
+    color: #a5f3fc; font-family: 'Consolas', 'Courier New', monospace; font-size: 13px;
+  }
+  .theory-item .ti-example {
+    margin-top: 8px; font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 13px; color: #fcd34d; background: #0b1120;
+    border-radius: 7px; padding: 8px 11px;
+    white-space: pre-wrap; word-break: break-word; line-height: 1.5;
+  }
+  .theory-note {
+    background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.35);
+    border-radius: 12px; padding: 13px 16px; font-size: 13.5px;
+    color: #fde68a; line-height: 1.55; margin-bottom: 16px;
+  }
+
+  @media (max-width: 560px) {
+    .card { padding: 20px 18px 24px; }
+    h1 { font-size: 22px; }
+    .qtext { font-size: 16px; }
+    .res-grid { grid-template-columns: 1fr 1fr; }
+    .res-box:last-child { grid-column: span 2; }
+    .modal-body { padding: 16px 16px 22px; }
+    .modal-head { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ================= СТАРТ ================= -->
+  <section id="screen-start" class="screen active">
+    <div class="card">
+      <h1>🎓 Тренажёр по HTML</h1>
+      <p class="sub">
+        16 заданий: <b>10</b> с вариантами ответа и <b>6</b>, где нужно написать нужный тег.
+        Вопросы выбираются случайно из банка в <b>100 заданий</b>.
+        В конце выставляется оценка. Прогресс и история попыток сохраняются в браузере.
+      </p>
+      <div id="teacherBadgeWrap"></div>
+      <div class="field">
+        <label for="inpSurname">Фамилия</label>
+        <input type="text" id="inpSurname" placeholder="Иванов" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="inpName">Имя</label>
+        <input type="text" id="inpName" placeholder="Иван" autocomplete="off">
+      </div>
+      <div class="row">
+        <button class="btn primary" id="btnStart">Начать тестирование</button>
+        <button class="btn theory" id="btnTheoryStart">📖 Теория</button>
+        <button class="btn ghost" id="btnTeacher">🔑 Режим преподавателя</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ВОПРОСЫ ================= -->
+  <section id="screen-quiz" class="screen">
+    <div class="card">
+      <div class="topbar">
+        <span id="qCounter">Вопрос 1 из 16</span>
+        <span class="right">
+          <span id="qScore">Правильно: 0</span>
+          <button class="btn theory" id="btnTheoryQuiz" title="Открыть справочник по тегам">📖 Теория</button>
+          <button class="btn ghost" id="btnResetQuiz" title="Начать тест заново">↺ Заново</button>
+        </span>
+      </div>
+      <div class="progress"><div id="progressBar"></div></div>
+
+      <div id="qType" class="qtype mc">Выбери вариант</div>
+      <div id="qText" class="qtext"></div>
+      <div id="qCode"></div>
+      <div id="qBody"></div>
+      <div id="feedback" class="feedback"></div>
+
+      <div class="actions">
+        <button class="btn ghost hidden" id="btnReveal">👁 Показать правильный ответ</button>
+        <button class="btn primary hidden" id="btnNext">Далее →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= РЕЗУЛЬТАТ ================= -->
+  <section id="screen-result" class="screen">
+    <div class="card">
+      <h2>Результат тестирования</h2>
+      <div class="res-name" id="resName"></div>
+      <div class="attempt-badge" id="attemptBadge"></div>
+      <div class="res-grid">
+        <div class="res-box"><div class="res-val" id="resScore">0/16</div><div class="res-lbl">верных</div></div>
+        <div class="res-box"><div class="res-val" id="resPct">0%</div><div class="res-lbl">процент</div></div>
+        <div class="res-box"><div class="res-val" id="resGrade">2</div><div class="res-lbl">оценка</div></div>
+      </div>
+
+      <h3>История попыток</h3>
+      <div id="historyBox"></div>
+
+      <h3>Разбор ошибок</h3>
+      <div id="resWrong"></div>
+
+      <div class="row">
+        <button class="btn primary" id="btnRestart">Пройти заново</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ================= ФУТЕР ================= -->
+<footer class="footer">
+  <div>Автор: <a href="https://vk.ru/archigpt" target="_blank" rel="noopener noreferrer">vk.ru/archigpt</a></div>
+  <div class="footer-stats">
+    <span id="footerAttempts">Сохранённых попыток: 0</span>
+    <span class="sep">·</span>
+    <button class="link-btn" id="btnClearHistory">Очистить историю</button>
+  </div>
+</footer>
+
+<!-- ================= МОДАЛЬНОЕ ОКНО ТЕОРИИ ================= -->
+<div class="modal-overlay" id="theoryOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="theoryTitle">
+    <div class="modal-head">
+      <h2 id="theoryTitle">📖 Справочник по HTML</h2>
+      <button class="modal-close" id="btnTheoryClose" aria-label="Закрыть">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="theory-note">
+        💡 Шпаргалка по базовым тегам. Можно открывать во время теста — это не считается подсказкой, но ответ всё равно нужно ввести самостоятельно.
+      </div>
+
+      <div class="theory-tabs" id="theoryTabs">
+        <button class="ttab active" data-pane="base">Основные</button>
+        <button class="ttab" data-pane="text">Текст</button>
+        <button class="ttab" data-pane="list">Списки</button>
+        <button class="ttab" data-pane="table">Таблицы</button>
+        <button class="ttab" data-pane="form">Формы</button>
+        <button class="ttab" data-pane="media">Медиа и ссылки</button>
+        <button class="ttab" data-pane="semantic">Семантика</button>
+      </div>
+
+      <div class="theory-pane active" data-pane="base">
+        <div class="theory-item">
+          <div class="ti-tag">&lt;!DOCTYPE html&gt;</div>
+          <div class="ti-desc">Объявление типа документа. Всегда первая строка HTML-файла. Указывает браузеру, что это HTML5.</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;html&gt;</div>
+          <div class="ti-desc">Корневой элемент страницы. Внутри него находятся <code>&lt;head&gt;</code> и <code>&lt;body&gt;</code>.</div>
+          <div class="ti-example">&lt;html&gt;
+  &lt;head&gt;...&lt;/head&gt;
+  &lt;body&gt;...&lt;/body&gt;
+&lt;/html&gt;</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;head&gt;</div>
+          <div class="ti-desc">Служебный раздел. Содержит <code>&lt;title&gt;</code>, <code>&lt;meta&gt;</code>, <code>&lt;link&gt;</code>. Пользователю не виден.</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;title&gt;</div>
+          <div class="ti-desc">Название страницы — отображается на вкладке браузера. Располагается внутри <code>&lt;head&gt;</code>.</div>
+          <div class="ti-example">&lt;title&gt;Мой сайт&lt;/title&gt;</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;body&gt;</div>
+          <div class="ti-desc">Тело документа. Всё видимое содержимое страницы находится здесь.</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;div&gt; / &lt;span&gt;</div>
+          <div class="ti-desc"><code>&lt;div&gt;</code> — блочный контейнер (занимает всю ширину, переносит строку). <code>&lt;span&gt;</code> — строчный контейнер (внутри текста).</div>
+          <div class="ti-example">&lt;div class="card"&gt;...&lt;/div&gt;
+Цена: &lt;span class="price"&gt;100 ₽&lt;/span&gt;</div>
+        </div>
+      </div>
+
+      <div class="theory-pane" data-pane="text">
+        <div class="theory-item">
+          <div class="ti-tag">&lt;h1&gt; … &lt;h6&gt;</div>
+          <div class="ti-desc">Заголовки. <code>&lt;h1&gt;</code> — самый крупный, <code>&lt;h6&gt;</code> — самый мелкий.</div>
+          <div class="ti-example">&lt;h1&gt;Новости&lt;/h1&gt;
+&lt;h6&gt;Сноска&lt;/h6&gt;</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;p&gt;</div>
+          <div class="ti-desc">Абзац текста. Браузер автоматически добавляет отступы между абзацами.</div>
+          <div class="ti-example">&lt;p&gt;Привет, мир!&lt;/p&gt;</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;br&gt;</div>
+          <div class="ti-desc">Перенос строки. Одиночный тег (закрывающий не нужен).</div>
+          <div class="ti-example">Строка 1&lt;br&gt;Строка 2</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;hr&gt;</div>
+          <div class="ti-desc">Горизонтальная разделительная линия. Одиночный тег.</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;strong&gt; / &lt;b&gt;</div>
+          <div class="ti-desc"><code>&lt;strong&gt;</code> — важный текст (жирный + смысл). <code>&lt;b&gt;</code> — просто жирный, без смысла.</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;em&gt; / &lt;i&gt;</div>
+          <div class="ti-desc"><code>&lt;em&gt;</code> — смысловой акцент (курсив). <code>&lt;i&gt;</code> — просто курсив.</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;u&gt; / &lt;s&gt;</div>
+          <div class="ti-desc"><code>&lt;u&gt;</code> — подчёркнутый текст. <code>&lt;s&gt;</code> — зачёркнутый текст.</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;sup&gt; / &lt;sub&gt;</div>
+          <div class="ti-desc"><code>&lt;sup&gt;</code> — верхний индекс (степень). <code>&lt;sub&gt;</code> — нижний индекс.</div>
+          <div class="ti-example">E = mc&lt;sup&gt;2&lt;/sup&gt;
+H&lt;sub&gt;2&lt;/sub&gt;O</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;code&gt; / &lt;pre&gt;</div>
+          <div class="ti-desc"><code>&lt;code&gt;</code> — фрагмент кода (моноширинный). <code>&lt;pre&gt;</code> — сохраняет пробелы и переносы.</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;blockquote&gt;</div>
+          <div class="ti-desc">Блочная цитата с отступом.</div>
+        </div>
+      </div>
+
+      <div class="theory-pane" data-pane="list">
+        <div class="theory-item">
+          <div class="ti-tag">&lt;ul&gt;</div>
+          <div class="ti-desc">Маркированный (ненумерованный) список. Внутри — пункты <code>&lt;li&gt;</code>.</div>
+          <div class="ti-example">&lt;ul&gt;
+  &lt;li&gt;Яблоко&lt;/li&gt;
+  &lt;li&gt;Груша&lt;/li&gt;
+&lt;/ul&gt;</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;ol&gt;</div>
+          <div class="ti-desc">Нумерованный список. Пункты автоматически нумеруются.</div>
+          <div class="ti-example">&lt;ol&gt;
+  &lt;li&gt;Первый&lt;/li&gt;
+  &lt;li&gt;Второй&lt;/li&gt;
+&lt;/ol&gt;</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;li&gt;</div>
+          <div class="ti-desc">Отдельный пункт списка. Используется и в <code>&lt;ul&gt;</code>, и в <code>&lt;ol&gt;</code>.</div>
+        </div>
+      </div>
+
+      <div class="theory-pane" data-pane="table">
+        <div class="theory-item">
+          <div class="ti-tag">&lt;table&gt;</div>
+          <div class="ti-desc">Корневой тег таблицы.</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;tr&gt;</div>
+          <div class="ti-desc">Строка таблицы (table row).</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;td&gt;</div>
+          <div class="ti-desc">Обычная ячейка таблицы с данными.</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;th&gt;</div>
+          <div class="ti-desc">Ячейка-заголовок: жирный текст и выравнивание по центру.</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;caption&gt;</div>
+          <div class="ti-desc">Подпись к таблице (заголовок). Указывается сразу после <code>&lt;table&gt;</code>.</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">colspan / rowspan</div>
+          <div class="ti-desc">Атрибуты объединения ячеек: <code>colspan="2"</code> — по горизонтали, <code>rowspan="2"</code> — по вертикали.</div>
+          <div class="ti-example">&lt;table&gt;
+  &lt;tr&gt;&lt;th colspan="2"&gt;Заголовок&lt;/th&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;2&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</div>
+        </div>
+      </div>
+
+      <div class="theory-pane" data-pane="form">
+        <div class="theory-item">
+          <div class="ti-tag">&lt;form&gt;</div>
+          <div class="ti-desc">Контейнер формы. Атрибут <code>action</code> — адрес обработчика, <code>method</code> — способ отправки (get/post).</div>
+          <div class="ti-example">&lt;form action="/send" method="post"&gt;...&lt;/form&gt;</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;input&gt;</div>
+          <div class="ti-desc">Однострочное поле ввода. Вид задаётся атрибутом <code>type</code>: text, password, checkbox, radio, submit и др.</div>
+          <div class="ti-example">&lt;input type="text" name="login"&gt;
+&lt;input type="password" name="pass"&gt;
+&lt;input type="checkbox"&gt;
+&lt;input type="submit" value="Отправить"&gt;</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;textarea&gt;</div>
+          <div class="ti-desc">Многострочное поле ввода. Парный тег.</div>
+          <div class="ti-example">&lt;textarea name="msg" rows="5"&gt;&lt;/textarea&gt;</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;button&gt;</div>
+          <div class="ti-desc">Кнопка. Может содержать разметку внутри.</div>
+          <div class="ti-example">&lt;button type="submit"&gt;Отправить&lt;/button&gt;</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;select&gt; / &lt;option&gt;</div>
+          <div class="ti-desc"><code>&lt;select&gt;</code> — выпадающий список, <code>&lt;option&gt;</code> — пункт списка.</div>
+          <div class="ti-example">&lt;select name="city"&gt;
+  &lt;option&gt;Москва&lt;/option&gt;
+  &lt;option&gt;Санкт-Петербург&lt;/option&gt;
+&lt;/select&gt;</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">placeholder / name</div>
+          <div class="ti-desc"><code>placeholder</code> — серая подсказка внутри поля. <code>name</code> — имя поля для отправки на сервер.</div>
+        </div>
+      </div>
+
+      <div class="theory-pane" data-pane="media">
+        <div class="theory-item">
+          <div class="ti-tag">&lt;a&gt;</div>
+          <div class="ti-desc">Гиперссылка. Адрес задаётся атрибутом <code>href</code>. <code>target="_blank"</code> — открыть в новой вкладке.</div>
+          <div class="ti-example">&lt;a href="page.html"&gt;Перейти&lt;/a&gt;
+&lt;a href="https://site.ru" target="_blank"&gt;Сайт&lt;/a&gt;</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;img&gt;</div>
+          <div class="ti-desc">Изображение. Одиночный тег. <code>src</code> — путь к файлу, <code>alt</code> — текст-замена.</div>
+          <div class="ti-example">&lt;img src="cat.jpg" alt="Кот"&gt;</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;video&gt;</div>
+          <div class="ti-desc">Видео. Атрибут <code>controls</code> добавляет панель управления.</div>
+          <div class="ti-example">&lt;video src="clip.mp4" controls&gt;&lt;/video&gt;</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;audio&gt;</div>
+          <div class="ti-desc">Аудио. Также поддерживает <code>controls</code>.</div>
+          <div class="ti-example">&lt;audio src="song.mp3" controls&gt;&lt;/audio&gt;</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;link&gt;</div>
+          <div class="ti-desc">Подключение внешних ресурсов, чаще всего CSS-файла. Внутри <code>&lt;head&gt;</code>.</div>
+          <div class="ti-example">&lt;link rel="stylesheet" href="style.css"&gt;</div>
+        </div>
+      </div>
+
+      <div class="theory-pane" data-pane="semantic">
+        <div class="theory-item">
+          <div class="ti-tag">&lt;header&gt;</div>
+          <div class="ti-desc">Шапка страницы или раздела. Не путать с <code>&lt;head&gt;</code> (служебный раздел).</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;footer&gt;</div>
+          <div class="ti-desc">Подвал страницы: копирайт, контакты, ссылки.</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;nav&gt;</div>
+          <div class="ti-desc">Блок навигации со ссылками.</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;main&gt;</div>
+          <div class="ti-desc">Основное содержимое страницы. На странице должен быть один.</div>
+        </div>
+        <div class="theory-item">
+          <div class="ti-tag">&lt;aside&gt;</div>
+          <div class="ti-desc">Боковая панель: реклама, примечания, второстепенные ссылки.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   КОНСТАНТЫ И КЛЮЧИ ХРАНИЛИЩА
+   ========================================================= */
+const TEACHER_PASSWORD = "teacher2024";
+const KEY_PROGRESS = "htmlTrainerProgress_v1";
+const KEY_HISTORY  = "htmlTrainerHistory_v1";
+
+const MC_COUNT = 10;
+const FILL_COUNT = 6;
+
+/* =========================================================
+   БАНК ВОПРОСОВ С ВАРИАНТАМИ ОТВЕТА (60 штук)
+   ========================================================= */
+const mcBank = [
+  { q:"Какой тег создаёт гиперссылку на другую страницу?",
+    a:["<link>","<a>","<href>","<url>"], c:1,
+    e:"Ссылка создаётся парным тегом <a>. Адрес указывается в атрибуте href: <a href=\"page.html\">Текст</a>." },
+  { q:"Какой тег задаёт заголовок самого большого уровня?",
+    a:["<h6>","<head>","<h1>","<title>"], c:2,
+    e:"Заголовки бывают от <h1> (самый крупный) до <h6> (самый мелкий)." },
+  { q:"Какой тег содержит всё видимое содержимое страницы?",
+    a:["<head>","<body>","<main>","<html>"], c:1,
+    e:"<body> — тело документа. Всё, что находится вне <body>, пользователь не видит." },
+  { q:"Какой тег задаёт название страницы на вкладке браузера?",
+    a:["<title>","<h1>","<meta>","<header>"], c:0,
+    e:"<title> находится внутри <head> и задаёт подпись вкладки браузера." },
+  { q:"Какой тег создаёт нумерованный (пронумерованный) список?",
+    a:["<ul>","<ol>","<li>","<dl>"], c:1,
+    e:"<ol> — ordered list, нумерованный список. Пункты внутри — <li>." },
+  { q:"Какой тег создаёт маркированный список?",
+    a:["<ol>","<li>","<ul>","<list>"], c:2,
+    e:"<ul> — unordered list, список с маркерами-точками." },
+  { q:"Какой тег создаёт отдельный пункт списка?",
+    a:["<li>","<ul>","<ol>","<item>"], c:0,
+    e:"<li> — list item, используется и внутри <ul>, и внутри <ol>." },
+  { q:"Какой тег вставляет изображение на страницу?",
+    a:["<image>","<img>","<picture>","<src>"], c:1,
+    e:"<img src=\"cat.jpg\" alt=\"Кот\"> — одиночный тег, закрывающего </img> нет." },
+  { q:"Какой атрибут задаёт адрес, на который ведёт ссылка?",
+    a:["src","href","link","url"], c:1,
+    e:"href (hypertext reference): <a href=\"https://example.com\">Сайт</a>." },
+  { q:"Какой атрибут задаёт путь к файлу изображения?",
+    a:["href","alt","src","path"], c:2,
+    e:"src (source) — источник: <img src=\"cat.jpg\" alt=\"Кот\">." },
+  { q:"Какой тег создаёт абзац текста?",
+    a:["<p>","<br>","<div>","<text>"], c:0,
+    e:"<p> — paragraph. Браузер автоматически добавляет отступы между абзацами." },
+  { q:"Какой тег выполняет перенос на новую строку?",
+    a:["<br>","<hr>","<p>","<newline>"], c:0,
+    e:"<br> — одиночный тег переноса строки внутри текста." },
+  { q:"Какой тег создаёт таблицу?",
+    a:["<table>","<tab>","<tr>","<grid>"], c:0,
+    e:"<table> — корневой тег таблицы, внутри располагаются <tr> и <td>." },
+  { q:"Какой тег создаёт строку таблицы?",
+    a:["<td>","<tr>","<th>","<row>"], c:1,
+    e:"<tr> — table row, строка таблицы." },
+  { q:"Какой тег создаёт обычную ячейку таблицы с данными?",
+    a:["<th>","<td>","<cell>","<tr>"], c:1,
+    e:"<td> — table data, ячейка с данными." },
+  { q:"Какой тег создаёт ячейку-заголовок в таблице?",
+    a:["<td>","<th>","<caption>","<head>"], c:1,
+    e:"<th> — table header: жирный текст и выравнивание по центру." },
+  { q:"Какой тег создаёт форму?",
+    a:["<form>","<input>","<fieldset>","<shape>"], c:0,
+    e:"<form> — контейнер для полей ввода и кнопки отправки данных." },
+  { q:"Какой тег создаёт однострочное поле ввода?",
+    a:["<input>","<textfield>","<text>","<textarea>"], c:0,
+    e:"<input> — одиночный тег, вид поля задаётся атрибутом type." },
+  { q:"Какой тег создаёт кнопку?",
+    a:["<input>","<button>","<btn>","<click>"], c:1,
+    e:"<button>Отправить</button> — парный тег, внутри может быть разметка." },
+  { q:"Какой тег создаёт выпадающий список?",
+    a:["<select>","<option>","<datalist>","<dropdown>"], c:0,
+    e:"<select> — выпадающий список, внутри — теги <option>." },
+  { q:"Какой тег создаёт пункт выпадающего списка?",
+    a:["<li>","<option>","<item>","<select>"], c:1,
+    e:"<option value=\"msk\">Москва</option> вкладывается внутрь <select>." },
+  { q:"Какой тег создаёт многострочное поле ввода?",
+    a:["<input>","<textarea>","<text>","<area>"], c:1,
+    e:"<textarea rows=\"5\"></textarea> — парный тег для длинного текста." },
+  { q:"Какой тег делает текст жирным и подчёркивает его важность?",
+    a:["<b>","<strong>","<i>","<em>"], c:1,
+    e:"<strong> — смысловое выделение важности. <b> тоже делает жирным, но без смысловой нагрузки." },
+  { q:"Какой тег выделяет текст курсивом со смысловым акцентом?",
+    a:["<em>","<i>","<u>","<s>"], c:0,
+    e:"<em> — emphasis, смысловой акцент. <i> — просто курсив без акцента." },
+  { q:"Какой тег рисует горизонтальную разделительную линию?",
+    a:["<br>","<hr>","<line>","<divider>"], c:1,
+    e:"<hr> — horizontal rule, одиночный тег." },
+  { q:"Каким тегом подключают внешний файл стилей CSS?",
+    a:["<style>","<link>","<css>","<script>"], c:1,
+    e:"<link rel=\"stylesheet\" href=\"style.css\"> — размещается внутри <head>." },
+  { q:"Какой тег содержит служебную информацию о странице?",
+    a:["<body>","<head>","<meta>","<header>"], c:1,
+    e:"<head> — внутри него <title>, <meta>, <link> и другие служебные теги." },
+  { q:"Какой атрибут тега <img> показывает текст, если картинка не загрузилась?",
+    a:["title","alt","text","label"], c:1,
+    e:"alt — альтернативный текст, он важен также для доступности (скринридеров)." },
+  { q:"Какой тег создаёт блочный контейнер?",
+    a:["<span>","<div>","<p>","<b>"], c:1,
+    e:"<div> — блочный контейнер: занимает всю ширину и переносит следующие элементы." },
+  { q:"Какой тег создаёт строчный (inline) контейнер?",
+    a:["<div>","<span>","<p>","<b>"], c:1,
+    e:"<span> — строчный контейнер для выделения части текста без переноса строки." },
+  { q:"Какой атрибут задаёт всплывающую подсказку при наведении мыши?",
+    a:["alt","title","tooltip","hint"], c:1,
+    e:"title=\"Подсказка\" — универсальный атрибут, работает почти на любом теге." },
+  { q:"Какой тег создаёт «шапку» страницы или раздела?",
+    a:["<head>","<header>","<top>","<h1>"], c:1,
+    e:"<header> — семантический тег шапки. Не путайте с <head> (служебный раздел)." },
+  { q:"Какой тег создаёт «подвал» страницы?",
+    a:["<footer>","<bottom>","<end>","<aside>"], c:0,
+    e:"<footer> — нижняя часть страницы: копирайт, контакты, ссылки." },
+  { q:"Какой тег создаёт блок навигации по сайту?",
+    a:["<nav>","<menu>","<navigate>","<ul>"], c:0,
+    e:"<nav> — семантический тег для блока навигации со ссылками." },
+  { q:"Какой тег выделяет основное содержимое страницы?",
+    a:["<body>","<main>","<content>","<section>"], c:1,
+    e:"<main> — главное содержимое; на странице должен быть только один." },
+  { q:"Какой тег создаёт боковую панель?",
+    a:["<aside>","<side>","<panel>","<nav>"], c:0,
+    e:"<aside> — второстепенный блок сбоку: реклама, ссылки, примечания." },
+  { q:"Какой тег вставляет видео?",
+    a:["<media>","<video>","<movie>","<mp4>"], c:1,
+    e:"<video src=\"clip.mp4\" controls></video> — атрибут controls добавляет кнопки управления." },
+  { q:"Какой тег вставляет аудио?",
+    a:["<sound>","<audio>","<music>","<mp3>"], c:1,
+    e:"<audio src=\"song.mp3\" controls></audio>." },
+  { q:"Какой атрибут открывает ссылку в новой вкладке?",
+    a:["target=\"_blank\"","href=\"_blank\"","new=\"true\"","open=\"new\""], c:0,
+    e:"<a href=\"...\" target=\"_blank\">Текст</a>." },
+  { q:"Какой тег делает текст подчёркнутым?",
+    a:["<u>","<s>","<ins>","<i>"], c:0,
+    e:"<u> — underline, подчёркнутый текст." },
+  { q:"Какой тег показывает зачёркнутый текст (визуально, без смысла удаления)?",
+    a:["<s>","<u>","<del>","<strike>"], c:0,
+    e:"<s> — визуальное зачёркивание. <del> — смысловое «удалённый текст»." },
+  { q:"Какой тег делает верхний индекс (степень)?",
+    a:["<sup>","<sub>","<top>","<up>"], c:0,
+    e:"E = mc<sup>2</sup> — двойка окажется сверху." },
+  { q:"Какой тег делает нижний индекс?",
+    a:["<sup>","<sub>","<bottom>","<down>"], c:1,
+    e:"H<sub>2</sub>O — двойка окажется снизу." },
+  { q:"Какой тег оформляет цитату отдельным блоком?",
+    a:["<quote>","<blockquote>","<q>","<cite>"], c:1,
+    e:"<blockquote> — блочная цитата с отступом слева." },
+  { q:"Какой тег показывает фрагмент программного кода?",
+    a:["<code>","<pre>","<script>","<program>"], c:0,
+    e:"<code> — моноширинный шрифт для фрагмента кода." },
+  { q:"Какой тег сохраняет пробелы и переносы точно как в исходном тексте?",
+    a:["<code>","<pre>","<text>","<p>"], c:1,
+    e:"<pre> — preformatted text, предварительно отформатированный текст." },
+  { q:"Какой тег создаёт подпись (заголовок) к таблице?",
+    a:["<caption>","<title>","<label>","<th>"], c:0,
+    e:"<caption> указывается сразу после открывающего <table>." },
+  { q:"Каким атрибутом объединяют ячейки таблицы по горизонтали?",
+    a:["rowspan","colspan","merge","span"], c:1,
+    e:"colspan=\"2\" — ячейка растягивается на 2 столбца." },
+  { q:"Каким атрибутом объединяют ячейки таблицы по вертикали?",
+    a:["rowspan","colspan","vmerge","height"], c:0,
+    e:"rowspan=\"2\" — ячейка растягивается на 2 строки." },
+  { q:"Какой атрибут задаёт имя поля формы для отправки на сервер?",
+    a:["id","name","value","key"], c:1,
+    e:"name — по этому имени сервер получает значение поля." },
+  { q:"Какой атрибут показывает подсказку внутри пустого поля ввода?",
+    a:["value","placeholder","hint","title"], c:1,
+    e:"placeholder=\"Введите имя\" — серый текст исчезает при вводе." },
+  { q:"Какой тип <input> скрывает вводимые символы точками?",
+    a:["type=\"text\"","type=\"password\"","type=\"hidden\"","type=\"secret\""], c:1,
+    e:"type=\"password\" — символы заменяются точками." },
+  { q:"Какой тип <input> создаёт флажок (галочку)?",
+    a:["type=\"radio\"","type=\"checkbox\"","type=\"flag\"","type=\"check\""], c:1,
+    e:"type=\"checkbox\" — можно отметить несколько вариантов сразу." },
+  { q:"Какой тип <input> создаёт переключатель (выбор одного из нескольких)?",
+    a:["type=\"checkbox\"","type=\"radio\"","type=\"select\"","type=\"option\""], c:1,
+    e:"type=\"radio\" — круглая кнопка; в группе можно выбрать только один вариант." },
+  { q:"Какой тип <input> создаёт кнопку отправки формы?",
+    a:["type=\"send\"","type=\"submit\"","type=\"button\"","type=\"form\""], c:1,
+    e:"type=\"submit\" отправляет данные формы на сервер." },
+  { q:"Как расшифровывается аббревиатура HTML?",
+    a:["HyperText Markup Language","Home Tool Markup Language","Hyperlinks Text Machine Language","High Tech Modern Language"], c:0,
+    e:"HTML — HyperText Markup Language, язык гипертекстовой разметки." },
+  { q:"Какой тег является корневым для всей страницы?",
+    a:["<body>","<html>","<head>","<!DOCTYPE>"], c:1,
+    e:"<html> — корневой элемент, внутри него находятся <head> и <body>." },
+  { q:"Что пишут самой первой строкой HTML-документа?",
+    a:["<!DOCTYPE html>","<html>","<head>","<!--html-->"], c:0,
+    e:"<!DOCTYPE html> — объявление типа документа, указывает на HTML5." },
+  { q:"Какой тег создаёт заголовок самого маленького уровня?",
+    a:["<h1>","<h6>","<h0>","<small>"], c:1,
+    e:"<h6> — самый мелкий из шести уровней заголовков." },
+  { q:"Какой тег группирует строки таблицы в «шапку»?",
+    a:["<thead>","<header>","<head>","<top>"], c:0,
+    e:"<thead>, <tbody>, <tfoot> — логические группы строк таблицы." }
+];
+
+/* =========================================================
+   БАНК ЗАДАНИЙ «НАПИШИ ТЕГ» (40 штук)
+   ========================================================= */
+const fillBank = [
+  { task:"Вставьте на страницу картинку cat.jpg. Напишите пропущенный тег.",
+    code:'<___ src="cat.jpg" alt="Кот">',
+    answers:["img"],
+    explain:"Изображение вставляется одиночным тегом <img>. src — путь к файлу, alt — текст-замена." },
+  { task:"Сделайте так, чтобы по тексту можно было перейти на page.html.",
+    code:'<___ href="page.html">Перейти</___>',
+    answers:["a"],
+    explain:"Ссылка создаётся парным тегом <a>, адрес задаётся атрибутом href." },
+  { task:"Задайте название страницы, которое видно на вкладке браузера.",
+    code:'<head>\n  <___>Мой сайт</___>\n</head>',
+    answers:["title"],
+    explain:"<title> находится внутри <head> и задаёт подпись вкладки браузера." },
+  { task:"Оформите текст как отдельный абзац.",
+    code:'<___>Привет, мир!</___>',
+    answers:["p"],
+    explain:"<p> — абзац; браузер добавляет отступы сверху и снизу." },
+  { task:"Сделайте заголовок самого большого уровня.",
+    code:'<___>Новости</___>',
+    answers:["h1"],
+    explain:"Заголовки бывают от <h1> (крупнейший) до <h6> (мельчайший)." },
+  { task:"Исправьте ошибку: нужен заголовок самого МАЛЕНЬКОГО уровня.",
+    code:'<h1>Сноска</h1>   <!-- а нужен самый мелкий заголовок -->',
+    answers:["h6"],
+    explain:"Самый мелкий заголовок — <h6>." },
+  { task:"Добавьте пункт в маркированный список.",
+    code:'<ul>\n  <___>Яблоко</___>\n</ul>',
+    answers:["li"],
+    explain:"Пункт любого списка оформляется тегом <li>." },
+  { task:"Исправьте ошибку: нужен НУМЕРОВАННЫЙ список.",
+    code:'<ul>\n  <li>Первый</li>\n  <li>Второй</li>\n</ul>',
+    answers:["ol"],
+    explain:"Нумерованный список — <ol>, маркированный — <ul>." },
+  { task:"Исправьте ошибку: нужен МАРКИРОВАННЫЙ список.",
+    code:'<ol>\n  <li>Хлеб</li>\n</ol>',
+    answers:["ul"],
+    explain:"<ul> — unordered list, список с маркерами." },
+  { task:"Создайте таблицу.",
+    code:'<___>\n  <tr><td>1</td></tr>\n</___>',
+    answers:["table"],
+    explain:"<table> — корневой тег таблицы." },
+  { task:"Добавьте строку в таблицу.",
+    code:'<table>\n  <___><td>1</td></___>\n</table>',
+    answers:["tr"],
+    explain:"<tr> — table row, строка таблицы." },
+  { task:"Добавьте ячейку с данными в строку таблицы.",
+    code:'<table>\n  <tr><___>1</___></tr>\n</table>',
+    answers:["td"],
+    explain:"<td> — table data, обычная ячейка таблицы." },
+  { task:"Сделайте ячейку-ЗАГОЛОВОК «Имя» в таблице.",
+    code:'<table>\n  <tr><___>Имя</___></tr>\n</table>',
+    answers:["th"],
+    explain:"<th> — ячейка-заголовок: жирный шрифт и выравнивание по центру." },
+  { task:"Создайте форму, отправляющую данные на /send.",
+    code:'<___ action="/send" method="post">\n  ...\n</___>',
+    answers:["form"],
+    explain:"<form> — контейнер формы; action задаёт адрес обработчика данных." },
+  { task:"Добавьте однострочное поле ввода для логина.",
+    code:'<___ type="text" name="login">',
+    answers:["input"],
+    explain:"<input> — одиночный тег; вид поля определяется атрибутом type." },
+  { task:"Добавьте многострочное поле для сообщения.",
+    code:'<___ name="msg" rows="5"></___>',
+    answers:["textarea"],
+    explain:"<textarea> — парный тег для ввода длинного многострочного текста." },
+  { task:"Добавьте кнопку «Отправить».",
+    code:'<___ type="submit">Отправить</___>',
+    answers:["button"],
+    explain:"<button> — парный тег кнопки; type=\"submit\" отправляет форму." },
+  { task:"Создайте выпадающий список городов.",
+    code:'<___ name="city">\n  <option>Москва</option>\n</___>',
+    answers:["select"],
+    explain:"<select> — выпадающий список, внутри располагаются <option>." },
+  { task:"Добавьте вариант «Москва» в выпадающий список.",
+    code:'<select name="city">\n  <___>Москва</___>\n</select>',
+    answers:["option"],
+    explain:"<option> — отдельный пункт выпадающего списка <select>." },
+  { task:"Сделайте перенос строки внутри абзаца.",
+    code:'<p>Первая строка<___>Вторая строка</p>',
+    answers:["br"],
+    explain:"<br> — одиночный тег переноса строки." },
+  { task:"Нарисуйте горизонтальную разделительную линию.",
+    code:'<p>Глава 1</p>\n<___>\n<p>Глава 2</p>',
+    answers:["hr"],
+    explain:"<hr> — одиночный тег горизонтальной линии." },
+  { task:"Выделите слово «Внимание!» как важное (жирным).",
+    code:'<___>Внимание!</___>',
+    answers:["strong","b"],
+    explain:"<strong> — смысловое выделение важности. Похожий <b> просто делает текст жирным." },
+  { task:"Поставьте смысловой акцент (курсив) на слове «очень».",
+    code:'Это <___>очень</___> важно.',
+    answers:["em","i"],
+    explain:"<em> — смысловой акцент (курсив). <i> — просто курсив без акцента." },
+  { task:"Оберните карточку в БЛОЧНЫЙ контейнер с классом card.",
+    code:'<___ class="card">\n  <h2>Заголовок</h2>\n  <p>Текст</p>\n</___>',
+    answers:["div"],
+    explain:"<div> — блочный контейнер, занимает всю доступную ширину." },
+  { task:"Оберните цену в СТРОЧНЫЙ контейнер с классом price.",
+    code:'<p>Цена: <___ class="price">100 ₽</___></p>',
+    answers:["span"],
+    explain:"<span> — строчный контейнер для выделения части текста." },
+  { task:"Подключите внешний файл стилей style.css.",
+    code:'<head>\n  <___ rel="stylesheet" href="style.css">\n</head>',
+    answers:["link"],
+    explain:"<link rel=\"stylesheet\" href=\"style.css\"> — так подключается внешний CSS." },
+  { task:"Откройте видимую часть документа.",
+    code:'<html>\n  <___>\n    <h1>Привет</h1>\n  </___>\n</html>',
+    answers:["body"],
+    explain:"<body> — тело документа, всё его видимое содержимое." },
+  { task:"Откройте служебный раздел документа.",
+    code:'<html>\n  <___>\n    <title>Сайт</title>\n  </___>\n</html>',
+    answers:["head"],
+    explain:"<head> — служебная информация: <title>, <meta>, <link>." },
+  { task:"Вставьте видео clip.mp4 с элементами управления.",
+    code:'<___ src="clip.mp4" controls></___>',
+    answers:["video"],
+    explain:"<video src=\"clip.mp4\" controls></video> — атрибут controls показывает панель управления." },
+  { task:"Вставьте аудио song.mp3 с элементами управления.",
+    code:'<___ src="song.mp3" controls></___>',
+    answers:["audio"],
+    explain:"<audio src=\"song.mp3\" controls></audio>." },
+  { task:"Запишите степень: E = mc² (двойка должна быть сверху).",
+    code:'E = mc<___>2</___>',
+    answers:["sup"],
+    explain:"<sup> — верхний индекс (superscript)." },
+  { task:"Запишите формулу воды H₂O (двойка должна быть снизу).",
+    code:'H<___>2</___>O',
+    answers:["sub"],
+    explain:"<sub> — нижний индекс (subscript)." },
+  { task:"Покажите старую цену зачёркнутой.",
+    code:'<___>1000 ₽</___>  500 ₽',
+    answers:["s","del"],
+    explain:"<s> — зачёркнутый текст; <del> — «удалённый» текст со смыслом." },
+  { task:"Подчеркните слово «Важно».",
+    code:'<___>Важно</___>',
+    answers:["u"],
+    explain:"<u> — underline, подчёркнутый текст." },
+  { task:"Оформите фрагмент кода console.log(1).",
+    code:'<___>console.log(1)</___>',
+    answers:["code"],
+    explain:"<code> — фрагмент программного кода, моноширинный шрифт." },
+  { task:"Оформите цитату отдельным блоком.",
+    code:'<___>Быть или не быть</___>',
+    answers:["blockquote"],
+    explain:"<blockquote> — блочная цитата с отступом." },
+  { task:"Сделайте шапку сайта с заголовком.",
+    code:'<___>\n  <h1>Мой сайт</h1>\n</___>',
+    answers:["header"],
+    explain:"<header> — семантический тег шапки страницы или раздела." },
+  { task:"Сделайте подвал с копирайтом.",
+    code:'<___>© 2024 Мой сайт</___>',
+    answers:["footer"],
+    explain:"<footer> — нижняя часть страницы: копирайт, контакты, ссылки." },
+  { task:"Оформите блок навигации со ссылками.",
+    code:'<___>\n  <a href="/">Главная</a>\n  <a href="/about">О нас</a>\n</___>',
+    answers:["nav"],
+    explain:"<nav> — семантический тег навигации по сайту." },
+  { task:"Выделите основное содержимое страницы.",
+    code:'<___>\n  <p>Текст статьи</p>\n</___>',
+    answers:["main"],
+    explain:"<main> — главное содержимое страницы, встречается один раз." }
+];
+
+/* =========================================================
+   СОСТОЯНИЕ И УТИЛИТЫ
+   ========================================================= */
+const state = {
+  surname: "",
+  name: "",
+  questions: [],
+  index: 0,
+  correct: 0,
+  answers: [],       // [{ qi, given, isCorrect }]
+  answered: false,
+  teacher: false
+};
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function normalize(s) {
+  return String(s).toLowerCase().replace(/[<>\/\s«»"'`.,;:!?]/g, "").trim();
+}
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(el => {
+    el.classList.toggle("active", el.id === id);
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* =========================================================
+   LOCALSTORAGE: ПРОГРЕСС И ИСТОРИЯ
+   ========================================================= */
+function getHistory() {
+  try {
+    const raw = localStorage.getItem(KEY_HISTORY);
+    const arr = raw ? JSON.parse(raw) : [];
+    return Array.isArray(arr) ? arr : [];
+  } catch (e) { return []; }
+}
+
+function saveHistory(history) {
+  try {
+    localStorage.setItem(KEY_HISTORY, JSON.stringify(history));
+  } catch (e) { console.warn("Не удалось сохранить историю", e); }
+}
+
+function saveProgress() {
+  const data = {
+    surname: state.surname,
+    name: state.name,
+    questions: state.questions,
+    index: state.index,
+    correct: state.correct,
+    answers: state.answers,
+    answered: state.answered,
+    teacher: state.teacher
+  };
+  try {
+    localStorage.setItem(KEY_PROGRESS, JSON.stringify(data));
+  } catch (e) { console.warn("Не удалось сохранить прогресс", e); }
+}
+
+function clearProgress() {
+  try { localStorage.removeItem(KEY_PROGRESS); } catch (e) {}
+}
+
+function tryRestoreProgress() {
+  let raw;
+  try { raw = localStorage.getItem(KEY_PROGRESS); } catch (e) { return false; }
+  if (!raw) return false;
+  try {
+    const data = JSON.parse(raw);
+    if (!data || !Array.isArray(data.questions) || data.questions.length === 0) return false;
+    state.surname = data.surname || "";
+    state.name = data.name || "";
+    state.questions = data.questions;
+    state.index = data.index || 0;
+    state.correct = data.correct || 0;
+    state.answers = Array.isArray(data.answers) ? data.answers : [];
+    state.answered = !!data.answered;
+    state.teacher = !!data.teacher;
+    return true;
+  } catch (e) { return false; }
+}
+
+function updateFooter() {
+  const history = getHistory();
+  const el = document.getElementById("footerAttempts");
+  if (el) el.textContent = `Сохранённых попыток: ${history.length}`;
+}
+
+/* =========================================================
+   МОДАЛЬНОЕ ОКНО ТЕОРИИ
+   ========================================================= */
+const theoryOverlay = document.getElementById("theoryOverlay");
+
+function openTheory() {
+  theoryOverlay.classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+function closeTheory() {
+  theoryOverlay.classList.remove("active");
+  document.body.style.overflow = "";
+}
+
+document.getElementById("btnTheoryStart").addEventListener("click", openTheory);
+document.getElementById("btnTheoryQuiz").addEventListener("click", openTheory);
+document.getElementById("btnTheoryClose").addEventListener("click", closeTheory);
+
+theoryOverlay.addEventListener("click", e => {
+  if (e.target === theoryOverlay) closeTheory();
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && theoryOverlay.classList.contains("active")) closeTheory();
+});
+
+document.getElementById("theoryTabs").addEventListener("click", e => {
+  const tab = e.target.closest(".ttab");
+  if (!tab) return;
+  const paneId = tab.dataset.pane;
+  document.querySelectorAll(".ttab").forEach(t => t.classList.toggle("active", t === tab));
+  document.querySelectorAll(".theory-pane").forEach(p => {
+    p.classList.toggle("active", p.dataset.pane === paneId);
+  });
+  document.querySelector(".modal-body").scrollTop = 0;
+});
+
+/* =========================================================
+   ФОРМИРОВАНИЕ НАБОРА ВОПРОСОВ
+   ========================================================= */
+function pickQuestions() {
+  const mc = shuffle(mcBank).slice(0, MC_COUNT).map(item => ({
+    type: "mc",
+    text: item.q,
+    code: "",
+    options: shuffle(item.a.map((t, i) => ({ text: t, correct: i === item.c }))),
+    explain: item.e,
+    correctText: item.a[item.c]
+  }));
+
+  const fl = shuffle(fillBank).slice(0, FILL_COUNT).map(item => ({
+    type: "fill",
+    text: item.task,
+    code: item.code,
+    answers: item.answers,
+    explain: item.explain,
+    correctText: "<" + item.answers[0] + ">"
+  }));
+
+  return shuffle(mc.concat(fl));
+}
+
+/* =========================================================
+   СТАРТ НОВОГО ТЕСТА
+   ========================================================= */
+function startNewQuiz(surname, name) {
+  state.surname = surname;
+  state.name = name;
+  state.questions = pickQuestions();
+  state.index = 0;
+  state.correct = 0;
+  state.answers = [];
+  state.answered = false;
+
+  saveProgress();
+  showScreen("screen-quiz");
+  renderQuestion();
+}
+
+document.getElementById("btnStart").addEventListener("click", () => {
+  const surname = document.getElementById("inpSurname").value.trim();
+  const name = document.getElementById("inpName").value.trim();
+  if (!surname || !name) {
+    alert("Пожалуйста, введите фамилию и имя.");
+    return;
+  }
+  startNewQuiz(surname, name);
+});
+
+/* Кнопка «Заново» на экране теста */
+document.getElementById("btnResetQuiz").addEventListener("click", () => {
+  if (!confirm("Начать тест заново? Текущий прогресс будет потерян.")) return;
+  clearProgress();
+  startNewQuiz(state.surname, state.name);
+});
+
+/* =========================================================
+   РЕЖИМ ПРЕПОДАВАТЕЛЯ
+   ========================================================= */
+const btnTeacher = document.getElementById("btnTeacher");
+const teacherBadgeWrap = document.getElementById("teacherBadgeWrap");
+
+btnTeacher.addEventListener("click", () => {
+  if (state.teacher) {
+    state.teacher = false;
+    renderTeacherBadge();
+    saveProgressIfActive();
+    return;
+  }
+  const pass = prompt("Введите пароль преподавателя:");
+  if (pass === null) return;
+  if (pass === TEACHER_PASSWORD) {
+    state.teacher = true;
+    renderTeacherBadge();
+    saveProgressIfActive();
+  } else {
+    alert("Неверный пароль.");
+  }
+});
+
+function renderTeacherBadge() {
+  if (state.teacher) {
+    teacherBadgeWrap.innerHTML = '<span class="badge">🔓 Режим преподавателя включён — ответ можно посмотреть до ответа</span>';
+    btnTeacher.textContent = "🔒 Выйти из режима преподавателя";
+  } else {
+    teacherBadgeWrap.innerHTML = "";
+    btnTeacher.textContent = "🔑 Режим преподавателя";
+  }
+}
+
+function saveProgressIfActive() {
+  if (state.questions.length > 0) saveProgress();
+}
+
+/* =========================================================
+   ОТРИСОВКА ВОПРОСА
+   ========================================================= */
+const elCounter  = document.getElementById("qCounter");
+const elScore    = document.getElementById("qScore");
+const elProgress = document.getElementById("progressBar");
+const elType     = document.getElementById("qType");
+const elText     = document.getElementById("qText");
+const elCode     = document.getElementById("qCode");
+const elBody     = document.getElementById("qBody");
+const elFeedback = document.getElementById("feedback");
+const btnReveal  = document.getElementById("btnReveal");
+const btnNext    = document.getElementById("btnNext");
+
+function renderQuestion() {
+  const q = state.questions[state.index];
+  if (!q) { showResults(); return; }
+
+  elCounter.textContent = `Вопрос ${state.index + 1} из ${state.questions.length}`;
+  elScore.textContent = `Правильно: ${state.correct}`;
+  elProgress.style.width = (state.index / state.questions.length * 100) + "%";
+
+  elType.textContent = q.type === "mc" ? "Выберите вариант ответа" : "Напишите нужный тег";
+  elType.className = "qtype " + q.type;
+
+  elText.textContent = q.text;
+  elCode.innerHTML = q.code ? '<pre class="code">' + esc(q.code) + "</pre>" : "";
+
+  elBody.innerHTML = "";
+  elFeedback.className = "feedback";
+  elFeedback.innerHTML = "";
+
+  btnNext.classList.add("hidden");
+  btnReveal.classList.add("hidden");
+  btnReveal.disabled = false;
+  if (state.teacher && !state.answered) {
+    btnReveal.classList.remove("hidden");
+  }
+
+  if (q.type === "mc") {
+    const wrap = document.createElement("div");
+    wrap.className = "options";
+    q.options.forEach((opt, i) => {
+      const b = document.createElement("button");
+      b.className = "option";
+      b.type = "button";
+      b.textContent = opt.text;
+      b.addEventListener("click", () => answerMC(i, b));
+      wrap.appendChild(b);
+    });
+    elBody.appendChild(wrap);
+  } else {
+    const wrap = document.createElement("div");
+    wrap.className = "fillwrap";
+
+    const inp = document.createElement("input");
+    inp.type = "text";
+    inp.id = "fillInput";
+    inp.placeholder = "Например: div";
+    inp.autocomplete = "off";
+    inp.spellcheck = false;
+    inp.addEventListener("keydown", e => {
+      if (e.key === "Enter") answerFill();
+    });
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn primary";
+    btn.textContent = "Ответить";
+    btn.addEventListener("click", answerFill);
+
+    wrap.appendChild(inp);
+    wrap.appendChild(btn);
+    elBody.appendChild(wrap);
+
+    setTimeout(() => inp.focus(), 60);
+  }
+}
+
+/* =========================================================
+   ПРОВЕРКА ОТВЕТОВ
+   ========================================================= */
+function answerMC(index, btn) {
+  if (state.answered) return;
+  const q = state.questions[state.index];
+  const isCorrect = q.options[index].correct;
+
+  document.querySelectorAll(".option").forEach((el, i) => {
+    el.disabled = true;
+    if (q.options[i].correct) el.classList.add("correct");
+  });
+  if (!isCorrect) btn.classList.add("wrong");
+
+  finishAnswer(isCorrect, q.options[index].text);
+}
+
+function answerFill() {
+  if (state.answered) return;
+  const inp = document.getElementById("fillInput");
+  if (!inp) return;
+
+  const value = inp.value.trim();
+  if (!value) { inp.focus(); return; }
+
+  const q = state.questions[state.index];
+  const norm = normalize(value);
+  const isCorrect = q.answers.some(a => normalize(a) === norm);
+
+  inp.disabled = true;
+  inp.classList.add(isCorrect ? "correct" : "wrong");
+  const btn = document.querySelector(".fillwrap .btn");
+  if (btn) btn.disabled = true;
+
+  finishAnswer(isCorrect, value);
+}
+
+function finishAnswer(isCorrect, given) {
+  const q = state.questions[state.index];
+  state.answered = true;
+
+  if (isCorrect) state.correct++;
+  state.answers.push({ qi: state.index, given, isCorrect });
+
+  elScore.textContent = `Правильно: ${state.correct}`;
+  renderFeedback(q, isCorrect);
+
+  btnReveal.classList.add("hidden");
+
+  const last = state.index === state.questions.length - 1;
+  btnNext.textContent = last ? "Показать результат →" : "Далее →";
+  btnNext.classList.remove("hidden");
+  btnNext.focus();
+
+  saveProgress();
+}
+
+function renderFeedback(q, isCorrect) {
+  let html = `<div class="fb-title">${isCorrect ? "✅ Верно!" : "❌ Неверно"}</div>`;
+  if (!isCorrect) {
+    html += `<div class="fb-correct">Правильный ответ: <code>${esc(q.correctText)}</code></div>`;
+  }
+  html += `<div class="fb-explain">${esc(q.explain)}</div>`;
+
+  elFeedback.className = "feedback " + (isCorrect ? "ok" : "bad");
+  elFeedback.innerHTML = html;
+}
+
+/* Восстановление состояния «ответ уже дан» после перезагрузки */
+function restoreAnsweredState() {
+  const q = state.questions[state.index];
+  if (!q) return;
+  const last = state.answers[state.answers.length - 1];
+  if (!last) return;
+
+  const isCorrect = !!last.isCorrect;
+
+  if (q.type === "mc") {
+    document.querySelectorAll(".option").forEach((el, i) => {
+      el.disabled = true;
+      if (q.options[i].correct) el.classList.add("correct");
+      if (q.options[i].text === last.given && !isCorrect) el.classList.add("wrong");
+    });
+  } else {
+    const inp = document.getElementById("fillInput");
+    if (inp) {
+      inp.value = last.given || "";
+      inp.disabled = true;
+      inp.classList.add(isCorrect ? "correct" : "wrong");
+    }
+    const btn = document.querySelector(".fillwrap .btn");
+    if (btn) btn.disabled = true;
+  }
+
+  renderFeedback(q, isCorrect);
+
+  const lastQ = state.index === state.questions.length - 1;
+  btnNext.textContent = lastQ ? "Показать результат →" : "Далее →";
+  btnNext.classList.remove("hidden");
+}
+
+/* =========================================================
+   КНОПКА «ПОКАЗАТЬ ОТВЕТ» (режим преподавателя)
+   ========================================================= */
+btnReveal.addEventListener("click", () => {
+  const q = state.questions[state.index];
+  elFeedback.className = "feedback info";
+  elFeedback.innerHTML =
+    `<div class="fb-title">👁 Режим преподавателя</div>` +
+    `<div class="fb-correct">Правильный ответ: <code>${esc(q.correctText)}</code></div>` +
+    `<div class="fb-explain">${esc(q.explain)}</div>`;
+  btnReveal.disabled = true;
+});
+
+/* =========================================================
+   ПЕРЕХОД К СЛЕДУЮЩЕМУ ВОПРОСУ
+   ========================================================= */
+btnNext.addEventListener("click", () => {
+  state.index++;
+  state.answered = false;
+
+  if (state.index >= state.questions.length) {
+    showResults();
+  } else {
+    saveProgress();
+    renderQuestion();
+  }
+});
+
+/* =========================================================
+   РЕЗУЛЬТАТЫ
+   ========================================================= */
+function showResults() {
+  const total = state.questions.length;
+  const pct = Math.round(state.correct / total * 100);
+
+  let grade = 2;
+  if (pct >= 90) grade = 5;
+  else if (pct >= 75) grade = 4;
+  else if (pct >= 50) grade = 3;
+
+  // Добавляем попытку в историю
+  const history = getHistory();
+  const attempt = {
+    surname: state.surname,
+    name: state.name,
+    date: new Date().toISOString(),
+    correct: state.correct,
+    total: total,
+    pct: pct,
+    grade: grade
+  };
+  history.push(attempt);
+  saveHistory(history);
+  clearProgress();
+
+  const attemptNumber = history.length;
+
+  document.getElementById("resName").textContent = state.surname + " " + state.name;
+  document.getElementById("resScore").textContent = state.correct + "/" + total;
+  document.getElementById("resPct").textContent = pct + "%";
+  document.getElementById("resGrade").textContent = grade;
+  document.getElementById("attemptBadge").textContent = `Попытка №${attemptNumber} · всего попыток: ${attemptNumber}`;
+
+  // История
+  renderHistory(history);
+
+  // Разбор ошибок
+  const wrongBox = document.getElementById("resWrong");
+  const wrong = state.answers.filter(a => !a.isCorrect);
+
+  if (wrong.length === 0) {
+    wrongBox.innerHTML = '<div class="perfect">🎉 Отлично! Ни одной ошибки.</div>';
+  } else {
+    wrongBox.innerHTML = wrong.map((item, i) => {
+      const q = state.questions[item.qi];
+      return `
+        <div class="res-item">
+          <div class="ri-q">${i + 1}. ${esc(q.text)}</div>
+          <div class="ri-line">Ваш ответ: <b>${esc(item.given)}</b></div>
+          <div class="ri-line">Правильный ответ: <b class="good">${esc(q.correctText)}</b></div>
+          <div class="ri-line">${esc(q.explain)}</div>
+        </div>`;
+    }).join("");
+  }
+
+  updateFooter();
+  showScreen("screen-result");
+}
+
+function renderHistory(history) {
+  const box = document.getElementById("historyBox");
+  if (!history.length) {
+    box.innerHTML = '<div class="no-history">Пока нет сохранённых попыток.</div>';
+    return;
+  }
+
+  // Последние 5, новые сверху
+  const recent = history.slice(-5).reverse();
+  box.innerHTML = recent.map((h, idx) => {
+    const num = history.length - idx;
+    const isCurrent = idx === 0;
+    const d = new Date(h.date);
+    const dateStr = isNaN(d.getTime())
+      ? "—"
+      : d.toLocaleString("ru-RU", {
+          day: "2-digit", month: "2-digit", year: "2-digit",
+          hour: "2-digit", minute: "2-digit"
+        });
+    return `
+      <div class="history-item ${isCurrent ? "current" : ""}">
+        <span class="h-num">№${num}</span>
+        <span class="h-date">${esc(dateStr)}</span>
+        <span class="h-score">${h.correct}/${h.total} · ${h.pct}%</span>
+        <span class="h-grade">оценка ${h.grade}</span>
+      </div>`;
+  }).join("");
+}
+
+/* =========================================================
+   ПРОЙТИ ЗАНОВО (с экрана результата)
+   ========================================================= */
+document.getElementById("btnRestart").addEventListener("click", () => {
+  // Подставляем фамилию и имя из последней попытки
+  document.getElementById("inpSurname").value = state.surname || "";
+  document.getElementById("inpName").value = state.name || "";
+
+  state.index = 0;
+  state.correct = 0;
+  state.answers = [];
+  state.questions = [];
+  state.answered = false;
+
+  renderTeacherBadge();
+  updateFooter();
+  showScreen("screen-start");
+});
+
+/* =========================================================
+   ОЧИСТКА ИСТОРИИ
+   ========================================================= */
+document.getElementById("btnClearHistory").addEventListener("click", () => {
+  const history = getHistory();
+  if (!history.length) {
+    alert("История попыток уже пуста.");
+    return;
+  }
+  if (!confirm(`Удалить все сохранённые попытки (${history.length})? Действие необратимо.`)) return;
+  try { localStorage.removeItem(KEY_HISTORY); } catch (e) {}
+  updateFooter();
+});
+
+/* =========================================================
+   ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ
+   ========================================================= */
+(function init() {
+  renderTeacherBadge();
+  updateFooter();
+
+  if (tryRestoreProgress()) {
+    // Есть незавершённый тест — продолжаем
+    renderTeacherBadge();
+    if (state.index >= state.questions.length) {
+      // На всякий случай: если индекс вышел за пределы
+      showResults();
+      return;
+    }
+    showScreen("screen-quiz");
+    renderQuestion();
+    if (state.answered) restoreAnsweredState();
+  } else {
+    showScreen("screen-start");
+  }
+})();
+</script>
+</body>
+</html>
