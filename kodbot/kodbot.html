@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>КодБот — тренажёр по Python</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar__brand">🤖 <span>КодБот</span></div>
+  <div class="topbar__actions">
+    <button class="btn btn--ghost btn--icon" id="btnSound" title="Звук вкл/выкл">🔇</button>
+    <button class="btn btn--ghost" id="btnTextbook">📖 Учебник</button>
+    <button class="btn btn--ghost" id="btnReset">🗑 Сброс</button>
+  </div>
+</header>
+
+<div class="main">
+  <!-- ЭКРАН ВЫБОРА УРОКА -->
+  <main id="screenLessons" class="screen">
+    <div class="hero">
+      <h1>Тренажёр «КодБот»</h1>
+      <p>5 уроков · 50 заданий · свой чат-бот в финале</p>
+    </div>
+    <div class="lessons" id="lessonsGrid"></div>
+  </main>
+
+  <!-- ЭКРАН ТРЕНАЖЁРА -->
+  <main id="screenTrainer" class="screen hidden">
+    <div class="trainer">
+
+      <!-- 4. Задание -->
+      <section class="pane pane--task">
+        <div class="pane__head">
+          <span id="taskCounter">Задание 1 из 10</span>
+          <div class="dots" id="dots"></div>
+        </div>
+        <div class="pane__body" id="taskBody"></div>
+        <div class="pane__foot">
+          <button class="btn btn--sm" id="btnTheory">📖 Теория</button>
+          <button class="btn btn--sm hidden" id="btnSummary">🏆 Итог урока</button>
+          <div class="spacer"></div>
+          <button class="btn btn--sm" id="btnBack">← Уроки</button>
+        </div>
+      </section>
+
+      <!-- 3. Код -->
+      <section class="pane pane--code">
+        <div class="pane__head">
+          <span>🐍 Код на Python</span>
+          <div class="pane__head-right">
+            <span class="save-indicator" id="saveIndicator" title="Код сохранён">✓</span>
+            <button class="pane-icon-btn" id="btnCopy" title="Скопировать код">📋</button>
+          </div>
+        </div>
+        <textarea id="codeArea" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off"></textarea>
+        <div class="pane__foot">
+          <button class="btn btn--run" id="btnRun">▶ Запустить</button>
+          <button class="btn btn--check" id="btnCheck">✓ Проверить</button>
+          <div class="spacer"></div>
+          <button class="btn btn--sm" id="btnResetCode" title="Вернуть исходный код">↺</button>
+        </div>
+      </section>
+
+      <!-- 1. Мессенджер -->
+      <section class="pane pane--messenger">
+        <div class="pane__head">📱 Мессенджер</div>
+        <div class="chat" id="chatBody"></div>
+        <div id="resultBar" class="result-bar hidden"></div>
+        <div class="chat-input">
+          <input id="chatInput" type="text" placeholder="Напиши сообщение..." disabled>
+          <button id="chatSend" class="btn btn--send" disabled>➤</button>
+        </div>
+      </section>
+
+      <!-- 2. Библиотека команд -->
+      <section class="pane pane--lib">
+        <div class="pane__head">🧰 Библиотека команд</div>
+        <div class="lib" id="libBody"></div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<footer class="footer">
+  <span>Автор: <a href="https://vk.ru/archigpt" target="_blank" rel="noopener">vk.ru/archigpt</a></span>
+</footer>
+
+<!-- ТОСТЫ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- МОДАЛКА -->
+<div class="modal hidden" id="modal">
+  <div class="modal__box">
+    <div class="modal__head">
+      <span id="modalTitle">Учебник</span>
+      <button class="btn btn--sm" id="modalClose">✕</button>
+    </div>
+    <div class="modal__body" id="modalBody"></div>
+  </div>
+</div>
+
+<script src="interpreter.js"></script>
+<script src="content.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
