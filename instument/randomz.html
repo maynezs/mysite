@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎲 Рандомайзер с защитой от повторов</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(145deg, #1e2b3c 0%, #0f1a24 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      padding: 16px;
+      margin: 0;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 56px;
+      padding: 40px 32px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+      width: 100%;
+      max-width: 680px;
+      transition: all 0.3s ease;
+    }
+
+    h1 {
+      color: #f0e9e1;
+      font-weight: 500;
+      font-size: 2rem;
+      letter-spacing: 1px;
+      text-align: center;
+      margin-bottom: 32px;
+      text-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    }
+
+    .range-panel {
+      background: rgba(10, 18, 28, 0.7);
+      border-radius: 48px;
+      padding: 28px 24px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255,215,150,0.25);
+      transition: opacity 0.3s, transform 0.2s;
+    }
+
+    .range-panel.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+      filter: grayscale(0.6);
+    }
+
+    .input-row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .input-group {
+      flex: 1 1 200px;
+      min-width: 160px;
+    }
+
+    .input-group label {
+      display: block;
+      color: #ccddee;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      margin-left: 12px;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    .input-group input {
+      width: 100%;
+      background: #1f2e3f;
+      border: 2px solid #3e5569;
+      border-radius: 40px;
+      padding: 16px 24px;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #ffd98c;
+      text-align: center;
+      outline: none;
+      transition: all 0.2s;
+      box-shadow: inset 0 4px 6px rgba(0,0,0,0.5);
+    }
+
+    .input-group input:focus {
+      border-color: #ffb347;
+      background: #263b50;
+      color: #ffe4b5;
+      box-shadow: 0 0 0 4px rgba(255, 180, 70, 0.3);
+    }
+
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 24px 0 16px;
+      gap: 14px;
+    }
+
+    .checkbox-wrapper input[type="checkbox"] {
+      width: 24px;
+      height: 24px;
+      accent-color: #ffa726;
+      transform: scale(1.1);
+      cursor: pointer;
+    }
+
+    .checkbox-wrapper label {
+      color: #e9daca;
+      font-size: 1.25rem;
+      font-weight: 400;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .random-btn {
+      background: radial-gradient(circle at 30% 20%, #ffc857, #f97c3a);
+      border: none;
+      border-radius: 80px;
+      padding: 24px 40px;
+      width: 100%;
+      font-size: 3.2rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #1c1e26;
+      letter-spacing: 6px;
+      text-shadow: 2px 2px 0 #ffe1a0;
+      box-shadow: 0 25px 35px -8px #b95a1e, 0 0 0 2px #ffdb9f inset, 0 0 0 5px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: 0.15s;
+      margin-bottom: 30px;
+      line-height: 1.2;
+    }
+
+    .random-btn:hover {
+      transform: scale(1.02);
+      background: radial-gradient(circle at 30% 20%, #ffda7c, #ff9147);
+      box-shadow: 0 30px 45px -8px #ff8c42, 0 0 0 3px #fff0c0 inset;
+    }
+
+    .random-btn:active {
+      transform: scale(0.98);
+      box-shadow: 0 15px 25px -5px #a35110;
+    }
+
+    .result-area {
+      background: #0b141e;
+      border-radius: 60px;
+      padding: 30px 20px;
+      margin: 20px 0 30px;
+      border: 2px solid #ffb45b;
+      box-shadow: inset 0 0 30px #00000099, 0 20px 30px -10px black;
+    }
+
+    #resultDisplay {
+      font-size: 7rem;
+      font-weight: 800;
+      text-align: center;
+      color: #fadf9e;
+      text-shadow: 0 0 15px #ffb347, 0 8px 0 #7f3f00;
+      letter-spacing: 8px;
+      line-height: 1.2;
+      word-break: break-word;
+      font-family: 'Courier New', monospace;
+      transition: 0.1s;
+      min-height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .edit-btn {
+      background: transparent;
+      border: 2px solid #b8a07c;
+      border-radius: 60px;
+      padding: 18px 28px;
+      font-size: 1.7rem;
+      font-weight: 600;
+      color: #eddbb8;
+      width: 100%;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      box-shadow: 0 8px 0 #4f3e2b, 0 10px 20px black;
+    }
+
+    .edit-btn:hover {
+      background: #3f4d5e50;
+      border-color: #f5cba0;
+      color: #fff2de;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 0 #4f3e2b, 0 15px 25px black;
+    }
+
+    .edit-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 4px 0 #4f3e2b;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .note {
+      color: #aab9c9;
+      text-align: center;
+      margin-top: 18px;
+      font-size: 1rem;
+    }
+
+    /* Стили для подвала */
+    .footer {
+      margin-top: 24px;
+      font-size: 0.85rem;
+      color: #8a9eb0;
+      text-align: center;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+      max-width: 680px;
+      width: 100%;
+    }
+
+    .footer:hover {
+      opacity: 1;
+    }
+
+    .footer a {
+      color: #c0d2e2;
+      text-decoration: none;
+      border-bottom: 1px dotted #5f7f9f;
+    }
+
+    .footer a:hover {
+      color: #ffd98c;
+      border-bottom-color: #ffb347;
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>⚡ СЛУЧАЙНОЕ ЧИСЛО ⚡</h1>
+
+  <!-- Панель настройки диапазона (активна по умолчанию) -->
+  <div id="rangePanel" class="range-panel">
+    <div class="input-row">
+      <div class="input-group">
+        <label>МИНИМУМ</label>
+        <input type="number" id="minInput" value="1" min="-999999" step="1">
+      </div>
+      <div class="input-group">
+        <label>МАКСИМУМ</label>
+        <input type="number" id="maxInput" value="100" min="-999999" step="1">
+      </div>
+    </div>
+
+    <div class="checkbox-wrapper">
+      <input type="checkbox" id="noRepeatCheck" checked>
+      <label for="noRepeatCheck">🔁 Без повторов (до изменения диапазона)</label>
+    </div>
+  </div>
+
+  <!-- Большая кнопка РАНДОМ -->
+  <button class="random-btn" id="randomBtn">🎲 РАНДОМ</button>
+
+  <!-- Блок результата -->
+  <div class="result-area">
+    <div id="resultDisplay">?</div>
+  </div>
+
+  <!-- Кнопка возврата к изменению диапазона (изначально скрыта) -->
+  <button class="edit-btn hidden" id="editRangeBtn">✎ Изменить диапазон</button>
+  <div class="note">Нажми РАНДОМ — цифры перебираются с магией ✨</div>
+</div>
+
+<!-- ПОДВАЛ С ИНФОРМАЦИЕЙ О РАЗРАБОТЧИКЕ -->
+<div class="footer">
+  Автор: <a href="https://vk.ru/archigpt" target="_blank" rel="noopener noreferrer">vk.ru/archigpt</a>
+</div>
+
+<script>
+  (function() {
+    // ------ ЭЛЕМЕНТЫ ------
+    const minInput = document.getElementById('minInput');
+    const maxInput = document.getElementById('maxInput');
+    const noRepeatCheck = document.getElementById('noRepeatCheck');
+    const randomBtn = document.getElementById('randomBtn');
+    const resultDisplay = document.getElementById('resultDisplay');
+    const rangePanel = document.getElementById('rangePanel');
+    const editRangeBtn = document.getElementById('editRangeBtn');
+
+    // ------ СОСТОЯНИЕ ------
+    let historySet = new Set();               // множество уже выпавших чисел
+    let currentMin = 1;                       // последний использованный min
+    let currentMax = 100;                      // последний использованный max
+    let animationInterval = null;              // для анимации перебора
+    let lastGeneratedNumber = null;            // последнее выпавшее (для анимации)
+
+    // Валидация и приведение к целому числу
+    function getValidMinMax() {
+      let min = parseInt(minInput.value, 10);
+      let max = parseInt(maxInput.value, 10);
+
+      if (isNaN(min)) min = 1;
+      if (isNaN(max)) max = 100;
+
+      if (min > max) {
+        [min, max] = [max, min];  // меняем местами, если путаница
+        minInput.value = min;
+        maxInput.value = max;
+      }
+
+      return { min, max };
+    }
+
+    // Сброс истории при изменении полей ввода (если панель активна)
+    function resetHistoryOnInputChange() {
+      if (!rangePanel.classList.contains('disabled')) {
+        historySet.clear();
+      }
+    }
+
+    minInput.addEventListener('input', resetHistoryOnInputChange);
+    maxInput.addEventListener('input', resetHistoryOnInputChange);
+
+    // ------ ГЕНЕРАЦИЯ СЛУЧАЙНОГО ЧИСЛА (с учётом исключений) ------
+    function getRandomIntExcluding(min, max, excludeSet) {
+      if (min > max) return null;
+
+      const rangeSize = max - min + 1;
+      // Если множество исключений содержит все возможные числа — выход
+      if (excludeSet.size >= rangeSize) {
+        return null; // все числа уже использованы
+      }
+
+      let randomNum;
+      do {
+        randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+      } while (excludeSet.has(randomNum));
+
+      return randomNum;
+    }
+
+    // Обычный рандом (можно повторяться)
+    function getRandomIntPlain(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // ------ АНИМАЦИЯ ПЕРЕБОРА (quick shuffle) ------
+    function startAnimation(finalNumber, min, max) {
+      if (animationInterval) clearInterval(animationInterval);
+
+      let iterations = 0;
+      const MAX_ITER = 20;               // количество смен цифр
+      const SPEED = 40;                   // мс между кадрами
+
+      animationInterval = setInterval(() => {
+        if (iterations >= MAX_ITER) {
+          clearInterval(animationInterval);
+          animationInterval = null;
+          resultDisplay.textContent = finalNumber;
+          return;
+        }
+
+        // случайное "мигающее" число из диапазона
+        const fakeNum = Math.floor(Math.random() * (max - min + 1)) + min;
+        resultDisplay.textContent = fakeNum;
+        iterations++;
+      }, SPEED);
+    }
+
+    // ------ ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ПОСЛЕ ГЕНЕРАЦИИ/СБРОСА ------
+    function lockRangePanel(lock) {
+      if (lock) {
+        rangePanel.classList.add('disabled');
+        minInput.disabled = true;
+        maxInput.disabled = true;
+        noRepeatCheck.disabled = true;
+        editRangeBtn.classList.remove('hidden');
+      } else {
+        rangePanel.classList.remove('disabled');
+        minInput.disabled = false;
+        maxInput.disabled = false;
+        noRepeatCheck.disabled = false;
+        editRangeBtn.classList.add('hidden');
+        // при разблокировке фокус на поля
+      }
+    }
+
+    // Сброс всего при возврате к изменению диапазона
+    function resetToEditMode() {
+      // Останавливаем анимацию если идёт
+      if (animationInterval) {
+        clearInterval(animationInterval);
+        animationInterval = null;
+      }
+
+      lockRangePanel(false);          // включаем поля
+      historySet.clear();             // чистим историю повторов
+      // Показываем "?" или последний результат не навязчиво
+      resultDisplay.textContent = '?';
+      lastGeneratedNumber = null;
+    }
+
+    // ------ ОБРАБОТЧИК КНОПКИ "РАНДОМ" ------
+    randomBtn.addEventListener('click', () => {
+      // Если панель залочена — используем currentMin / currentMax, иначе парсим заново
+      let min, max;
+      const panelLocked = rangePanel.classList.contains('disabled');
+
+      if (panelLocked) {
+        // используем сохранённые границы (которые были при первой генерации)
+        min = currentMin;
+        max = currentMax;
+      } else {
+        // получаем значения из полей и сохраняем как текущие
+        const values = getValidMinMax();
+        min = values.min;
+        max = values.max;
+        currentMin = min;
+        currentMax = max;
+
+        // Если пользовать менял поля вручную (даже в активном режиме) — сбрасываем историю
+        // но при первом нажатии historySet уже может содержать старые данные — очистим.
+        // Сбрасываем всегда при переходе от активной панели (не locked) к генерации.
+        historySet.clear();
+      }
+
+      // Дополнительная проверка на корректность
+      if (min > max) {
+        [min, max] = [max, min];
+        currentMin = min;
+        currentMax = max;
+        minInput.value = min;
+        maxInput.value = max;
+      }
+
+      const noRepeat = noRepeatCheck.checked;
+
+      // 1. Определяем финальное число
+      let finalNumber;
+
+      if (noRepeat) {
+        finalNumber = getRandomIntExcluding(min, max, historySet);
+        if (finalNumber === null) {
+          alert(`⚠️ Все числа от ${min} до ${max} уже использованы!\nИзмените диапазон или отключите опцию "Без повторов".`);
+          return; // ничего не делаем
+        }
+      } else {
+        finalNumber = getRandomIntPlain(min, max);
+      }
+
+      // 2. Если впервые генерируем (панель не заблокирована) — блокируем её
+      if (!panelLocked) {
+        lockRangePanel(true);
+      }
+
+      // 3. Добавляем в историю (если без повторов или просто сохраняем для информации)
+      if (noRepeat) {
+        historySet.add(finalNumber);
+      } else {
+        // если повторы разрешены — не храним историю (или можно хранить, но не используем)
+        // просто очистим, чтобы при смене режима не было путаницы
+        // Но при повторном нажатии в том же диапазоне история не нужна, поэтому оставим пустой.
+        historySet.clear(); // для режима без повторов история не accumulates
+      }
+
+      // 4. Запускаем анимацию, по окончании покажем finalNumber
+      startAnimation(finalNumber, min, max);
+
+      // 5. Запоминаем последнее число (на всякий случай)
+      lastGeneratedNumber = finalNumber;
+
+      // Обновляем значения в полях на всякий случай (если они были изменены во время лока)
+      minInput.value = min;
+      maxInput.value = max;
+    });
+
+    // ------ ОБРАБОТЧИК КНОПКИ "ИЗМЕНИТЬ ДИАПАЗОН" ------
+    editRangeBtn.addEventListener('click', () => {
+      resetToEditMode();
+      // Принудительно показываем корректные значения полей
+      const { min, max } = getValidMinMax();
+      minInput.value = min;
+      maxInput.value = max;
+      currentMin = min;
+      currentMax = max;
+    });
+
+    // Инициализация: если поля меняются вручную, история сбрасывается (уже есть)
+    // При загрузке страницы проверяем, что min не больше max
+    (function init() {
+      const { min, max } = getValidMinMax();
+      minInput.value = min;
+      maxInput.value = max;
+      currentMin = min;
+      currentMax = max;
+    })();
+
+    // Дополнительная защита: при попытке ввести невалидные данные подправляем
+    minInput.addEventListener('blur', () => {
+      const { min, max } = getValidMinMax();
+      minInput.value = min;
+      maxInput.value = max;
+      if (!rangePanel.classList.contains('disabled')) {
+        historySet.clear();
+      }
+    });
+
+    maxInput.addEventListener('blur', () => {
+      const { min, max } = getValidMinMax();
+      minInput.value = min;
+      maxInput.value = max;
+      if (!rangePanel.classList.contains('disabled')) {
+        historySet.clear();
+      }
+    });
+  })();
+</script>
+</body>
+</html>
