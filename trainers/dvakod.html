@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Язык машины - двоичный код</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #1a1a2e;
+            --primary: #e94560;
+            --secondary: #0f3460;
+            --accent: #00f5d4;
+            --text: #ffffff;
+            --btn-hover: #16213e;
+            --success: #00b894;
+            --danger: #d63031;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(233, 69, 96, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(0, 245, 212, 0.1) 0%, transparent 50%);
+        }
+
+        header {
+            background-color: var(--secondary);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--primary);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        h1 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1rem;
+            color: var(--accent);
+            text-shadow: 2px 2px var(--primary);
+            line-height: 1.5;
+        }
+
+        .header-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            font-family: 'Rubik', sans-serif;
+            font-weight: 700;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 0 #b32d45;
+            text-transform: uppercase;
+        }
+
+        button:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 transparent;
+        }
+
+        button:disabled {
+            background-color: #555;
+            box-shadow: 0 4px 0 #333;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        button.secondary-btn {
+            background-color: var(--secondary);
+            box-shadow: 0 4px 0 #091c35;
+        }
+
+        button.secondary-btn:active {
+            box-shadow: 0 0 0 transparent;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        main {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .module-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--secondary);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s, border-color 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .module-card h2 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+
+        .module-card p {
+            margin-bottom: 20px;
+            color: #ccc;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .module-card .emoji {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--secondary);
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .hearts {
+            color: var(--primary);
+            font-size: 1.5rem;
+            letter-spacing: 5px;
+        }
+
+        .question-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.5rem;
+            border: 2px dashed var(--accent);
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background-color: var(--secondary);
+            font-size: 1.1rem;
+            padding: 20px;
+            border: 2px solid transparent;
+            box-shadow: 0 4px 0 #091c35;
+            word-break: break-all;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--accent);
+        }
+
+        .option-btn.correct {
+            background-color: var(--success);
+            box-shadow: 0 4px 0 #007a63;
+        }
+
+        .option-btn.wrong {
+            background-color: var(--danger);
+            box-shadow: 0 4px 0 #8c1e1e;
+        }
+
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .input-area input {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            border: 2px solid var(--accent);
+            background: #000;
+            color: var(--accent);
+            text-align: center;
+            font-family: monospace;
+            letter-spacing: 2px;
+        }
+
+        .input-area input:focus {
+            outline: none;
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        aside {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--secondary);
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        aside h3 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--accent);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.9rem;
+        }
+
+        .table-search {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--secondary);
+            background: #000;
+            color: white;
+        }
+
+        .code-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1.1rem;
+            font-family: monospace;
+            table-layout: fixed;
+        }
+
+        .code-table th, .code-table td {
+            border: 1px solid var(--secondary);
+            padding: 8px;
+            text-align: center;
+            word-break: break-all;
+        }
+
+        .code-table th {
+            background: var(--secondary);
+            position: sticky;
+            top: 0;
+            font-size: 1rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-color);
+            border: 3px solid var(--accent);
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            text-align: center;
+        }
+
+        .modal-content h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.2rem;
+        }
+
+        .modal-content p, .modal-content li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            color: #ddd;
+        }
+        
+        .modal-content ul {
+            padding-left: 20px;
+            text-align: left;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--primary);
+            background: none;
+            border: none;
+            box-shadow: none;
+            padding: 0;
+        }
+
+        .quest-map {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .quest-map::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 0; width: 100%; height: 4px;
+            background: var(--secondary);
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+
+        .quest-node {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: var(--secondary);
+            border: 3px solid var(--bg-color);
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .quest-node.active {
+            background: var(--accent);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        .quest-node.passed {
+            background: var(--success);
+        }
+
+        .result-box {
+            text-align: center;
+            background: rgba(255,255,255,0.05);
+            padding: 40px 20px;
+            border-radius: 15px;
+            border: 2px solid var(--accent);
+        }
+
+        .result-box h2 {
+            font-family: 'Press Start 2P', cursive;
+            color: var(--accent);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .result-box .grade {
+            font-size: 3rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: var(--secondary);
+            color: white;
+            border-top: 4px solid var(--primary);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        @media (max-width: 900px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .option-btn {
+                padding: 15px;
+                font-size: 1rem;
+            }
+            h1 {
+                font-size: 0.8rem;
+            }
+            .header-btns button {
+                padding: 8px 10px;
+                font-size: 0.7rem;
+            }
+            .question-box {
+                font-size: 1.2rem;
+            }
+            .result-box .grade {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🤖 ЯЗЫК МАШИНЫ - ДВОИЧНЫЙ КОД</h1>
+        <div class="header-btns">
+            <button class="secondary-btn" onclick="openModal('theoryModal')">📖 Теория</button>
+            <button class="secondary-btn" onclick="resetProgress()" style="background-color: var(--danger); box-shadow: 0 4px 0 #8c1e1e;">🗑️ Сброс</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <main>
+            <div id="menuScreen" class="screen active">
+                <div class="modules-grid">
+                    <div class="module-card" id="card1">
+                        <span class="emoji">📝</span>
+                        <h2>Модуль 1</h2>
+                        <p>Тест на знание кодирования. 16 вопросов. Получи 4 или 5, чтобы открыть следующее!</p>
+                        <button onclick="startModule1()" id="btn1">Начать</button>
+                    </div>
+                    <div class="module-card" id="card2">
+                        <span class="emoji">🤖</span>
+                        <h2>Модуль 2</h2>
+                        <p>Робот учится понимать нас. 10 вопросов, 3 жизни. Выбери правильный код!</p>
+                        <button onclick="startModule2()" id="btn2" disabled>Заблокировано</button>
+                    </div>
+                    <div class="module-card" id="card3">
+                        <span class="emoji">⚔️</span>
+                        <h2>Модуль 3</h2>
+                        <p>Совместные испытания. 8 этапов, 3 жизни. Введи код вручную и победи босса!</p>
+                        <button onclick="startModule3()" id="btn3" disabled>Заблокировано</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="gameScreen" class="screen">
+                <div class="game-header">
+                    <div id="gameTitle">Модуль</div>
+                    <div class="hearts" id="gameLives" style="display: none;">❤️❤️❤️</div>
+                    <div id="gameProgress">Вопрос 1/16</div>
+                </div>
+                <div id="questMap" class="quest-map" style="display: none;"></div>
+                <div class="question-box" id="questionText">Вопрос...</div>
+                
+                <div id="optionsContainer" class="options-grid"></div>
+                
+                <div id="inputContainer" class="input-area" style="display: none;">
+                    <input type="text" id="binaryInput" placeholder="Введите коды через пробел" autocomplete="off">
+                    <button onclick="submitInput()">Ответить</button>
+                </div>
+            </div>
+
+            <div id="finalScreen" class="screen">
+                <div class="result-box">
+                    <h2>Финальный шаг!</h2>
+                    <p style="margin-bottom: 20px;">Вы прошли все испытания. Введите ваши данные для получения сертификата.</p>
+                    <div style="display:flex; flex-direction:column; gap:15px; max-width:400px; margin: 0 auto;">
+                        <input type="text" id="firstName" placeholder="Имя" style="padding:15px; border-radius:8px; border:2px solid var(--accent); background:#000; color:white; text-align:center; font-size:1.1rem;">
+                        <input type="text" id="lastName" placeholder="Фамилия" style="padding:15px; border-radius:8px; border:2px solid var(--accent); background:#000; color:white; text-align:center; font-size:1.1rem;">
+                        <button onclick="showFinalResults()" style="font-size:1.1rem; padding:15px;">Получить результат</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="resultScreen" class="screen">
+                <div class="result-box">
+                    <h2 id="resultTitle">Игра Окончена!</h2>
+                    <div class="grade" id="resultGrade"></div>
+                    <p id="resultText" style="font-size: 1.1rem; line-height: 1.8;"></p>
+                    <br>
+                    <button onclick="goToMenu()" style="font-size: 1.2rem; padding: 15px 30px;">В главное меню</button>
+                </div>
+            </div>
+        </main>
+
+        <aside>
+            <h3>Таблица кодов</h3>
+            <input type="text" class="table-search" id="tableSearch" placeholder="Поиск символа..." oninput="filterTable()">
+            <table class="code-table" id="codeTable">
+                <thead>
+                    <tr>
+                        <th>Буква</th>
+                        <th>Код</th>
+                        <th>буква</th>
+                        <th>Код</th>
+                        <th>Символ</th>
+                        <th>Код</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </aside>
+    </div>
+
+    <footer>
+        Автор: <a href="https://vk.ru/archigpt" target="_blank">vk.ru/archigpt</a>
+    </footer>
+
+    <!-- Модальное окно сюжетных реплик (перед вопросом) -->
+    <div id="storyModal" class="modal">
+        <div class="modal-content" style="border-color: var(--primary);">
+            <h2 id="storyModalTitle" style="color: var(--accent);">Сюжет</h2>
+            <p id="storyModalText" style="font-size: 1.2rem; margin-bottom: 20px;"></p>
+            <button onclick="closeStoryModal()" style="font-size: 1.1rem; padding: 12px 25px;">Продолжить</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно реплик при ошибке -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content" style="border-color: var(--danger);">
+            <h2 style="color: var(--danger);">Ошибка!</h2>
+            <p id="errorModalText" style="font-size: 1.2rem; margin-bottom: 20px;"></p>
+            <button onclick="closeErrorModal()" style="font-size: 1.1rem; padding: 12px 25px; background-color: var(--danger); box-shadow: 0 4px 0 #8c1e1e;">Продолжить</button>
+        </div>
+    </div>
+
+    <div id="theoryModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('theoryModal')">×</button>
+            <h2>ДВОИЧНОЕ КОДИРОВАНИЕ</h2>
+            <p><strong>Двоичный код</strong> — это способ представления информации с помощью двух знаков: 0 и 1.</p>
+            
+            <h3 style="color:var(--accent); margin-top: 15px;">Двоичный алфавит</h3>
+            <p>Алфавит из двух знаков (символов) — 0 и 1. Слова из одного символа: «0» и «1». Из двух: 00, 01, 10, 11. Количество возможных слов вычисляется как 2<sup>n</sup>, где n — количество символов в слове.</p>
+            
+            <h3 style="color:var(--accent); margin-top: 15px;">Кодирование текста</h3>
+            <p>Каждому символу (букве, цифре, знаку) ставится в соответствие уникальный двоичный код. В компьютерах обычно используется 8-битный код (1 байт = 8 бит). Это позволяет закодировать 256 различных символов.</p>
+            <p><strong>Алгоритм кодирования:</strong></p>
+            <ul>
+                <li>Найти символ в кодовой таблице.</li>
+                <li>Записать соответствующий ему двоичный код.</li>
+            </ul>
+            <p><strong>Декодирование:</strong> Разбить код на группы по 8 символов и заменить каждую группу на символ из таблицы.</p>
+            
+            <h3 style="color:var(--accent); margin-top: 15px;">Графическая информация</h3>
+            <p><strong>Растровое изображение</strong> — совокупность точек (пикселей). Каждый пиксель имеет свой цвет, который кодируется двоичным числом.</p>
+            <p><strong>Векторное изображение</strong> — состоит из геометрических фигур (отрезков, окружностей). Запоминается как набор команд для построения.</p>
+        </div>
+    </div>
+
+    <script>
+        function getBin(char) {
+            let code = char.charCodeAt(0);
+            if (char === 'Ё') code = 168;
+            else if (char === 'ё') code = 184;
+            else if (code >= 1040 && code <= 1103) {
+                if (code >= 1040 && code <= 1071) code = code - 848;
+                else if (code >= 1072 && code <= 1103) code = code - 848;
+            }
+            return code.toString(2).padStart(8, '0');
+        }
+
+        const ruUpper = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+        const ruLower = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+        const otherSymbols = ['0','1','2','3','4','5','6','7','8','9','+','-','*','/','=','!','?','.',',',' '];
+
+        const tableBody = document.getElementById('tableBody');
+        
+        function renderTable() {
+            tableBody.innerHTML = '';
+            const maxRows = Math.max(ruUpper.length, ruLower.length, otherSymbols.length);
+            
+            for (let i = 0; i < maxRows; i++) {
+                const tr = document.createElement('tr');
+                const uChar = ruUpper[i] || '';
+                const uCode = uChar ? getBin(uChar) : '';
+                const lChar = ruLower[i] || '';
+                const lCode = lChar ? getBin(lChar) : '';
+                const sChar = otherSymbols[i] || '';
+                const sCode = sChar ? getBin(sChar) : '';
+                
+                tr.innerHTML = `
+                    <td>${uChar}</td>
+                    <td>${uCode}</td>
+                    <td>${lChar}</td>
+                    <td>${lCode}</td>
+                    <td>${sChar === ' ' ? 'Пробел' : sChar}</td>
+                    <td>${sCode}</td>
+                `;
+                tableBody.appendChild(tr);
+            }
+        }
+        renderTable();
+
+        function filterTable() {
+            const query = document.getElementById('tableSearch').value.toUpperCase();
+            tableBody.innerHTML = '';
+            const maxRows = Math.max(ruUpper.length, ruLower.length, otherSymbols.length);
+            
+            for (let i = 0; i < maxRows; i++) {
+                const uChar = ruUpper[i] || '';
+                const lChar = ruLower[i] || '';
+                const sChar = otherSymbols[i] || '';
+                
+                if (uChar.includes(query) || lChar.includes(query) || sChar.includes(query)) {
+                    const tr = document.createElement('tr');
+                    const uCode = uChar ? getBin(uChar) : '';
+                    const lCode = lChar ? getBin(lChar) : '';
+                    const sCode = sChar ? getBin(sChar) : '';
+                    tr.innerHTML = `
+                        <td>${uChar}</td>
+                        <td>${uCode}</td>
+                        <td>${lChar}</td>
+                        <td>${lCode}</td>
+                        <td>${sChar === ' ' ? 'Пробел' : sChar}</td>
+                        <td>${sCode}</td>
+                    `;
+                    tableBody.appendChild(tr);
+                }
+            }
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        const symbolPool = [
+            '0','1','2','3','4','5','6','7','8','9',
+            '+','-','*','/','=','!','?','.',',',' ',
+            ...ruUpper.split(''), ...ruLower.split('')
+        ];
+
+        const questionBank = [];
+        
+        function generateQuestions() {
+            const shuffledSymbols = shuffleArray([...symbolPool]).slice(0, 30);
+            shuffledSymbols.forEach(sym => {
+                const correct = getBin(sym);
+                const options = [correct];
+                while (options.length < 4) {
+                    const rnd = Math.floor(Math.random() * 256).toString(2).padStart(8, '0');
+                    if (!options.includes(rnd)) options.push(rnd);
+                }
+                questionBank.push({
+                    type: 'symbol',
+                    text: `Переведите символ "${sym === ' ' ? 'Пробел' : sym}" в двоичный код:`,
+                    correct: correct,
+                    options: shuffleArray(options)
+                });
+            });
+
+            const words = ["ВИНТ", "РОБОТ", "КОД", "БИТ", "БАЙТ", "ИГРА", "СЕТЬ", "ДАННЫЕ", "ПАМЯТЬ", "СИСТЕМА", "МОДЕМ", "КУРСОР", "ФАЙЛ", "ПАПКА", "ЭКРАН", "МЫШЬ", "КЛАВИША", "ПРОЦЕССОР", "АЛГОРИТМ", "ПРОГРАММА"];
+            const shuffledWords = shuffleArray([...words]).slice(0, 20);
+            
+            shuffledWords.forEach(word => {
+                const correct = word.split('').map(c => getBin(c)).join(' ');
+                const options = [correct];
+                while (options.length < 4) {
+                    let fakeWord = [];
+                    for (let j = 0; j < word.length; j++) {
+                        fakeWord.push(Math.floor(Math.random() * 256).toString(2).padStart(8, '0'));
+                    }
+                    const fakeString = fakeWord.join(' ');
+                    if (!options.includes(fakeString)) options.push(fakeString);
+                }
+                const spacedWord = word.split('').join(' ');
+                questionBank.push({
+                    type: 'word',
+                    text: `Закодируйте слово "${spacedWord}":`,
+                    correct: correct,
+                    options: shuffleArray(options)
+                });
+            });
+        }
+        generateQuestions();
+
+        let state = {
+            m1Passed: false,
+            m2Passed: false,
+            m3Passed: false,
+            m1Score: 0,
+            m2Lives: 3,
+            m3Lives: 3,
+            currentModule: 1,
+            questions: [],
+            currentIndex: 0,
+            score: 0,
+            lives: 3,
+            isGameOver: false
+        };
+
+        function loadState() {
+            const saved = localStorage.getItem('binaryTrainerState');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                state.m1Passed = parsed.m1Passed || false;
+                state.m2Passed = parsed.m2Passed || false;
+                state.m3Passed = parsed.m3Passed || false;
+                state.m1Score = parsed.m1Score || 0;
+                state.m2Lives = parsed.m2Lives || 3;
+                state.m3Lives = parsed.m3Lives || 3;
+                updateMenuUI();
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('binaryTrainerState', JSON.stringify({
+                m1Passed: state.m1Passed,
+                m2Passed: state.m2Passed,
+                m3Passed: state.m3Passed,
+                m1Score: state.m1Score,
+                m2Lives: state.m2Lives,
+                m3Lives: state.m3Lives
+            }));
+        }
+
+        function updateMenuUI() {
+            const btn2 = document.getElementById('btn2');
+            const btn3 = document.getElementById('btn3');
+            
+            if (state.m1Passed) {
+                btn2.disabled = false;
+                btn2.innerText = "Начать";
+                btn2.parentElement.style.borderColor = 'var(--accent)';
+            }
+            if (state.m2Passed) {
+                btn3.disabled = false;
+                btn3.innerText = "Начать";
+                btn3.parentElement.style.borderColor = 'var(--accent)';
+            }
+            if (state.m3Passed) {
+                btn3.innerText = "Пройдено!";
+                btn3.disabled = true;
+            }
+        }
+
+        function resetProgress() {
+            if(confirm("Вы уверены, что хотите сбросить весь прогресс?")) {
+                localStorage.removeItem('binaryTrainerState');
+                location.reload();
+            }
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function goToMenu() {
+            showScreen('menuScreen');
+            updateMenuUI();
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function updateHearts() {
+            const heartsEl = document.getElementById('gameLives');
+            if (state.currentModule === 1) {
+                heartsEl.style.display = 'none';
+            } else {
+                heartsEl.style.display = 'block';
+                heartsEl.innerText = '❤️'.repeat(state.lives) + '🖤'.repeat(3 - state.lives);
+            }
+        }
+
+        function updateProgress() {
+            const total = state.currentModule === 1 ? 16 : (state.currentModule === 2 ? 10 : 8);
+            document.getElementById('gameProgress').innerText = `Этап ${state.currentIndex + 1}/${total}`;
+            
+            if (state.currentModule === 3) {
+                const nodes = document.querySelectorAll('.quest-node');
+                nodes.forEach((node, idx) => {
+                    if (idx < state.currentIndex) node.classList.add('passed');
+                    if (idx === state.currentIndex) node.classList.add('active');
+                });
+            }
+        }
+
+        const storyM2 = [
+            "Привет! Я робот Бинар. Мой корабль сломан, и я не понимаю ваши символы. Помоги мне выучить двоичный код!",
+            "Отлично! Теперь я знаю, как выглядит эта буква. Давай продолжим.",
+            "Я запоминаю... Это так интересно! А как насчёт следующего символа?",
+            "Мои схемы работают быстрее! Ещё немного практики.",
+            "Я почти готов к ремонту. Но нужно выучить больше слов.",
+            "Спасибо! Теперь я смогу прочитать инструкцию к кораблю.",
+            "Осталось совсем немного. Я чувствую, как просыпаются мои процессоры!",
+            "Ты отличный учитель! Давай закончим обучение.",
+            "Последний символ... Я готов к самостоятельной работе!",
+            "Финальная проверка! Покажи, чему ты меня научил."
+        ];
+
+        const storyM3 = [
+            "Начнём ремонт! Первая задача — открыть дверь в машинное отделение. Код от двери — это двоичный код символа.",
+            "Дверь открыта! Теперь нужно взломать камеру наблюдения, чтобы пробраться незамеченными.",
+            "Камера отключена. Активируем лифт, чтобы спуститься в энергетический отсек.",
+            "Лифт работает! Осталось обойти лазерные датчики. Введи код вручную.",
+            "Отлично! Теперь перед нами терминал управления. Введи код символа, чтобы получить доступ.",
+            "Терминал взломан! Осталось загрузить ядро системы. Введи код слова.",
+            "Ядро загружено! Осталось активировать файрвол. Введи код вручную.",
+            "Внимание! Вирус-босс на экране. Это наш последний бой. Введи его код, чтобы уничтожить его!"
+        ];
+
+        const errorReplies = [
+            "Ничего, в этот раз я справился сам, давай дальше.",
+            "Ошибаться не страшно, главное — учиться!",
+            "Хм, я запомню этот случай. Продолжаем!",
+            "Не переживай, я тоже иногда путаюсь в кодах.",
+            "Давай попробуем ещё раз в следующем задании!",
+            "Я верю в тебя! Следующий вопрос будет легче.",
+            "Ошибка — это тоже опыт. Идём дальше!",
+            "Я всё равно рад, что ты стараешься!",
+            "Ничего страшного, я подскажу правильный ответ в следующий раз.",
+            "Не сдавайся! У нас ещё есть жизни."
+        ];
+
+        function showStoryAndLoadQuestion() {
+            if (state.currentIndex >= state.questions.length) {
+                endGame(true);
+                return;
+            }
+
+            let storyText = "";
+            let title = "";
+            if (state.currentModule === 2 && storyM2[state.currentIndex]) {
+                storyText = storyM2[state.currentIndex];
+                title = "🤖 Робот Бинар";
+            } else if (state.currentModule === 3 && storyM3[state.currentIndex]) {
+                storyText = storyM3[state.currentIndex];
+                title = "⚔️ Событие";
+            }
+            
+            if (storyText) {
+                document.getElementById('storyModalTitle').innerText = title;
+                document.getElementById('storyModalText').innerText = storyText;
+                document.getElementById('storyModal').classList.add('active');
+            } else {
+                loadQuestion();
+            }
+        }
+
+        function closeStoryModal() {
+            document.getElementById('storyModal').classList.remove('active');
+            loadQuestion();
+        }
+
+        function showErrorReply() {
+            const reply = errorReplies[Math.floor(Math.random() * errorReplies.length)];
+            document.getElementById('errorModalText').innerText = reply;
+            document.getElementById('errorModal').classList.add('active');
+        }
+
+        function closeErrorModal() {
+            document.getElementById('errorModal').classList.remove('active');
+            state.currentIndex++;
+            showStoryAndLoadQuestion();
+        }
+
+        function startModule1() {
+            state.currentModule = 1;
+            state.currentIndex = 0;
+            state.score = 0;
+            
+            const symbolQuestions = shuffleArray(questionBank.filter(q => q.type === 'symbol')).slice(0, 10);
+            const wordQuestions = shuffleArray(questionBank.filter(q => q.type === 'word')).slice(0, 6);
+            state.questions = [...symbolQuestions, ...wordQuestions];
+            
+            document.getElementById('gameTitle').innerText = "Модуль 1: Тест";
+            document.getElementById('questMap').style.display = 'none';
+            showScreen('gameScreen');
+            loadQuestion();
+        }
+
+        function startModule2() {
+            state.currentModule = 2;
+            state.currentIndex = 0;
+            state.lives = 3;
+            state.isGameOver = false;
+            
+            // Сначала 5 символов, затем 5 слов
+            const symbolQs = shuffleArray(questionBank.filter(q => q.type === 'symbol')).slice(0, 5);
+            const wordQs = shuffleArray(questionBank.filter(q => q.type === 'word')).slice(0, 5);
+            state.questions = [...symbolQs, ...wordQs];
+            
+            document.getElementById('gameTitle').innerText = "Модуль 2: Диалог с роботом";
+            document.getElementById('questMap').style.display = 'none';
+            showScreen('gameScreen');
+            showStoryAndLoadQuestion();
+        }
+
+        function startModule3() {
+            state.currentModule = 3;
+            state.currentIndex = 0;
+            state.lives = 3;
+            state.isGameOver = false;
+            
+            // 7 случайных вопросов + 1 слово последним
+            const allWords = questionBank.filter(q => q.type === 'word');
+            const selectedWord = shuffleArray([...allWords])[0];
+            const otherQs = shuffleArray([...questionBank]).filter(q => q !== selectedWord).slice(0, 7);
+            state.questions = [...otherQs, selectedWord];
+            
+            document.getElementById('gameTitle').innerText = "Модуль 3: Испытания";
+            
+            const map = document.getElementById('questMap');
+            map.style.display = 'flex';
+            map.innerHTML = '';
+            for(let i=0; i<8; i++) {
+                const node = document.createElement('div');
+                node.className = 'quest-node';
+                node.innerText = i+1;
+                map.appendChild(node);
+            }
+
+            showScreen('gameScreen');
+            showStoryAndLoadQuestion();
+        }
+
+        function loadQuestion() {
+            updateProgress();
+            updateHearts();
+
+            const q = state.questions[state.currentIndex];
+            const qText = document.getElementById('questionText');
+            const optContainer = document.getElementById('optionsContainer');
+            const inputContainer = document.getElementById('inputContainer');
+            
+            optContainer.innerHTML = '';
+            inputContainer.style.display = 'none';
+
+            let questionHtml = '';
+            if (state.currentModule === 1) {
+                questionHtml = `<strong>Вопрос ${state.currentIndex + 1}:</strong><br>${q.text}`;
+            } else if (state.currentModule === 2) {
+                const match = q.text.match(/"([^"]+)"/);
+                const target = match ? match[1] : q.text;
+                questionHtml = `<em>Робот спрашивает:</em><br>"Как закодировать ${q.type === 'symbol' ? 'символ' : 'слово'} ${target}?"`;
+            } else if (state.currentModule === 3) {
+                const questNames = ["Открытие двери", "Взлом камеры", "Активация лифта", "Обход лазеров", "Терминал", "Ядро системы", "Файрвол", "ФИНАЛЬНЫЙ БОСС"];
+                questionHtml = `<strong>Испытание ${state.currentIndex + 1}: ${questNames[state.currentIndex]}</strong><br><br>${q.text}`;
+            }
+
+            qText.innerHTML = questionHtml;
+
+            if (state.currentModule === 3 && state.currentIndex >= 4) {
+                optContainer.style.display = 'none';
+                inputContainer.style.display = 'flex';
+                document.getElementById('binaryInput').value = '';
+                document.getElementById('binaryInput').focus();
+            } else {
+                inputContainer.style.display = 'none';
+                optContainer.style.display = 'grid';
+                
+                q.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = opt;
+                    btn.onclick = () => checkAnswer(opt, btn);
+                    optContainer.appendChild(btn);
+                });
+            }
+        }
+
+        function checkAnswer(selected, btn) {
+            const q = state.questions[state.currentIndex];
+            const isCorrect = selected === q.correct;
+            const optContainer = document.getElementById('optionsContainer');
+            const allBtns = optContainer.querySelectorAll('.option-btn');
+
+            allBtns.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                btn.classList.add('correct');
+                state.score++;
+                setTimeout(() => {
+                    state.currentIndex++;
+                    showStoryAndLoadQuestion();
+                }, 800);
+            } else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => {
+                    if (b.innerText === q.correct) b.classList.add('correct');
+                });
+                
+                if (state.currentModule !== 1) {
+                    state.lives--;
+                    updateHearts();
+                    if (state.lives <= 0) {
+                        state.isGameOver = true;
+                        setTimeout(() => endGame(false), 1500);
+                        return;
+                    }
+                }
+
+                if (state.currentModule === 1) {
+                    setTimeout(() => {
+                        state.currentIndex++;
+                        loadQuestion();
+                    }, 2000);
+                } else {
+                    const qText = document.getElementById('questionText');
+                    qText.innerHTML += "<br><br><span style='color:var(--primary); font-size:1rem;'>Правильный ответ подсвечен. Нажмите, чтобы продолжить...</span>";
+                    
+                    const goNext = () => {
+                        optContainer.removeEventListener('click', goNext);
+                        if (!state.isGameOver) {
+                            showErrorReply();
+                        }
+                    };
+                    
+                    optContainer.addEventListener('click', goNext);
+                    
+                    allBtns.forEach(b => {
+                        if (b.innerText === q.correct) {
+                            b.disabled = false;
+                            b.onclick = () => {
+                                optContainer.removeEventListener('click', goNext);
+                                showErrorReply();
+                            };
+                        }
+                    });
+                }
+            }
+        }
+
+        function submitInput() {
+            const input = document.getElementById('binaryInput').value.replace(/\s/g, '');
+            const q = state.questions[state.currentIndex];
+            const correctStripped = q.correct.replace(/\s/g, '');
+            
+            if (input === correctStripped) {
+                document.getElementById('binaryInput').style.borderColor = 'var(--success)';
+                setTimeout(() => {
+                    document.getElementById('binaryInput').style.borderColor = 'var(--accent)';
+                    state.currentIndex++;
+                    showStoryAndLoadQuestion();
+                }, 1000);
+            } else {
+                document.getElementById('binaryInput').style.borderColor = 'var(--danger)';
+                state.lives--;
+                updateHearts();
+                
+                if (state.lives <= 0) {
+                    state.isGameOver = true;
+                    setTimeout(() => endGame(false), 1500);
+                    return;
+                }
+
+                const qText = document.getElementById('questionText');
+                qText.innerHTML += `<br><br><span style="color:var(--danger); font-size:1rem;">Ошибка! Правильный код: <strong>${q.correct}</strong></span>`;
+                
+                const inputContainer = document.getElementById('inputContainer');
+                const oldBtn = inputContainer.querySelector('button');
+                oldBtn.innerText = "Продолжить";
+                oldBtn.onclick = () => {
+                    oldBtn.innerText = "Ответить";
+                    oldBtn.onclick = submitInput;
+                    document.getElementById('binaryInput').style.borderColor = 'var(--accent)';
+                    showErrorReply();
+                };
+            }
+        }
+
+        function endGame(isWin) {
+            if (state.currentModule === 3 && isWin) {
+                state.m3Lives = state.lives;
+                showScreen('finalScreen');
+                return;
+            }
+            
+            showScreen('resultScreen');
+            const title = document.getElementById('resultTitle');
+            const grade = document.getElementById('resultGrade');
+            const text = document.getElementById('resultText');
+            
+            grade.innerText = '';
+            text.innerHTML = '';
+
+            if (state.currentModule === 1) {
+                const correctAnswers = state.score;
+                let finalGrade = 2;
+                if (correctAnswers >= 16) finalGrade = 5;
+                else if (correctAnswers >= 13) finalGrade = 4;
+                else if (correctAnswers >= 10) finalGrade = 3;
+
+                title.innerText = "Тест завершен!";
+                grade.innerText = `Оценка: ${finalGrade}`;
+                
+                if (finalGrade >= 4) {
+                    title.innerText = "ПОБЕДА! 🎉";
+                    title.style.color = "var(--success)";
+                    text.innerHTML = `Вы ответили правильно на ${correctAnswers} из 16 вопросов.<br>Модуль 2 разблокирован!`;
+                    state.m1Passed = true;
+                    state.m1Score = correctAnswers;
+                    saveState();
+                } else {
+                    title.innerText = "Попробуйте еще раз 😢";
+                    title.style.color = "var(--danger)";
+                    text.innerHTML = `Вы ответили правильно на ${correctAnswers} из 16 вопросов.<br>Для открытия Модуля 2 нужно получить 4 или 5.`;
+                }
+            } else {
+                if (isWin) {
+                    title.innerText = "ИСПЫТАНИЕ ПРОЙДЕНО! 🏆";
+                    title.style.color = "var(--success)";
+                    grade.innerText = "🎉";
+                    if (state.currentModule === 2) {
+                        state.m2Lives = state.lives;
+                        text.innerHTML = "Ура! Я всё понял! Теперь я могу помочь тебе с ремонтом.<br>Модуль 3 разблокирован.";
+                        state.m2Passed = true;
+                        saveState();
+                    } else {
+                        text.innerHTML = "Победа! Вирус уничтожен, корабль в порядке. Спасибо за помощь, друг!";
+                    }
+                } else {
+                    title.innerText = "GAME OVER 💀";
+                    title.style.color = "var(--danger)";
+                    grade.innerText = "☠️";
+                    text.innerHTML = "У вас закончились жизни. Модуль нужно начать заново.";
+                }
+            }
+        }
+
+        function showFinalResults() {
+            const firstName = document.getElementById('firstName').value.trim() || 'Ученик';
+            const lastName = document.getElementById('lastName').value.trim() || '';
+            
+            let m1Grade = 2;
+            if (state.m1Score >= 16) m1Grade = 5;
+            else if (state.m1Score >= 13) m1Grade = 4;
+            else if (state.m1Score >= 10) m1Grade = 3;
+            
+            let m2Grade = 2;
+            if (state.m2Lives === 3) m2Grade = 5;
+            else if (state.m2Lives === 2) m2Grade = 4;
+            else if (state.m2Lives === 1) m2Grade = 3;
+            
+            let m3Grade = 2;
+            if (state.m3Lives === 3) m3Grade = 5;
+            else if (state.m3Lives === 2) m3Grade = 4;
+            else if (state.m3Lives === 1) m3Grade = 3;
+            
+            const finalGrade = Math.round((m1Grade + m2Grade + m3Grade) / 3);
+            
+            const title = document.getElementById('resultTitle');
+            const grade = document.getElementById('resultGrade');
+            const text = document.getElementById('resultText');
+            
+            title.innerText = `Поздравляем, ${firstName} ${lastName}! 🎉`;
+            grade.innerText = `Итоговая оценка: ${finalGrade}`;
+            text.innerHTML = `
+                <strong>Общая статистика:</strong><br><br>
+                Модуль 1: ${state.m1Score} из 16 правильных ответов (Оценка: ${m1Grade})<br>
+                Модуль 2: Осталось жизней: ${state.m2Lives} из 3 (Оценка: ${m2Grade})<br>
+                Модуль 3: Осталось жизней: ${state.m3Lives} из 3 (Оценка: ${m3Grade})<br><br>
+                Вы настоящий мастер двоичного кода!
+            `;
+            
+            state.m3Passed = true;
+            saveState();
+            showScreen('resultScreen');
+        }
+
+        loadState();
+
+        document.getElementById('binaryInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                submitInput();
+            }
+        });
+
+    </script>
+</body>
+</html>
