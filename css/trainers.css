@@ -74,11 +74,23 @@ body {
 }
 
 .group { margin-top: 38px; }
-.group__head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.group__head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;          /* бейдж количества при нехватке места уходит на новую строку */
+}
 .group__title { margin: 0; font-weight: 300; font-size: 23px; color: var(--head); white-space: nowrap; }
 .group__count {
-    font-size: 13px; color: var(--brand-text); background: var(--brand-soft);
-    border: 1px solid var(--brand-border); padding: 2px 10px; border-radius: var(--radius-chip); white-space: nowrap;
+    font-size: 13px;
+    color: var(--brand-text);
+    background: var(--brand-soft);
+    border: 1px solid var(--brand-border);
+    padding: 2px 10px;
+    border-radius: var(--radius-chip);
+    white-space: normal;      /* было nowrap — теперь бейдж может переноситься */
+    line-height: 1.4;
 }
 .group__line { flex: 1; height: 1px; background: var(--border); }
 
@@ -151,8 +163,50 @@ body {
     .card { padding: 16px; gap: 14px; }
     .card__icon { width: 44px; height: 44px; }
     .card__arrow { display: none; }
+
+    .group__head {
+        gap: 8px;
+    }
+    .group__count {
+        width: 100%;
+        text-align: center;
+        padding: 4px 10px;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+/* ── Карточки-заглушки «В разработке» ─────────────────────────── */
+.card--placeholder {
+    border-style: dashed;
+    background: linear-gradient(145deg, rgba(31, 37, 47, .55), rgba(25, 29, 37, .55));
+    cursor: default;
+}
+
+/* Отменяем «живые» эффекты карточки: заглушка — не ссылка */
+.card--placeholder:hover,
+.card--placeholder:active {
+    transform: none;
+    border-color: var(--border);
+    box-shadow: none;
+}
+
+/* Приглушаем иконку и текст */
+.card--placeholder .card__icon {
+    background: rgba(255, 255, 255, .03);
+    color: var(--faint);
+}
+
+.card--placeholder .card__title {
+    color: var(--muted);
+}
+
+.card--placeholder .card__text {
+    color: var(--faint);
+}
+
+.card--placeholder .tag {
+    color: var(--faint);
+    background: rgba(255, 255, 255, .03);
 }
