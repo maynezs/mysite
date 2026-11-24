@@ -1,110 +1,168 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>КодБот — тренажёр по Python</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <header class="topbar">
-  <div class="topbar__brand">🤖 <span>КодБот</span></div>
+  <div class="topbar__brand">🤖 КодБот</div>
   <div class="topbar__actions">
-    <button class="btn btn--ghost btn--icon" id="btnSound" title="Звук вкл/выкл">🔇</button>
-    <button class="btn btn--ghost" id="btnTextbook">📖 Учебник</button>
-    <button class="btn btn--ghost" id="btnReset">🗑 Сброс</button>
+    <button class="btn btn--ghost btn--sm" id="btnSandbox" title="Свободная песочница">🧪 Песочница</button>
+    <button class="btn btn--ghost btn--sm" id="btnAchievements" title="Достижения">🏅</button>
+    <button class="btn btn--ghost btn--sm" id="btnExport" title="Сохранить прогресс">💾</button>
+    <button class="btn btn--ghost btn--sm" id="btnImport" title="Загрузить прогресс">📥</button>
+    <input type="file" id="importFile" accept="application/json" class="hidden">
+    <button class="btn btn--ghost btn--sm" id="btnSound">🔇</button>
+    <button class="btn btn--ghost btn--sm" id="btnTextbook">📖 Учебник</button>
+    <button class="btn btn--ghost btn--sm" id="btnReset">🗑 Сброс</button>
   </div>
 </header>
 
-<div class="main">
-  <!-- ЭКРАН ВЫБОРА УРОКА -->
-  <main id="screenLessons" class="screen">
+<main class="main">
+  <!-- Экран выбора уроков -->
+  <section id="screenLessons" class="screen">
     <div class="hero">
       <h1>Тренажёр «КодБот»</h1>
-      <p>5 уроков · 50 заданий · свой чат-бот в финале</p>
+      <p>8 уроков · 80 заданий · свой чат-бот в финале 🚀</p>
     </div>
-    <div class="lessons" id="lessonsGrid"></div>
-  </main>
+    <div id="lessonsGrid" class="lessons"></div>
+  </section>
 
-  <!-- ЭКРАН ТРЕНАЖЁРА -->
-  <main id="screenTrainer" class="screen hidden">
+  <!-- Экран тренажёра -->
+  <section id="screenTrainer" class="screen hidden">
     <div class="trainer">
-
-      <!-- 4. Задание -->
-      <section class="pane pane--task">
+      <div class="pane pane--task">
         <div class="pane__head">
           <span id="taskCounter">Задание 1 из 10</span>
-          <div class="dots" id="dots"></div>
+          <div class="pane__head-right">
+            <button class="pane-icon-btn" id="btnTheory">📖 Теория</button>
+            <button class="pane-icon-btn hidden" id="btnSummary">🏆 Итог</button>
+          </div>
         </div>
         <div class="pane__body" id="taskBody"></div>
         <div class="pane__foot">
-          <button class="btn btn--sm" id="btnTheory">📖 Теория</button>
-          <button class="btn btn--sm hidden" id="btnSummary">🏆 Итог урока</button>
-          <div class="spacer"></div>
-          <button class="btn btn--sm" id="btnBack">← Уроки</button>
+          <div class="dots" id="dots"></div>
+          <button class="btn btn--sm btn--ghost" id="btnBack">← Уроки</button>
         </div>
-      </section>
+      </div>
 
-      <!-- 3. Код -->
-      <section class="pane pane--code">
+      <div class="pane pane--code">
         <div class="pane__head">
           <span>🐍 Код на Python</span>
           <div class="pane__head-right">
-            <span class="save-indicator" id="saveIndicator" title="Код сохранён">✓</span>
-            <button class="pane-icon-btn" id="btnCopy" title="Скопировать код">📋</button>
+            <span class="save-indicator" id="saveIndicator">✓ сохранено</span>
+            <button class="pane-icon-btn" id="btnCopy">📋</button>
+            <button class="pane-icon-btn" id="btnResetCode">↺</button>
           </div>
         </div>
-        <textarea id="codeArea" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off"></textarea>
+        <textarea id="codeArea" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
         <div class="pane__foot">
           <button class="btn btn--run" id="btnRun">▶ Запустить</button>
           <button class="btn btn--check" id="btnCheck">✓ Проверить</button>
-          <div class="spacer"></div>
-          <button class="btn btn--sm" id="btnResetCode" title="Вернуть исходный код">↺</button>
+          <button class="btn btn--ghost btn--sm" id="btnVars" title="Показать переменные">📊 Переменные</button>
         </div>
-      </section>
+      </div>
 
-      <!-- 1. Мессенджер -->
-      <section class="pane pane--messenger">
+      <div class="pane pane--messenger">
         <div class="pane__head">📱 Мессенджер</div>
         <div class="chat" id="chatBody"></div>
-        <div id="resultBar" class="result-bar hidden"></div>
         <div class="chat-input">
-          <input id="chatInput" type="text" placeholder="Напиши сообщение..." disabled>
-          <button id="chatSend" class="btn btn--send" disabled>➤</button>
+          <input type="text" id="chatInput" placeholder="Сообщение для бота..." disabled>
+          <button class="btn btn--send" id="chatSend">➤</button>
         </div>
-      </section>
+        <div class="result-bar hidden" id="resultBar"></div>
+      </div>
 
-      <!-- 2. Библиотека команд -->
-      <section class="pane pane--lib">
+      <div class="pane pane--lib">
         <div class="pane__head">🧰 Библиотека команд</div>
-        <div class="lib" id="libBody"></div>
-      </section>
-
+        <div class="pane__body lib" id="libBody"></div>
+      </div>
     </div>
-  </main>
-</div>
+  </section>
+
+  <!-- Экран песочницы -->
+  <section id="screenSandbox" class="screen hidden">
+    <div class="trainer">
+      <div class="pane pane--task">
+        <div class="pane__head">
+          <span>🧪 Песочница</span>
+          <div class="pane__head-right">
+            <button class="pane-icon-btn" id="btnSandboxClear">🗑 Очистить</button>
+          </div>
+        </div>
+        <div class="pane__body">
+          <h3>Свободное творчество 🎨</h3>
+          <p class="task-text">Здесь нет заданий и проверок — только ты и код. Экспериментируй, combining всё, чему научился!</p>
+          <details class="hint"><summary>💡 Идеи для экспериментов</summary>
+            <div>
+              • Бот-предсказатель с <code>random.choice()</code><br>
+              • Бот-список дел с памятью<br>
+              • Игра «Угадай число»<br>
+              • Генератор паролей<br>
+              • Бот-калькулятор с историей
+            </div>
+          </details>
+        </div>
+        <div class="pane__foot">
+          <button class="btn btn--sm btn--ghost" id="btnBackFromSandbox">← К урокам</button>
+        </div>
+      </div>
+
+      <div class="pane pane--code">
+        <div class="pane__head">
+          <span>🐍 Твой код</span>
+          <div class="pane__head-right">
+            <button class="pane-icon-btn" id="btnSandboxCopy">📋</button>
+          </div>
+        </div>
+        <textarea id="sandboxCode" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
+        <div class="pane__foot">
+          <button class="btn btn--run" id="btnSandboxRun">▶ Запустить</button>
+          <button class="btn btn--ghost btn--sm" id="btnSandboxVars">📊 Переменные</button>
+        </div>
+      </div>
+
+      <div class="pane pane--messenger">
+        <div class="pane__head">📱 Мессенджер</div>
+        <div class="chat" id="sandboxChatBody"></div>
+        <div class="chat-input">
+          <input type="text" id="sandboxChatInput" placeholder="Сообщение для бота..." disabled>
+          <button class="btn btn--send" id="sandboxChatSend">➤</button>
+        </div>
+      </div>
+
+      <div class="pane pane--lib">
+        <div class="pane__head">🧰 Все команды</div>
+        <div class="pane__body lib" id="sandboxLibBody"></div>
+      </div>
+    </div>
+  </section>
+</main>
 
 <footer class="footer">
-  <span>Автор: <a href="https://vk.ru/archigpt" target="_blank" rel="noopener">vk.ru/archigpt</a></span>
+  Автор: <a href="https://vk.ru/archigpt" target="_blank">vk.ru/archigpt</a>
 </footer>
 
-<!-- ТОСТЫ -->
-<div class="toast-container" id="toastContainer"></div>
-
-<!-- МОДАЛКА -->
+<!-- Модалка -->
 <div class="modal hidden" id="modal">
   <div class="modal__box">
     <div class="modal__head">
-      <span id="modalTitle">Учебник</span>
-      <button class="btn btn--sm" id="modalClose">✕</button>
+      <span id="modalTitle">Заголовок</span>
+      <button class="pane-icon-btn" id="modalClose">✕</button>
     </div>
     <div class="modal__body" id="modalBody"></div>
   </div>
 </div>
 
+<!-- Контейнер тостов -->
+<div class="toast-container" id="toastContainer"></div>
+
 <script src="interpreter.js"></script>
-<script src="content.js"></script>
+<script src="content.js"></script>   
 <script src="app.js"></script>
 </body>
 </html>
