@@ -1,708 +1,430 @@
-/* content.js — вся учебная программа: теория, задания, тесты, итоги уроков */
-
-const L5_START = ['Привет! Я бот-помощник 🤖', 'Как тебя зовут?', 'Приятно познакомиться, Петя!'];
-const L5_MENU  = ['1 - анекдот', '2 - комплимент', '3 - выход'];
-
+/* content.js — учебная программа: теория, задания, тесты, итоги уроков */
 const LESSONS = [
-
-/* ================= УРОК 1 ================= */
-{
-  id: 1,
-  emoji: '👋',
-  title: 'Первые сообщения',
-  tagline: 'send, input и переменные',
-  color: '#ffd93d',
-  lib: ['msg', 'var', 'cond'],
-
-  theory: `
-    <h3>Что мы делаем?</h3>
-    <p>Мы учимся писать <b>чат-бота на Python</b>. Бот живёт в мессенджере и умеет две главные вещи:
-       отправлять сообщения и читать то, что написал человек.</p>
-
-    <h3>1. Бот говорит — send()</h3>
-    <pre><code>send("Привет, как тебя зовут?")</code></pre>
-    <p>Всё, что стоит в кавычках, бот отправит в чат. Кавычки обязательны — без них Python не поймёт, что это текст.</p>
-
-    <h3>2. Бот слушает — input()</h3>
-    <pre><code>answer = input()</code></pre>
-    <p><code>input()</code> ждёт сообщение от человека. Чтобы не потерять его, мы кладём ответ
-       в <b>переменную</b> — это коробочка с именем. Здесь коробочка называется <code>answer</code>.</p>
-
-    <h3>3. Склеиваем текст через +</h3>
-    <pre><code>name = input()
-send("Привет, " + name + "!")</code></pre>
-    <p>Если человек написал «Петя», бот отправит «Привет, Петя!». Плюс склеивает кусочки текста.</p>
-
-    <h3>4. Бот думает — if / else</h3>
-    <pre><code>if answer == "Да":
-    send("Круто!")
-else:
-    send("Жаль!")</code></pre>
-    <p><b>if</b> — «если». <b>else</b> — «иначе». Два знака равно <code>==</code> — это сравнение
-       (одно равно — это присваивание!). После двоеточия в следующей строке обязательно
-       <b>4 пробела</b> — это отступ.</p>
-  `,
-
-  summary: [
-    { code: 'send("Привет!")', note: 'бот отправляет сообщение в чат' },
-    { code: 'name = input()', note: 'бот ждёт ответ и кладёт его в переменную name' },
-    { code: 'send("Привет, " + name + "!")', note: 'склеиваем текст и переменную знаком +' },
-    { code: 'if answer == "Да":', note: 'если ответ равен «Да» — выполняется блок с отступом' },
-    { code: '    send("Погнали!")', note: 'эта строка сработает только при ответе «Да»' },
-    { code: 'else:', note: 'иначе — во всех остальных случаях' },
-    { code: '    send("Ок, в другой раз")', note: 'эта строка сработает, если ответ не «Да»' }
-  ],
-
-  tasks: [
-    {
-      title: 'Поздоровайся',
-      text: 'Бот должен отправить в чат сообщение: <b>Привет, как тебя зовут?</b>',
-      hint: 'Напиши текст внутри кавычек: <code>send("Привет, как тебя зовут?")</code>',
-      starter: 'send("")\n',
-      tests: [{ replies: [], expect: ['Привет, как тебя зовут?'] }]
-    },
-    {
-      title: 'Прочитай имя',
-      text: 'Считай сообщение пользователя в переменную <code>name</code> и поздоровайся: <b>Привет, &lt;имя&gt;!</b>',
-      hint: 'Склей три кусочка: <code>"Привет, " + name + "!"</code>',
-      starter: 'name = input()\nsend("")\n',
-      tests: [{ replies: ['Петя'], expect: ['Привет, Петя!'] }]
-    },
-    {
-      title: 'Ответь по контексту',
-      text: 'Считай имя и предложи: <b>&lt;имя&gt;, давай учиться кодить вместе?</b>',
-      hint: 'Начни сообщение с переменной: <code>send(name + ", давай учиться кодить вместе?")</code>',
-      starter: 'name = input()\nsend("")\n',
-      tests: [{ replies: ['Петя'], expect: ['Петя, давай учиться кодить вместе?'] }]
-    },
-    {
-      title: 'Согласие или отказ',
-      text: 'Считай ответ. Если «Да» — отправь <b>Круто! Погнали!</b>, иначе — <b>Жаль! Может позже?</b>',
-      hint: 'Внутри if и else у тебя по одному send. Впиши нужный текст в кавычки.',
-      starter: 'answer = input()\nif answer == "Да":\n    send("")\nelse:\n    send("")\n',
-      tests: [
-        { replies: ['Да'], expect: ['Круто! Погнали!'] },
-        { replies: ['Нет'], expect: ['Жаль! Может позже?'] }
+  // ================= УРОК 1 =================
+  {
+    id: 1, title: 'Привет, бот!', tagline: 'Первые сообщения и диалог',
+    emoji: '🤖', color: '#ffd93d',
+    lib: ['msg', 'var'],
+    intro: {
+      title: 'Знакомство с КодБотом',
+      emoji: '🤖',
+      commands: [
+        { code: 'send("Привет!")', desc: '<strong>send()</strong> — отправить сообщение пользователю.' },
+        { code: 'name = input()', desc: '<strong>input()</strong> — ждать ответ и сохранить в переменную.' },
+        { code: 'send("Привет, " + name + "!")', desc: 'Строки склеиваются знаком <code>+</code>.' }
       ]
     },
-    {
-      title: 'Два сообщения подряд',
-      text: 'Отправь два сообщения: сначала <b>Я бот.</b>, потом <b>Я учусь кодить.</b>',
-      hint: 'Просто напиши две команды send подряд — каждая отправит своё сообщение.',
-      starter: 'send("")\n',
-      tests: [{ replies: [], expect: ['Я бот.', 'Я учусь кодить.'] }]
-    },
-    {
-      title: 'Переменная с текстом',
-      text: 'Сохрани в переменную <code>game</code> слово <b>Minecraft</b>. Отправь два сообщения: <b>Я играю в Minecraft</b> и <b>Minecraft — топ!</b>',
-      hint: 'Сначала <code>game = "Minecraft"</code>, потом используй переменную внутри send.',
-      starter: 'game = ""\nsend("")\nsend("")\n',
-      tests: [{ replies: [], expect: ['Я играю в Minecraft', 'Minecraft — топ!'] }]
-    },
-    {
-      title: 'Имя и город',
-      text: 'Считай два сообщения: имя и город. Отправь: <b>&lt;имя&gt; из города &lt;город&gt;</b>',
-      hint: '<code>send(name + " из города " + city)</code>',
-      starter: 'name = input()\ncity = input()\nsend("")\n',
-      tests: [{ replies: ['Петя', 'Казань'], expect: ['Петя из города Казань'] }]
-    },
-    {
-      title: 'Три варианта',
-      text: 'Считай ответ. «Да» → <b>Огонь!</b>, «Нет» → <b>Ладно</b>, любой другой → <b>Не понял</b>',
-      hint: 'Для второго условия используй <code>elif</code>, для остальных случаев — <code>else</code>.',
-      starter: 'answer = input()\nif answer == "Да":\n    send("")\nelif answer == "Нет":\n    send("")\nelse:\n    send("")\n',
-      tests: [
-        { replies: ['Да'], expect: ['Огонь!'] },
-        { replies: ['Нет'], expect: ['Ладно'] },
-        { replies: ['Может'], expect: ['Не понял'] }
+    theory: '<h3>👋 Первый урок</h3><p>Чат-бот отправляет сообщения и читает ответы.</p><p><code>send("текст")</code> — бот пишет. <code>input()</code> — бот ждёт ответ.</p><h3>📦 Переменные</h3><p><code>name = input()</code> — сохранить ответ. Потом: <code>send("Привет, " + name)</code>.</p>',
+    summary: [
+      { code: 'send("Привет! Как тебя зовут?")\nname = input()\nsend("Рад знакомству, " + name + "!")', note: 'Бот здоровается, спрашивает имя и приветствует пользователя.' }
+    ],
+    tasks: [
+      { title: '👋 Первое сообщение', text: 'Отправь <code>"Привет!"</code>',
+        starter: '', hint: '<code>send("Привет!")</code>',
+        tests: [{ replies: [], expect: ['Привет!'] }] },
+      { title: '❓ Вопрос', text: 'Пусть бот спросит: <code>"Как тебя зовут?"</code>',
+        starter: '', hint: '<code>send("Как тебя зовут?")</code>',
+        tests: [{ replies: [], expect: ['Как тебя зовут?'] }] },
+      { title: '💾 Запомнить имя', text: 'Сохрани ответ в переменную <code>name</code>.',
+        starter: 'send("Как тебя зовут?")\n', hint: '<code>name = input()</code>',
+        tests: [{ replies: ['Алиса'], expect: ['Как тебя зовут?'] }] },
+      { title: '🎉 Приветствие по имени', text: 'Отправь: <code>"Привет, &lt;имя&gt;!"</code>',
+        starter: 'send("Как тебя зовут?")\nname = input()\n', hint: '<code>send("Привет, " + name + "!")</code>',
+        tests: [{ replies: ['Алиса'], expect: ['Как тебя зовут?', 'Привет, Алиса!'] }] },
+      { title: '🗨 Полный диалог', text: 'Добавь вопрос <code>"Сколько тебе лет?"</code> и ответ <code>"Круто, тебе &lt;возраст&gt; лет!"</code>',
+        starter: 'send("Как тебя зовут?")\nname = input()\nsend("Привет, " + name + "!")\n',
+        hint: 'Создай переменную <code>age</code>.',
+        tests: [{ replies: ['Алиса', '25'], expect: ['Как тебя зовут?', 'Привет, Алиса!', 'Сколько тебе лет?', 'Круто, тебе 25 лет!'] }] },
+      { title: '🎨 Три вопроса', text: 'Спроси имя, цвет и еду. После каждого — комментарий.',
+        starter: '', hint: 'Повтори: send → input → send.',
+        tests: [{ replies: ['Алиса', 'синий', 'пицца'], expect: ['Как тебя зовут?', 'Привет, Алиса!', 'Какой твой любимый цвет?', 'синий — классный выбор!', 'Какую еду ты любишь?', 'пицца — вкусно!'] }] },
+      { title: '🔢 Сложение двух чисел', text: 'Спроси два числа, преврати в <code>int()</code>, выведи сумму.',
+        starter: '', hint: '<code>a = int(input())</code>',
+        tests: [{ replies: ['5', '7'], expect: ['Введи первое число:', 'Введи второе число:', 'Сумма: 12'] }] },
+      { title: '📏 Площадь прямоугольника', text: 'Спроси длину и ширину, выведи <code>"Площадь: &lt;S&gt;"</code>',
+        starter: '', hint: '<code>S = a * b</code>',
+        tests: [{ replies: ['5', '4'], expect: ['Длина?', 'Ширина?', 'Площадь: 20'] }] },
+      { title: '🎂 Возраст через 10 лет', text: 'Выведи <code>"Через 10 лет тебе будет &lt;age+10&gt;"</code>',
+        starter: '', hint: '<code>age + 10</code>',
+        tests: [{ replies: ['20'], expect: ['Сколько тебе лет?', 'Через 10 лет тебе будет 30'] }] },
+      { title: '🏆 Бот-визитка', text: 'Бот: <code>"Я КодБот!"</code>, спрашивает имя и город, затем: <code>"Привет, &lt;имя&gt; из &lt;город&gt;!"</code>',
+        starter: '', hint: 'Две переменные.',
+        tests: [{ replies: ['Алиса', 'Москва'], expect: ['Я КодБот!', 'Как тебя зовут?', 'Откуда ты?', 'Привет, Алиса из Москва!'] }] }
+    ]
+  },
+
+  // ================= УРОК 2 =================
+  {
+    id: 2, title: 'Переменные и числа', tagline: 'Математика и преобразования',
+    emoji: '🔢', color: '#5eead4',
+    lib: ['var', 'math'],
+    intro: {
+      title: 'Работа с числами',
+      emoji: '🔢',
+      commands: [
+        { code: 'x = int(input())', desc: '<strong>int()</strong> превращает текст в число.' },
+        { code: 'a + b, a - b, a * b, a / b', desc: 'Обычная <strong>арифметика</strong>.' },
+        { code: 'a % b', desc: '<strong>Остаток от деления</strong>. Например, <code>10 % 3 = 1</code>.' }
       ]
     },
-    {
-      title: 'Спроси и познакомься',
-      text: 'Сначала отправь <b>Как тебя зовут?</b>, потом считай имя и отправь <b>Привет, &lt;имя&gt;!</b>',
-      hint: 'Порядок важен: send → input → send.',
-      starter: 'send("")\nname = input()\nsend("")\n',
-      tests: [{ replies: ['Петя'], expect: ['Как тебя зовут?', 'Привет, Петя!'] }]
-    },
-    {
-      title: 'Мини-бот',
-      text: 'Собери мини-бота:<br>1) спроси «Как тебя зовут?»<br>2) поздоровайся: «Привет, &lt;имя&gt;!»<br>3) предложи: «&lt;имя&gt;, давай учиться кодить вместе?»<br>4) если ответ «Да» → «Погнали!», иначе → «Ок, в другой раз»',
-      hint: 'Всего 5 команд: send, input, send, send, input, if/else.',
-      starter: '',
-      tests: [
-        { replies: ['Петя', 'Да'], expect: ['Как тебя зовут?', 'Привет, Петя!', 'Петя, давай учиться кодить вместе?', 'Погнали!'] },
-        { replies: ['Аня', 'Нет'], expect: ['Как тебя зовут?', 'Привет, Аня!', 'Аня, давай учиться кодить вместе?', 'Ок, в другой раз'] }
-      ]
-    }
-  ]
-},
+    theory: '<h3>🔢 Числа</h3><p>Когда пользователь пишет число, оно приходит как текст. Преврати: <code>n = int(input())</code>.</p><h3>🧮 Операции</h3><p><code>+ - * / %</code> — как в математике.</p>',
+    summary: [
+      { code: 'send("Введи число:")\nn = int(input())\nsend("Квадрат: " + str(n * n))', note: 'Превращаем ввод в число, считаем квадрат.' }
+    ],
+    tasks: [
+      { title: '📥 Число в переменной', text: 'Спроси число, выведи <code>"Ты ввёл: &lt;n&gt;"</code>',
+        starter: '', hint: '<code>n = int(input())</code>',
+        tests: [{ replies: ['42'], expect: ['Введи число:', 'Ты ввёл: 42'] }] },
+      { title: '➕ Сложение', text: 'Сложи два числа, выведи <code>"Сумма: &lt;s&gt;"</code>',
+        starter: '', hint: '<code>a = int(input())</code>, <code>b = int(input())</code>',
+        tests: [{ replies: ['3', '4'], expect: ['Первое:', 'Второе:', 'Сумма: 7'] }] },
+      { title: '🧮 Все операции', text: 'Спроси два числа, выведи сумму, разность, произведение, частное',
+        starter: '', hint: '<code>+ - * /</code>',
+        tests: [{ replies: ['10', '2'], expect: ['Два числа:', 'Сумма: 12', 'Разность: 8', 'Произведение: 20', 'Частное: 5'] }] },
+      { title: '💱 Конвертер валют', text: 'Спроси рубли и курс, выведи <code>"В долларах: &lt;сумма/курс&gt;"</code>',
+        starter: '', hint: '<code>usd = rub / course</code>',
+        tests: [{ replies: ['1000', '100'], expect: ['Рублей?', 'Курс?', 'В долларах: 10'] }] },
+      { title: '📐 Периметр квадрата', text: 'Выведи <code>"Периметр: &lt;4*a&gt;"</code>',
+        starter: '', hint: '<code>P = a * 4</code>',
+        tests: [{ replies: ['5'], expect: ['Сторона?', 'Периметр: 20'] }] },
+      { title: '🎂 Год рождения', text: 'Выведи <code>"Ты родился примерно в &lt;2026-age&gt; году"</code>',
+        starter: '', hint: '<code>2026 - age</code>',
+        tests: [{ replies: ['20'], expect: ['Сколько тебе лет?', 'Ты родился примерно в 2006 году'] }] },
+      { title: '🔢 Чётное или нечётное', text: 'Выведи <code>"Чётное"</code> или <code>"Нечётное"</code>',
+        starter: '', hint: '<code>n % 2 == 0</code>',
+        tests: [{ replies: ['4'], expect: ['Число?', 'Чётное'] }, { replies: ['5'], expect: ['Число?', 'Нечётное'] }] },
+      { title: '🌡️ Цельсий → Фаренгейт', text: '<code>F = C * 9 / 5 + 32</code>',
+        starter: '', hint: 'Порядок операций!',
+        tests: [{ replies: ['0'], expect: ['Цельсии?', '32 градусов по Фаренгейту'] }, { replies: ['100'], expect: ['Цельсии?', '212 градусов по Фаренгейту'] }] },
+      { title: '⏱️ Секунды в минуты', text: 'Выведи <code>"&lt;мин&gt; мин &lt;сек&gt; сек"</code>',
+        starter: '', hint: '<code>int(s / 60)</code>, <code>s % 60</code>',
+        tests: [{ replies: ['125'], expect: ['Секунд?', '2 мин 5 сек'] }] },
+      { title: '🏆 Калькулятор', text: 'Спроси число, знак и число. Выведи <code>"Результат: &lt;r&gt;"</code>',
+        starter: '', hint: '4 if',
+        tests: [{ replies: ['10', '+', '5'], expect: ['Число?', 'Знак?', 'Число?', 'Результат: 15'] }, { replies: ['10', '*', '3'], expect: ['Число?', 'Знак?', 'Число?', 'Результат: 30'] }] }
+    ]
+  },
 
-/* ================= УРОК 2 ================= */
-{
-  id: 2,
-  emoji: '🔀',
-  title: 'Условия и числа',
-  tagline: 'int, сравнения, and / or',
-  color: '#5eead4',
-  lib: ['msg', 'var', 'cond', 'math'],
-
-  theory: `
-    <h3>Текст ≠ число</h3>
-    <p>Всё, что приходит из <code>input()</code>, — это <b>текст</b>. Даже если человек написал «12»,
-       для Python это строка «12», а не число 12. Чтобы сравнивать числа, текст надо превратить в число:</p>
-    <pre><code>age = int(input())</code></pre>
-    <p><code>int()</code> — «сделай из этого целое число».</p>
-
-    <h3>Сравнения</h3>
-    <pre><code>age &gt;= 12      # больше или равно
-age &lt; 12       # меньше
-age == 12      # равно
-age != 12      # НЕ равно</code></pre>
-
-    <h3>Логика: and / or / not</h3>
-    <pre><code>if age &gt;= 10 and age &lt;= 12:
-    send("Тебе самое время учить Python!")</code></pre>
-    <p><b>and</b> — «и то, и другое». <b>or</b> — «хотя бы одно». <b>not</b> — «наоборот».</p>
-
-    <h3>elif — несколько вариантов</h3>
-    <pre><code>if score &gt;= 90:
-    send("Отлично!")
-elif score &gt;= 60:
-    send("Хорошо!")
-else:
-    send("Надо потренироваться")</code></pre>
-
-    <h3>Длина строки и поиск внутри</h3>
-    <pre><code>len(name)          # сколько букв
-"привет" in text   # есть ли слово внутри текста</code></pre>
-  `,
-
-  summary: [
-    { code: 'age = int(input())', note: 'превращаем текст от пользователя в число' },
-    { code: 'if age >= 12:', note: 'сравниваем числа (без int() сравнение работало бы неправильно)' },
-    { code: 'if a > 10 and b > 10:', note: 'and — оба условия должны быть верны' },
-    { code: 'if x == "Да" or x == "да":', note: 'or — достаточно одного верного условия' },
-    { code: 'if word != "нет":', note: '!= — «не равно»' },
-    { code: 'elif score >= 60:', note: 'elif проверяется, только если первое условие не сработало' },
-    { code: 'if "привет" in text:', note: 'in — проверяет, есть ли кусочек текста внутри строки' },
-    { code: 'if len(name) > 5:', note: 'len() возвращает количество символов' }
-  ],
-
-  tasks: [
-    {
-      title: 'Возраст',
-      text: 'Считай возраст как число. Если возраст 12 или больше → <b>Ты уже большой!</b>, иначе → <b>Ты ещё маленький!</b>',
-      hint: 'Не забудь <code>int()</code> перед input() и знак <code>&gt;=</code>.',
-      starter: 'age = int(input())\nif age >= 12:\n    send("")\nelse:\n    send("")\n',
-      tests: [{ replies: ['12'], expect: ['Ты уже большой!'] }, { replies: ['9'], expect: ['Ты ещё маленький!'] }]
-    },
-    {
-      title: 'НЕ равно',
-      text: 'Считай слово. Если оно НЕ равно «нет» → <b>Продолжаем!</b>, иначе → <b>Стоп.</b>',
-      hint: '«Не равно» — это <code>!=</code>.',
-      starter: 'word = input()\nif word != "нет":\n    send("")\nelse:\n    send("")\n',
-      tests: [{ replies: ['да'], expect: ['Продолжаем!'] }, { replies: ['нет'], expect: ['Стоп.'] }]
-    },
-    {
-      title: 'Оператор and',
-      text: 'Считай возраст. Если возраст от 10 до 12 включительно → <b>Тебе самое время учить Python!</b>, иначе → <b>Другой возраст</b>',
-      hint: '<code>if age &gt;= 10 and age &lt;= 12:</code>',
-      starter: 'age = int(input())\nif age >= 10 and age <= 12:\n    send("")\nelse:\n    send("")\n',
-      tests: [{ replies: ['11'], expect: ['Тебе самое время учить Python!'] }, { replies: ['15'], expect: ['Другой возраст'] }]
-    },
-    {
-      title: 'Оператор or',
-      text: 'Считай ответ. Если «Да» или «да» → <b>Погнали!</b>, иначе → <b>Не понял</b>',
-      hint: '<code>if answer == "Да" or answer == "да":</code>',
-      starter: 'answer = input()\nif answer == "Да" or answer == "да":\n    send("")\nelse:\n    send("")\n',
-      tests: [
-        { replies: ['Да'], expect: ['Погнали!'] },
-        { replies: ['да'], expect: ['Погнали!'] },
-        { replies: ['нет'], expect: ['Не понял'] }
+  // ================= УРОК 3 =================
+  {
+    id: 3, title: 'Условия', tagline: 'Логика и развилки',
+    emoji: '🔀', color: '#ff6bcb',
+    lib: ['cond', 'var', 'math'],
+    intro: {
+      title: 'Учим бота думать',
+      emoji: '🔀',
+      commands: [
+        { code: 'if x > 5:\n    send("Много")', desc: '<strong>if</strong> — если условие верно.' },
+        { code: 'if x > 5:\n    send("Много")\nelse:\n    send("Мало")', desc: '<strong>else</strong> — иначе.' },
+        { code: 'if x > 10:\n    send("Очень")\nelif x > 5:\n    send("Много")\nelse:\n    send("Мало")', desc: '<strong>elif</strong> — дополнительная проверка.' },
+        { code: 'x > 5 and x < 10', desc: '<strong>and</strong> — оба условия. <strong>or</strong> — хотя бы одно.' }
       ]
     },
-    {
-      title: 'Длина имени',
-      text: 'Считай имя. Если в нём больше 5 букв → <b>Классное длинное имя!</b>, иначе → <b>Короткое, но тоже классное!</b>',
-      hint: '<code>if len(name) &gt; 5:</code>',
-      starter: 'name = input()\nif len(name) > 5:\n    send("")\nelse:\n    send("")\n',
-      tests: [
-        { replies: ['Владимир'], expect: ['Классное длинное имя!'] },
-        { replies: ['Петя'], expect: ['Короткое, но тоже классное!'] }
+    theory: '<h3>🔀 Условия</h3><p><code>if</code> проверяет условие. Если верно — выполняется блок.</p><h3>🧪 Сравнения</h3><p><code>== != &lt; &gt; &lt;= &gt;=</code></p><h3>🔗 Логика</h3><p><code>and</code>, <code>or</code>, <code>not</code>.</p>',
+    summary: [
+      { code: 'send("Сколько тебе лет?")\nage = int(input())\nif age < 18:\n    send("Ты несовершеннолетний")\nelif age < 60:\n    send("Ты взрослый")\nelse:\n    send("Ты пожилой")', note: 'Каскад if/elif/else.' }
+    ],
+    tasks: [
+      { title: '✅ Да или нет', text: 'Если "да" — <code>"Иди гулять!"</code>, иначе <code>"Посиди дома"</code>',
+        starter: '', hint: '<code>if answer == "да":</code>',
+        tests: [{ replies: ['да'], expect: ['Светит солнце?', 'Иди гулять!'] }, { replies: ['нет'], expect: ['Светит солнце?', 'Посиди дома'] }] },
+      { title: '🔢 Больше/меньше', text: 'Если &gt;10 — <code>"Много"</code>, иначе <code>"Норм"</code>',
+        starter: '', hint: '<code>if n > 10:</code>',
+        tests: [{ replies: ['15'], expect: ['Число?', 'Много'] }, { replies: ['5'], expect: ['Число?', 'Норм'] }] },
+      { title: '🎯 Три варианта', text: '&lt;0 — <code>"Отрицательное"</code>, 0 — <code>"Ноль"</code>, иначе <code>"Положительное"</code>',
+        starter: '', hint: 'elif',
+        tests: [{ replies: ['-5'], expect: ['Число?', 'Отрицательное'] }, { replies: ['0'], expect: ['Число?', 'Ноль'] }, { replies: ['7'], expect: ['Число?', 'Положительное'] }] },
+      { title: '🔐 Пароль', text: 'Если <code>"1234"</code> — <code>"Добро пожаловать!"</code>, иначе <code>"Отказано"</code>',
+        starter: '', hint: '<code>if pwd == "1234":</code>',
+        tests: [{ replies: ['1234'], expect: ['Пароль?', 'Добро пожаловать!'] }, { replies: ['0000'], expect: ['Пароль?', 'Отказано'] }] },
+      { title: '🎂 Возраст: ребёнок/взрослый', text: '&lt;18 — <code>"Ребёнок"</code>, 18-65 — <code>"Взрослый"</code>, &gt;65 — <code>"Пожилой"</code>',
+        starter: '', hint: '<code>age >= 18 and age <= 65</code>',
+        tests: [{ replies: ['10'], expect: ['Возраст?', 'Ребёнок'] }, { replies: ['30'], expect: ['Возраст?', 'Взрослый'] }, { replies: ['70'], expect: ['Возраст?', 'Пожилой'] }] },
+      { title: '🔢 Угадай число', text: 'Загадай 7. Скажи <code>"Угадал!"</code> или <code>"Не угадал"</code>',
+        starter: '', hint: '<code>if n == 7:</code>',
+        tests: [{ replies: ['7'], expect: ['Угадай число от 1 до 10:', 'Угадал!'] }, { replies: ['5'], expect: ['Угадай число от 1 до 10:', 'Не угадал'] }] },
+      { title: '🚦 Светофор', text: 'красный — <code>"Стой"</code>, жёлтый — <code>"Жди"</code>, зелёный — <code>"Иди"</code>',
+        starter: '', hint: 'Три elif',
+        tests: [{ replies: ['красный'], expect: ['Цвет?', 'Стой'] }, { replies: ['жёлтый'], expect: ['Цвет?', 'Жди'] }, { replies: ['зелёный'], expect: ['Цвет?', 'Иди'] }] },
+      { title: '🎫 Билет', text: 'Если &lt;18 или студент — <code>"Бесплатно"</code>, иначе <code>"200 рублей"</code>',
+        starter: '', hint: '<code>if age < 18 or student == "да":</code>',
+        tests: [{ replies: ['15', 'нет'], expect: ['Возраст?', 'Студент?', 'Бесплатно'] }, { replies: ['25', 'да'], expect: ['Возраст?', 'Студент?', 'Бесплатно'] }, { replies: ['25', 'нет'], expect: ['Возраст?', 'Студент?', '200 рублей'] }] },
+      { title: '🌡️ Температура', text: '&lt;0 — <code>"Холодно"</code>, 0-20 — <code>"Прохладно"</code>, 20-30 — <code>"Тепло"</code>, &gt;30 — <code>"Жарко"</code>',
+        starter: '', hint: 'Четыре ветки',
+        tests: [{ replies: ['-5'], expect: ['Температура?', 'Холодно'] }, { replies: ['15'], expect: ['Температура?', 'Прохладно'] }, { replies: ['25'], expect: ['Температура?', 'Тепло'] }, { replies: ['35'], expect: ['Температура?', 'Жарко'] }] },
+      { title: '🏆 Квиз', text: '"Столица Франции?" (ответ: paris). Верно — <code>"Верно!"</code>, иначе <code>"Неверно, это Париж"</code>',
+        starter: '', hint: 'Сравнивай с "paris"',
+        tests: [{ replies: ['paris'], expect: ['Столица Франции?', 'Верно!'] }, { replies: ['london'], expect: ['Столица Франции?', 'Неверно, это Париж'] }] }
+    ]
+  },
+
+  // ================= УРОК 4 =================
+  {
+    id: 4, title: 'Циклы', tagline: 'Повторения и диапазоны',
+    emoji: '🔁', color: '#a78bfa',
+    lib: ['loop', 'var', 'cond', 'math'],
+    intro: {
+      title: 'Повторяем действия',
+      emoji: '🔁',
+      commands: [
+        { code: 'for i in range(5):\n    send(str(i))', desc: '<strong>for</strong> повторяет N раз. <code>range(5)</code> — от 0 до 4.' },
+        { code: 'for i in range(1, 6):\n    send(str(i))', desc: '<code>range(от, до)</code> — от 1 до 5.' },
+        { code: 'while условие:\n    ...', desc: '<strong>while</strong> — пока условие истинно.' },
+        { code: 'break', desc: '<strong>break</strong> — выйти из цикла.' },
+        { code: 'continue', desc: '<strong>continue</strong> — к следующей итерации.' }
       ]
     },
-    {
-      title: 'Лестница elif',
-      text: 'Считай число очков. 90 и больше → <b>Отлично!</b>, 60 и больше → <b>Хорошо!</b>, иначе → <b>Надо потренироваться</b>',
-      hint: 'Порядок важен: сначала проверяем самое большое число.',
-      starter: 'score = int(input())\nif score >= 90:\n    send("")\nelif score >= 60:\n    send("")\nelse:\n    send("")\n',
-      tests: [
-        { replies: ['95'], expect: ['Отлично!'] },
-        { replies: ['70'], expect: ['Хорошо!'] },
-        { replies: ['30'], expect: ['Надо потренироваться'] }
+    theory: '<h3>🔁 Цикл for</h3><p><code>for i in range(N)</code> — N повторов.</p><h3>🔄 Цикл while</h3><p>Пока условие верно. Не забудь <code>break</code>!</p>',
+    summary: [
+      { code: 'for i in range(1, 6):\n    send("Шаг " + str(i))\nsend("Готово!")', note: 'Цикл от 1 до 5.' }
+    ],
+    tasks: [
+      { title: '🔢 Счётчик до 5', text: 'Выведи числа от 1 до 5',
+        starter: '', hint: '<code>for i in range(1, 6):</code>',
+        tests: [{ replies: [], expect: ['1', '2', '3', '4', '5'] }] },
+      { title: '🔁 Повтор 3 раза', text: 'Спроси имя и поприветствуй 3 раза',
+        starter: '', hint: '<code>for i in range(3):</code>',
+        tests: [{ replies: ['Алиса'], expect: ['Имя?', 'Привет, Алиса!', 'Привет, Алиса!', 'Привет, Алиса!'] }] },
+      { title: '📊 Таблица умножения', text: 'Выведи таблицу от 1 до 10: <code>"&lt;n&gt; * &lt;i&gt; = &lt;результат&gt;"</code>',
+        starter: '', hint: '<code>for i in range(1, 11):</code>',
+        tests: [{ replies: ['5'], expect: ['Число?', '5 * 1 = 5', '5 * 2 = 10', '5 * 3 = 15', '5 * 4 = 20', '5 * 5 = 25', '5 * 6 = 30', '5 * 7 = 35', '5 * 8 = 40', '5 * 9 = 45', '5 * 10 = 50'] }] },
+      { title: '🎯 Сумма чисел', text: 'Сумма от 1 до N: <code>"Сумма: &lt;s&gt;"</code>',
+        starter: '', hint: '<code>s = 0</code>, <code>s = s + i</code>',
+        tests: [{ replies: ['5'], expect: ['N?', 'Сумма: 15'] }, { replies: ['10'], expect: ['N?', 'Сумма: 55'] }] },
+      { title: '🔁 While: пока не "стоп"', text: 'Спрашивай слово, пока не <code>"стоп"</code>. После каждого: <code>"Слышал: &lt;слово&gt;"</code>',
+        starter: '', hint: '<code>while True:</code> и <code>break</code>',
+        tests: [{ replies: ['привет', 'мир', 'стоп'], expect: ['Слово (стоп — выход)?', 'Слышал: привет', 'Слово (стоп — выход)?', 'Слышал: мир', 'Слово (стоп — выход)?', 'Пока!'] }] },
+      { title: '🎮 Угадай число', text: 'Загадай 7. Говори <code>"Мало"</code> / <code>"Много"</code> / <code>"Угадал!"</code>',
+        starter: '', hint: '<code>while True:</code>',
+        tests: [{ replies: ['3', '9', '7'], expect: ['Угадай (1-10)?', 'Мало', 'Угадай (1-10)?', 'Много', 'Угадай (1-10)?', 'Угадал!'] }] },
+      { title: '🔢 Только чётные', text: 'Выведи чётные от 1 до 10 через <code>continue</code>',
+        starter: '', hint: '<code>if i % 2 != 0: continue</code>',
+        tests: [{ replies: [], expect: ['2', '4', '6', '8', '10'] }] },
+      { title: '📉 Обратный отсчёт', text: 'От 10 до 1, потом <code>"Пуск!"</code>',
+        starter: '', hint: 'while с уменьшением счётчика',
+        tests: [{ replies: [], expect: ['10', '9', '8', '7', '6', '5', '4', '3', '2', '1', 'Пуск!'] }] },
+      { title: '🎲 Бросок кубика', text: 'Спрашивай "Бросить?" (да/нет). Если да — <code>"Выпало: 6"</code>, если нет — <code>"Ладно"</code>',
+        starter: '', hint: 'Простой if',
+        tests: [{ replies: ['да'], expect: ['Бросить кубик? (да/нет)', 'Выпало: 6'] }, { replies: ['нет'], expect: ['Бросить кубик? (да/нет)', 'Ладно'] }] },
+      { title: '🏆 Пирамида', text: 'Пирамида из звёздочек: 1, 2, 3, ..., N',
+        starter: '', hint: '<code>send("*" * i)</code>',
+        tests: [{ replies: ['4'], expect: ['N?', '*', '**', '***', '****'] }] }
+    ]
+  },
+
+  // ================= УРОК 5 =================
+  {
+    id: 5, title: 'Функции', tagline: 'Свои команды',
+    emoji: '🧩', color: '#4ade80',
+    lib: ['func', 'var', 'cond', 'loop', 'math'],
+    intro: {
+      title: 'Создаём свои команды',
+      emoji: '🧩',
+      commands: [
+        { code: 'def greet():\n    send("Привет!")', desc: '<strong>def</strong> создаёт команду. Вызов: <code>greet()</code>.' },
+        { code: 'def greet(name):\n    send("Привет, " + name)', desc: 'Функция с <strong>параметрами</strong>.' },
+        { code: 'def square(x):\n    return x * x', desc: '<strong>return</strong> — вернуть результат.' }
       ]
     },
-    {
-      title: 'Сумма двух чисел',
-      text: 'Считай два числа и отправь их сумму.',
-      hint: 'Оба числа получи через <code>int(input())</code>, потом <code>send(a + b)</code>.',
-      starter: 'a = int(input())\nb = int(input())\nsend(0)\n',
-      tests: [{ replies: ['3', '4'], expect: ['7'] }]
-    },
-    {
-      title: 'Поиск слова',
-      text: 'Считай сообщение. Если в нём есть слово «привет» → <b>И тебе привет!</b>, иначе → <b>Не понял</b>',
-      hint: '<code>if "привет" in text:</code>',
-      starter: 'text = input()\nif "привет" in text:\n    send("")\nelse:\n    send("")\n',
-      tests: [
-        { replies: ['привет, бот'], expect: ['И тебе привет!'] },
-        { replies: ['пока'], expect: ['Не понял'] }
+    theory: '<h3>🧩 Функции</h3><p><code>def имя(параметры):</code> — переиспользуемый кусок кода.</p><h3>📤 return</h3><p>Возвращает значение из функции.</p>',
+    summary: [
+      { code: 'def greet(name):\n    send("Привет, " + name + "!")\n\ndef square(x):\n    return x * x\n\ngreet("Алиса")\nsend("Квадрат 5: " + str(square(5)))', note: 'Две функции: одна общается, другая считает.' }
+    ],
+    tasks: [
+      { title: '🎤 Простая функция', text: 'Создай <code>hello()</code>, отправляющую <code>"Привет!"</code>. Вызови её.',
+        starter: '', hint: '<code>def hello():</code>',
+        tests: [{ replies: [], expect: ['Привет!'] }] },
+      { title: '👋 С параметром', text: '<code>greet(name)</code> → <code>"Привет, &lt;name&gt;!"</code>. Вызови с "Мир".',
+        starter: '', hint: '<code>def greet(name):</code>',
+        tests: [{ replies: [], expect: ['Привет, Мир!'] }] },
+      { title: '🔢 Возврат значения', text: '<code>square(x)</code> → <code>x * x</code>. Выведи <code>"Квадрат 5: &lt;r&gt;"</code>',
+        starter: '', hint: '<code>return x * x</code>',
+        tests: [{ replies: [], expect: ['Квадрат 5: 25'] }] },
+      { title: '🧮 Сумма', text: '<code>add(a, b)</code> → сумма. Выведи <code>"3 + 4 = &lt;r&gt;"</code>',
+        starter: '', hint: '<code>return a + b</code>',
+        tests: [{ replies: [], expect: ['3 + 4 = 7'] }] },
+      { title: '🎯 Максимум из двух', text: '<code>max2(a, b)</code> → большее. Для 10 и 20.',
+        starter: '', hint: '<code>if a > b: return a</code>',
+        tests: [{ replies: [], expect: ['Максимум: 20'] }] },
+      { title: '🔁 Функция в цикле', text: '<code>greet(name)</code>. Спроси 3 имени и вызови для каждого.',
+        starter: '', hint: '<code>for i in range(3):</code>',
+        tests: [{ replies: ['Алиса', 'Борис', 'Виктор'], expect: ['Имя 1?', 'Привет, Алиса!', 'Имя 2?', 'Привет, Борис!', 'Имя 3?', 'Привет, Виктор!'] }] },
+      { title: '🔀 Функция с условием', text: '<code>check_age(age)</code> → <code>"взрослый"</code> или <code>"ребёнок"</code>. Для 25.',
+        starter: '', hint: '<code>if age >= 18: return "взрослый"</code>',
+        tests: [{ replies: [], expect: ['взрослый'] }] },
+      { title: '📊 Несколько функций', text: '<code>square(x)</code> и <code>cube(x)</code>. Квадрат и куб 3.',
+        starter: '', hint: 'Две функции с return',
+        tests: [{ replies: [], expect: ['Квадрат: 9', 'Куб: 27'] }] },
+      { title: '🎮 Меню команд', text: '<code>cmd_help()</code>, <code>cmd_time()</code> (отправляет "12:00"). Команды: help/time/exit',
+        starter: '', hint: 'if/elif внутри while',
+        tests: [{ replies: ['help', 'time', 'exit'], expect: ['Команда?', 'Я бот-помощник!', 'Команда?', '12:00', 'Команда?', 'Пока!'] }] },
+      { title: '🏆 Факториал', text: '<code>fact(n)</code>. Выведи <code>"5! = &lt;r&gt;"</code>',
+        starter: '', hint: 'Цикл от 1 до n',
+        tests: [{ replies: [], expect: ['5! = 120'] }] }
+    ]
+  },
+
+  // ================= УРОК 6 =================
+  {
+    id: 6, title: 'Списки', tagline: 'Храним много данных',
+    emoji: '📋', color: '#ffd93d',
+    lib: ['list', 'loop', 'var', 'cond', 'func'],
+    intro: {
+      title: 'Работа со списками',
+      emoji: '📋',
+      commands: [
+        { code: 'items = [1, 2, 3]', desc: '<strong>Список</strong> — набор элементов.' },
+        { code: 'items[0]', desc: '<strong>Первый элемент</strong> — индекс 0. <code>items[-1]</code> — последний.' },
+        { code: 'items.append(x)', desc: '<strong>Добавить</strong> элемент в конец.' },
+        { code: 'items.remove(x)', desc: '<strong>Удалить</strong> первое вхождение.' },
+        { code: 'for x in items:\n    send(str(x))', desc: 'Перебор списка.' },
+        { code: 'len(items)', desc: '<strong>Длина</strong> списка.' },
+        { code: 'x in items', desc: 'Есть ли элемент в списке.' }
       ]
     },
-    {
-      title: 'Оба числа большие',
-      text: 'Считай два числа. Если оба больше 10 → <b>Оба большие!</b>, иначе → <b>Не оба большие</b>',
-      hint: '<code>if a &gt; 10 and b &gt; 10:</code>',
-      starter: 'a = int(input())\nb = int(input())\nif a > 10 and b > 10:\n    send("")\nelse:\n    send("")\n',
-      tests: [
-        { replies: ['12', '15'], expect: ['Оба большие!'] },
-        { replies: ['12', '5'], expect: ['Не оба большие'] }
+    theory: '<h3>📋 Списки</h3><p><code>items = [1, 2, 3]</code>.</p><h3>🔢 Индексы</h3><p>С 0. <code>items[-1]</code> — последний.</p><h3>🛠 Методы</h3><p><code>append</code>, <code>remove</code>, <code>len</code>.</p>',
+    summary: [
+      { code: 'items = []\nfor i in range(3):\n    send("Элемент?")\n    items.append(input())\nsend("Твой список: " + str(items))', note: 'Собираем список из 3 элементов.' }
+    ],
+    tasks: [
+      { title: '📝 Создать список', text: '<code>fruits = ["яблоко", "банан", "вишня"]</code>. Выведи его.',
+        starter: '', hint: '<code>send(str(fruits))</code>',
+        tests: [{ replies: [], expect: ['["яблоко", "банан", "вишня"]'] }] },
+      { title: '🔢 Первый и последний', text: 'Список <code>[10, 20, 30, 40]</code>. Выведи первый и последний.',
+        starter: '', hint: '<code>items[0]</code> и <code>items[-1]</code>',
+        tests: [{ replies: [], expect: ['Первый: 10', 'Последний: 40'] }] },
+      { title: '➕ Добавить элемент', text: 'Пустой список. Спроси 3 слова, добавь через <code>append</code>.',
+        starter: '', hint: '<code>items.append(input())</code>',
+        tests: [{ replies: ['а', 'б', 'в'], expect: ['Слово 1?', 'Слово 2?', 'Слово 3?', '["а", "б", "в"]'] }] },
+      { title: '🗑 Удалить элемент', text: '<code>[1, 2, 3, 4]</code>. Удали 2 и 3.',
+        starter: '', hint: '<code>items.remove(2)</code>',
+        tests: [{ replies: [], expect: ['[1, 4]'] }] },
+      { title: '🔁 Перебор списка', text: '<code>["Алиса", "Борис", "Виктор"]</code>. Для каждого: <code>"Привет, &lt;имя&gt;!"</code>',
+        starter: '', hint: '<code>for name in names:</code>',
+        tests: [{ replies: [], expect: ['Привет, Алиса!', 'Привет, Борис!', 'Привет, Виктор!'] }] },
+      { title: '🔍 Поиск', text: '<code>[10, 20, 30]</code>. Если есть — <code>"Нашёл!"</code>, иначе <code>"Нет"</code>',
+        starter: '', hint: '<code>if n in items:</code>',
+        tests: [{ replies: ['20'], expect: ['Число?', 'Нашёл!'] }, { replies: ['5'], expect: ['Число?', 'Нет'] }] },
+      { title: '📊 Сумма списка', text: '<code>[1, 2, 3, 4, 5]</code>. Посчитай сумму.',
+        starter: '', hint: '<code>s = 0</code>, <code>for x in items: s = s + x</code>',
+        tests: [{ replies: [], expect: ['Сумма: 15'] }] },
+      { title: '🛒 Список покупок', text: 'Спрашивай, пока не <code>"стоп"</code>. Выведи <code>"В корзине N товаров"</code>',
+        starter: '', hint: '<code>while True</code> и <code>cart.append</code>',
+        tests: [{ replies: ['хлеб', 'молоко', 'стоп'], expect: ['Товар (стоп — выход)?', 'Товар (стоп — выход)?', 'Товар (стоп — выход)?', 'В корзине 2 товаров'] }] },
+      { title: '🔢 Максимум в списке', text: '<code>[5, 2, 9, 1, 7]</code>. Найди максимум.',
+        starter: '', hint: '<code>m = items[0]</code>',
+        tests: [{ replies: [], expect: ['Максимум: 9'] }] },
+      { title: '🏆 Функция со списком', text: '<code>show_list(items)</code> — выводит каждый элемент. Для <code>["a", "b", "c"]</code>',
+        starter: '', hint: '<code>for x in items: send(str(x))</code>',
+        tests: [{ replies: [], expect: ['a', 'b', 'c'] }] }
+    ]
+  },
+
+  // ================= УРОК 7 =================
+  {
+    id: 7, title: 'Строки и случайности', tagline: 'Магия текста и рандом',
+    emoji: '🎲', color: '#ff6bcb',
+    lib: ['str', 'random', 'list', 'var', 'cond', 'loop'],
+    intro: {
+      title: 'Работа со строками и случайностями',
+      emoji: '🎲',
+      commands: [
+        { code: 'text.upper()', desc: '<strong>ВЕРХНИЙ РЕГИСТР</strong>.' },
+        { code: 'text.lower()', desc: '<strong>нижний регистр</strong>.' },
+        { code: 'text.find("мир")', desc: 'Ищет подстроку. Индекс или <code>-1</code>.' },
+        { code: 'text.split(", ")', desc: 'Разбивает на <strong>список</strong>.' },
+        { code: '", ".join(words)', desc: 'Склеивает список в строку.' },
+        { code: 'random.randint(1, 10)', desc: 'Случайное <strong>целое</strong> от 1 до 10.' },
+        { code: 'random.choice(items)', desc: 'Случайный <strong>элемент</strong> из списка.' }
       ]
     },
-    {
-      title: 'Викторина',
-      text: 'Задай вопрос <b>Сколько будет 2+2?</b> и считай ответ. Если 4 → <b>Верно!</b>, иначе → <b>Неверно!</b><br>Потом спроси <b>А сколько будет 5*5?</b>: если 25 → <b>Правильно!</b>, иначе → <b>Неверно!</b>',
-      hint: 'Два раза подряд: send → int(input()) → if/else.',
-      starter: '',
-      tests: [
-        { replies: ['4', '25'], expect: ['Сколько будет 2+2?', 'Верно!', 'А сколько будет 5*5?', 'Правильно!'] },
-        { replies: ['5', '20'], expect: ['Сколько будет 2+2?', 'Неверно!', 'А сколько будет 5*5?', 'Неверно!'] }
-      ]
-    }
-  ]
-},
+    theory: '<h3>✂️ Методы строк</h3><p><code>upper</code>, <code>lower</code>, <code>find</code>, <code>split</code>, <code>join</code>.</p><h3>🎲 Случайности</h3><p><code>random.randint(a, b)</code> и <code>random.choice(list)</code>.</p>',
+    summary: [
+      { code: 'send("Как дела?")\nanswer = input().lower()\nif "хорошо" in answer:\n    send("Рад слышать!")\nelse:\n    send("Держись!")', note: 'Приводим к нижнему регистру.' }
+    ],
+    tasks: [
+      { title: '🔠 Верхний регистр', text: 'Спроси имя, выведи ЗАГЛАВНЫМИ',
+        starter: '', hint: '<code>name.upper()</code>',
+        tests: [{ replies: ['Алиса'], expect: ['Имя?', 'АЛИСА'] }] },
+      { title: '🔡 Нижний регистр', text: 'Спроси слово, выведи маленькими',
+        starter: '', hint: '<code>word.lower()</code>',
+        tests: [{ replies: ['ПРИВЕТ'], expect: ['Слово?', 'привет'] }] },
+      { title: '🔍 Поиск подстроки', text: 'Если есть — <code>"Нашёл на позиции &lt;idx&gt;"</code>, иначе <code>"Не нашёл"</code>',
+        starter: '', hint: '<code>text.find(word)</code>',
+        tests: [{ replies: ['привет мир', 'мир'], expect: ['Фраза?', 'Слово?', 'Нашёл на позиции 7'] }, { replies: ['привет мир', 'кот'], expect: ['Фраза?', 'Слово?', 'Не нашёл'] }] },
+      { title: '🔪 Разбить на слова', text: 'Спроси строку, выведи количество слов',
+        starter: '', hint: '<code>text.split(" ")</code>',
+        tests: [{ replies: ['один два три'], expect: ['Строка?', 'Слов: 3'] }] },
+      { title: '🧵 Склеить список', text: '<code>["Алиса", "Борис", "Виктор"]</code>. Через <code>", "</code>',
+        starter: '', hint: '<code>", ".join(names)</code>',
+        tests: [{ replies: [], expect: ['Алиса, Борис, Виктор'] }] },
+      { title: '🎲 Случайное число', text: 'От 1 до 100: <code>"Твоё число: &lt;n&gt;"</code>',
+        starter: '', hint: '<code>random.randint(1, 100)</code>',
+        tests: [{ replies: [], expect: [], check: (got) => got.length === 1 && got[0].startsWith('Твоё число:') && (() => { const n = parseInt(got[0].slice(12)); return n >= 1 && n <= 100; })() }] },
+      { title: '🎯 Случайный элемент', text: '<code>["яблоко", "банан", "вишня"]</code>. <code>"Выбрано: &lt;x&gt;"</code>',
+        starter: '', hint: '<code>random.choice(items)</code>',
+        tests: [{ replies: [], expect: [], check: (got) => got.length === 1 && got[0].startsWith('Выбрано: ') && ['Выбрано: яблоко', 'Выбрано: банан', 'Выбрано: вишня'].includes(got[0]) }] },
+      { title: '🔐 Генератор пароля', text: '6 случайных цифр (0-9)',
+        starter: '', hint: 'Цикл 6 раз, <code>random.randint(0, 9)</code>',
+        tests: [{ replies: [], expect: [], check: (got) => got.length === 1 && /^Пароль: \d{6}$/.test(got[0]) }] },
+      { title: '🎮 Магический шар', text: 'Список ответов: <code>["Да", "Нет", "Возможно", "Спроси позже"]</code>. Спроси вопрос, дай случайный ответ',
+        starter: '', hint: '<code>random.choice(answers)</code>',
+        tests: [{ replies: ['Будет ли солнце?'], expect: ['Задай вопрос:', ''], check: (got) => got.length === 2 && ['Да', 'Нет', 'Возможно', 'Спроси позже'].includes(got[1]) }] },
+      { title: '🏆 Анализатор текста', text: 'Длину, кол-во слов, в верхнем регистре',
+        starter: '', hint: '<code>len</code>, <code>split</code>, <code>upper</code>',
+        tests: [{ replies: ['привет мир'], expect: ['Текст?', 'Длина: 10', 'Слов: 2', 'ВЕРХ: ПРИВЕТ МИР'] }] }
+    ]
+  },
 
-/* ================= УРОК 3 ================= */
-{
-  id: 3,
-  emoji: '🔁',
-  title: 'Циклы',
-  tagline: 'for, while и break',
-  color: '#ff6bcb',
-  lib: ['msg', 'var', 'cond', 'loop', 'math'],
-
-  theory: `
-    <h3>Цикл for — повтори N раз</h3>
-    <pre><code>for i in range(3):
-    send("Я учу Python!")</code></pre>
-    <p><code>range(3)</code> даёт числа 0, 1, 2 — итого <b>три</b> повтора.
-       Если нужно от 1 до 5, пиши <code>range(1, 6)</code>.</p>
-
-    <h3>Цикл while — повторяй, пока условие верно</h3>
-    <pre><code>answer = input()
-while answer != "2":
-    send("Не угадал, попробуй ещё")
-    answer = input()</code></pre>
-    <p>Пока условие верно — тело цикла повторяется.</p>
-
-    <h3>break — выйти из цикла</h3>
-    <pre><code>while True:
-    text = input()
-    if text == "стоп":
-        break
-    send("Ты сказал: " + text)</code></pre>
-    <p><code>while True</code> — «повторяй вечно», а <code>break</code> — «хватит, выходим».</p>
-
-    <h3>Счётчик и остаток</h3>
-    <pre><code>count = 0
-count = count + 1     # увеличить счётчик на 1
-i % 2 == 0            # проверка на чётность (остаток от деления)</code></pre>
-  `,
-
-  summary: [
-    { code: 'for i in range(3):', note: 'повторить блок 3 раза (i = 0, 1, 2)' },
-    { code: 'for i in range(1, 6):', note: 'повторить для чисел 1, 2, 3, 4, 5' },
-    { code: 'while answer != "2":', note: 'повторять, пока ответ не равен «2»' },
-    { code: 'while True:', note: 'бесконечный цикл — выходить будем через break' },
-    { code: '    break', note: 'немедленно выйти из цикла' },
-    { code: 'count = count + 1', note: 'счётчик: увеличиваем число на 1 на каждом круге' },
-    { code: 'if i % 2 == 0:', note: 'остаток от деления: 0 — значит число чётное' }
-  ],
-
-  tasks: [
-    {
-      title: 'Повтори 3 раза',
-      text: 'Отправь сообщение <b>Я учу Python!</b> три раза с помощью цикла for.',
-      hint: 'Внутри цикла один send — он выполнится три раза.',
-      starter: 'for i in range(3):\n    send("")\n',
-      tests: [{ replies: [], expect: ['Я учу Python!', 'Я учу Python!', 'Я учу Python!'] }]
-    },
-    {
-      title: 'Числа по порядку',
-      text: 'С помощью цикла отправь числа от 1 до 5.',
-      hint: '<code>for i in range(1, 6):</code> и внутри <code>send(i)</code>.',
-      starter: 'for i in range(1, 6):\n    send(i)\n',
-      tests: [{ replies: [], expect: ['1', '2', '3', '4', '5'] }]
-    },
-    {
-      title: 'Счётчик сообщений',
-      text: 'Считай сообщения пользователя, пока он не напишет <b>стоп</b>. Потом отправь <b>Сообщений: &lt;n&gt;</b>',
-      hint: 'Внутри цикла увеличивай <code>count</code> на 1, а после цикла отправь результат.',
-      starter: 'count = 0\nwhile True:\n    text = input()\n    if text == "стоп":\n        break\n    count = count + 1\nsend("")\n',
-      tests: [{ replies: ['привет', 'как дела', 'стоп'], expect: ['Сообщений: 2'] }]
-    },
-    {
-      title: 'Угадай число',
-      text: 'Отправь <b>Угадай число от 1 до 3</b>. Считай ответ. Пока ответ не «2» — отправляй <b>Не угадал, попробуй ещё</b> и снова считывай. Когда угадает — <b>Ты угадал!</b>',
-      hint: 'Внутри while не забудь снова считать ответ, иначе цикл будет вечным.',
-      starter: 'send("Угадай число от 1 до 3")\nanswer = input()\nwhile answer != "2":\n    send("")\n    answer = input()\nsend("Ты угадал!")\n',
-      tests: [{ replies: ['1', '3', '2'], expect: ['Угадай число от 1 до 3', 'Не угадал, попробуй ещё', 'Не угадал, попробуй ещё', 'Ты угадал!'] }]
-    },
-    {
-      title: 'Только чётные',
-      text: 'С помощью цикла for отправь только чётные числа от 1 до 10.',
-      hint: 'Добавь внутри цикла проверку <code>if i % 2 == 0:</code> и send с отступом.',
-      starter: 'for i in range(1, 11):\n    send(i)\n',
-      tests: [{ replies: [], expect: ['2', '4', '6', '8', '10'] }]
-    },
-    {
-      title: 'Стоп-слово',
-      text: 'Считывай слова в цикле, пока не встретится слово <b>хватит</b>. Каждое слово повторяй: <b>Ты сказал: &lt;слово&gt;</b>',
-      hint: 'Сначала проверка на «хватит» с break, потом send.',
-      starter: 'while True:\n    word = input()\n    if word == "хватит":\n        break\n    send("")\n',
-      tests: [{ replies: ['привет', 'как дела', 'хватит'], expect: ['Ты сказал: привет', 'Ты сказал: как дела'] }]
-    },
-    {
-      title: 'Склей строку',
-      text: 'Считай 3 слова и склей их в одну строку через пробел. Потом отправь эту строку.',
-      hint: 'Внутри цикла добавь: <code>result = result + word + " "</code>',
-      starter: 'result = ""\nfor i in range(3):\n    word = input()\n\nsend(result)\n',
-      tests: [{ replies: ['я', 'люблю', 'python'], expect: ['я люблю python'] }]
-    },
-    {
-      title: 'Меню с циклом',
-      text: 'Бот показывает меню: <b>1 - привет</b>, <b>2 - пока</b>. Считай выбор. Если «1» → <b>Привет!</b>, если «2» → <b>Пока!</b> и выход из цикла, иначе → <b>Не понял</b>. Меню повторяется.',
-      hint: 'Меню и считывание должны быть внутри while True.',
-      starter: 'while True:\n    send("1 - привет")\n    send("2 - пока")\n    choice = input()\n    if choice == "1":\n        send("")\n    elif choice == "2":\n        send("")\n        break\n    else:\n        send("")\n',
-      tests: [{ replies: ['1', '2'], expect: ['1 - привет', '2 - пока', 'Привет!', '1 - привет', '2 - пока', 'Пока!'] }]
-    },
-    {
-      title: 'Сумма от 1 до N',
-      text: 'Считай число N и отправь сумму всех чисел от 1 до N.',
-      hint: 'Внутри цикла: <code>total = total + i</code>',
-      starter: 'n = int(input())\ntotal = 0\nfor i in range(1, n + 1):\n\nsend(total)\n',
-      tests: [{ replies: ['5'], expect: ['15'] }]
-    },
-    {
-      title: 'Бот-эхо',
-      text: 'Три раза считай сообщение и повторяй его. Потом отправь <b>Хватит болтать!</b>',
-      hint: 'Цикл for на 3 повтора, внутри input и send. Прощание — после цикла.',
-      starter: 'for i in range(3):\n    text = input()\n    send("")\nsend("")\n',
-      tests: [{ replies: ['раз', 'два', 'три'], expect: ['раз', 'два', 'три', 'Хватит болтать!'] }]
-    }
-  ]
-},
-
-/* ================= УРОК 4 ================= */
-{
-  id: 4,
-  emoji: '🧩',
-  title: 'Функции',
-  tagline: 'def, параметры и return',
-  color: '#a78bfa',
-  lib: ['msg', 'var', 'cond', 'loop', 'func', 'math'],
-
-  theory: `
-    <h3>Зачем нужны функции?</h3>
-    <p>Функция — это «сохранённый кусочек программы» с именем. Написал один раз — вызываешь сколько хочешь.</p>
-
-    <h3>Создаём функцию — def</h3>
-    <pre><code>def hello():
-    send("Привет!")
-
-hello()</code></pre>
-    <p><code>def</code> — «создай функцию». Всё с отступом — это её тело.
-       Пока функцию не <b>вызовешь</b> по имени, она не выполнится.</p>
-
-    <h3>Параметры — функция с данными</h3>
-    <pre><code>def greet(name):
-    send("Привет, " + name + "!")
-
-greet("Петя")     # отправит: Привет, Петя!</code></pre>
-    <p><code>name</code> — это <b>параметр</b>, «дырочка» в функции. При вызове мы кладём в неё значение.</p>
-
-    <h3>return — вернуть результат</h3>
-    <pre><code>def double(x):
-    return x * 2
-
-send(double(5))   # отправит: 10</code></pre>
-    <p><code>send</code> отправляет сообщение наружу, а <code>return</code> <b>возвращает</b> значение
-       тому, кто вызвал функцию. Поэтому результат можно положить в переменную или передать в send.</p>
-
-    <h3>Функция с условием</h3>
-    <pre><code>def check(answer):
-    if answer == "Да":
-        return "Погнали!"
-    else:
-        return "Ладно"</code></pre>
-  `,
-
-  summary: [
-    { code: 'def hello():', note: 'объявляем функцию с именем hello' },
-    { code: '    send("Привет!")', note: 'тело функции — выполнится при вызове' },
-    { code: 'hello()', note: 'вызов функции: без скобок она не запустится' },
-    { code: 'def greet(name):', note: 'name — параметр, значение подставится при вызове' },
-    { code: 'greet("Петя")', note: 'вызываем функцию и передаём ей значение' },
-    { code: 'def double(x):', note: 'функция, которая что-то считает' },
-    { code: '    return x * 2', note: 'return возвращает результат наружу' },
-    { code: 'send(double(5))', note: 'результат функции сразу отправляем в чат' }
-  ],
-
-  tasks: [
-    {
-      title: 'Первая функция',
-      text: 'Создай функцию <code>hello()</code>, которая отправляет <b>Привет!</b>, и вызови её.',
-      hint: 'Не забудь строку <code>hello()</code> в самом конце без отступа.',
-      starter: 'def hello():\n    send("")\n\nhello()\n',
-      tests: [{ replies: [], expect: ['Привет!'] }]
-    },
-    {
-      title: 'Функция с параметром',
-      text: 'Создай функцию <code>greet(name)</code>, которая отправляет <b>Привет, &lt;name&gt;!</b>. Вызови <code>greet("Петя")</code>.',
-      hint: 'Внутри функции используй параметр name так же, как переменную.',
-      starter: 'def greet(name):\n    send("")\n\ngreet("Петя")\n',
-      tests: [{ replies: [], expect: ['Привет, Петя!'] }]
-    },
-    {
-      title: 'return',
-      text: 'Создай функцию <code>make_greeting(name)</code>, которая <b>возвращает</b> строку <b>Привет, &lt;name&gt;!</b>. Отправь результат: <code>send(make_greeting("Аня"))</code>',
-      hint: 'Внутри функции: <code>return "Привет, " + name + "!"</code>',
-      starter: 'def make_greeting(name):\n    return ""\n\nsend(make_greeting("Аня"))\n',
-      tests: [{ replies: [], expect: ['Привет, Аня!'] }]
-    },
-    {
-      title: 'Два параметра',
-      text: 'Создай функцию <code>sum_numbers(a, b)</code>, которая возвращает сумму a и b. Отправь <code>sum_numbers(3, 4)</code>.',
-      hint: '<code>return a + b</code>',
-      starter: 'def sum_numbers(a, b):\n    return 0\n\nsend(sum_numbers(3, 4))\n',
-      tests: [{ replies: [], expect: ['7'] }]
-    },
-    {
-      title: 'Функция с условием',
-      text: 'Создай функцию <code>check(answer)</code>: если answer равен «Да» — возвращает <b>Погнали!</b>, иначе — <b>Ладно</b>. Считай ответ пользователя и отправь результат функции.',
-      hint: 'Сначала input(), потом send(check(answer)).',
-      starter: 'def check(answer):\n    if answer == "Да":\n        return ""\n    else:\n        return ""\n\nanswer = input()\nsend(check(answer))\n',
-      tests: [{ replies: ['Да'], expect: ['Погнали!'] }, { replies: ['Нет'], expect: ['Ладно'] }]
-    },
-    {
-      title: 'Две функции',
-      text: 'Создай две функции: <code>hi()</code> отправляет <b>Привет!</b>, <code>bye()</code> отправляет <b>Пока!</b>. Вызови сначала hi(), потом bye().',
-      hint: 'Функции объявляются одна за другой, вызовы — в самом конце.',
-      starter: 'def hi():\n    send("")\n\ndef bye():\n    send("")\n\nhi()\nbye()\n',
-      tests: [{ replies: [], expect: ['Привет!', 'Пока!'] }]
-    },
-    {
-      title: 'Удвоитель',
-      text: 'Создай функцию <code>double(x)</code>, которая возвращает x * 2. Отправь double(5) и double(10).',
-      hint: '<code>return x * 2</code>',
-      starter: 'def double(x):\n    return 0\n\nsend(double(5))\nsend(double(10))\n',
-      tests: [{ replies: [], expect: ['10', '20'] }]
-    },
-    {
-      title: 'Функция с циклом',
-      text: 'Создай функцию <code>repeat_message(text, n)</code>, которая отправляет text ровно n раз (используй цикл). Вызови <code>repeat_message("Python", 3)</code>.',
-      hint: '<code>for i in range(n): send(text)</code>',
-      starter: 'def repeat_message(text, n):\n    for i in range(n):\n        send("")\n\nrepeat_message("Python", 3)\n',
-      tests: [{ replies: [], expect: ['Python', 'Python', 'Python'] }]
-    },
-    {
-      title: 'Функция-меню',
-      text: 'Создай функцию <code>menu()</code>, которая отправляет <b>1 - привет</b> и <b>2 - пока</b>. Вызови её, считай выбор: «1» → <b>Привет!</b>, иначе → <b>Пока!</b>',
-      hint: 'Меню рисует функция, а логика выбора — снаружи.',
-      starter: 'def menu():\n    send("")\n    send("")\n\nmenu()\nchoice = input()\nif choice == "1":\n    send("")\nelse:\n    send("")\n',
-      tests: [
-        { replies: ['1'], expect: ['1 - привет', '2 - пока', 'Привет!'] },
-        { replies: ['2'], expect: ['1 - привет', '2 - пока', 'Пока!'] }
+  // ================= УРОК 8 =================
+  {
+    id: 8, title: 'Финальный проект', tagline: 'Твой собственный бот',
+    emoji: '🏆', color: '#4ade80',
+    lib: ['msg', 'var', 'cond', 'loop', 'func', 'list', 'str', 'random', 'math'],
+    intro: {
+      title: 'Финальный босс 🏆',
+      emoji: '🏆',
+      commands: [
+        { code: 'Все команды из прошлых уроков', desc: 'Объединяй списки, функции, условия, циклы и случайности!' },
+        { code: 'while True:\n    cmd = input()\n    if cmd == "...":\n        ...', desc: 'Главный цикл бота.' },
+        { code: 'memory = []\nmemory.append(x)', desc: 'Бот запоминает данные между сообщениями.' }
       ]
     },
-    {
-      title: 'Бот с функциями',
-      text: 'Собери бота:<br>1) <code>greet(name)</code> возвращает «Привет, &lt;name&gt;!»<br>2) <code>bye(name)</code> возвращает «Пока, &lt;name&gt;!»<br>3) спроси имя, поздоровайся, спроси «Как дела?», если ответ «хорошо» → «Класс!», иначе → «Не грусти!», затем попрощайся.',
-      hint: 'Порядок: send → input → send(greet(name)) → send → input → if/else → send(bye(name)).',
-      starter: '',
-      tests: [
-        { replies: ['Петя', 'хорошо'], expect: ['Как тебя зовут?', 'Привет, Петя!', 'Как дела?', 'Класс!', 'Пока, Петя!'] },
-        { replies: ['Аня', 'плохо'], expect: ['Как тебя зовут?', 'Привет, Аня!', 'Как дела?', 'Не грусти!', 'Пока, Аня!'] }
-      ]
-    }
-  ]
-},
-
-/* ================= УРОК 5 ================= */
-{
-  id: 5,
-  emoji: '🤖',
-  title: 'Финальный чат-бот',
-  tagline: 'собираем всё вместе',
-  color: '#4ade80',
-  lib: ['msg', 'var', 'cond', 'loop', 'func', 'math'],
-
-  theory: `
-    <h3>Финишная прямая!</h3>
-    <p>Теперь у нас есть все инструменты, чтобы собрать настоящего чат-бота для мессенджера.
-       Вот его план:</p>
-    <pre><code>1. Поздороваться
-2. Спросить имя и познакомиться
-3. В бесконечном цикле показывать меню
-4. Обрабатывать выбор: анекдот / комплимент / выход
-5. Попрощаться по имени</code></pre>
-
-    <h3>Скелет бота</h3>
-    <pre><code>def show_menu():
-    send("1 - анекдот")
-    send("2 - комплимент")
-    send("3 - выход")
-
-def joke():
-    send("Колобок повесился 😄")
-
-def compliment(name):
-    send(name + ", ты классный!")
-
-send("Привет! Я бот-помощник 🤖")
-send("Как тебя зовут?")
-name = input()
-send("Приятно познакомиться, " + name + "!")
-
-while True:
-    show_menu()
-    choice = input()
-    if choice == "1":
-        joke()
-    elif choice == "2":
-        compliment(name)
-    elif choice == "3":
-        send("Пока, " + name + "! Увидимся!")
-        break
-    else:
-        send("Не понял, попробуй ещё")</code></pre>
-
-    <h3>Почему это работает</h3>
-    <p>Функции прячут повторяющиеся куски, <code>while True</code> держит бота «в сети»,
-       а <code>break</code> аккуратно выключает его, когда пользователь выбрал выход.</p>
-  `,
-
-  summary: [
-    { code: 'def show_menu():', note: 'функция рисует меню из трёх пунктов' },
-    { code: 'def joke():', note: 'функция с анекдотом — её легко заменить на другую шутку' },
-    { code: 'def compliment(name):', note: 'функция принимает имя и делает персональный комплимент' },
-    { code: 'name = input()', note: 'знакомство: запоминаем имя на всю программу' },
-    { code: 'while True:', note: 'бот работает, пока пользователь не выберет выход' },
-    { code: '    show_menu()', note: 'на каждом круге показываем меню заново' },
-    { code: '    choice = input()', note: 'ждём выбор пользователя' },
-    { code: '    if choice == "1": joke()', note: 'пункт 1 — вызываем функцию с анекдотом' },
-    { code: '    elif choice == "3":', note: 'пункт 3 — прощаемся' },
-    { code: '        break', note: 'выходим из цикла — бот завершает работу' },
-    { code: '        send("Пока, " + name + "!")', note: 'прощание с именем пользователя' }
-  ],
-
-  tasks: [
-    {
-      title: 'Приветствие бота',
-      text: 'Финальный бот начинается так: отправь <b>Привет! Я бот-помощник 🤖</b> и <b>Как тебя зовут?</b>',
-      hint: 'Два send подряд.',
-      starter: 'send("")\nsend("")\n',
-      tests: [{ replies: [], expect: ['Привет! Я бот-помощник 🤖', 'Как тебя зовут?'] }]
-    },
-    {
-      title: 'Знакомство',
-      text: 'Считай имя и отправь <b>Приятно познакомиться, &lt;имя&gt;!</b>',
-      hint: 'Склей текст и переменную через +.',
-      starter: 'send("Привет! Я бот-помощник 🤖")\nsend("Как тебя зовут?")\nname = input()\nsend("")\n',
-      tests: [{ replies: ['Петя'], expect: L5_START }]
-    },
-    {
-      title: 'Меню-функция',
-      text: 'Создай функцию <code>show_menu()</code>, которая отправляет три строки: <b>1 - анекдот</b>, <b>2 - комплимент</b>, <b>3 - выход</b>. Вызови её после знакомства.',
-      hint: 'Объяви функцию можно в любом месте, главное — вызвать: <code>show_menu()</code>.',
-      starter: 'send("Привет! Я бот-помощник 🤖")\nsend("Как тебя зовут?")\nname = input()\nsend("Приятно познакомиться, " + name + "!")\n\ndef show_menu():\n    send("")\n    send("")\n    send("")\n\nshow_menu()\n',
-      tests: [{ replies: ['Петя'], expect: L5_START.concat(L5_MENU) }]
-    },
-    {
-      title: 'Обработка выбора',
-      text: 'Считай выбор. Если «1» → <b>Колобок повесился 😄</b>. Если «3» → <b>Пока!</b>',
-      hint: 'Добавь в конец: choice = input() и if/elif.',
-      starter: 'send("Привет! Я бот-помощник 🤖")\nsend("Как тебя зовут?")\nname = input()\nsend("Приятно познакомиться, " + name + "!")\n\ndef show_menu():\n    send("1 - анекдот")\n    send("2 - комплимент")\n    send("3 - выход")\n\nshow_menu()\nchoice = input()\nif choice == "1":\n    send("")\nelif choice == "3":\n    send("")\n',
-      tests: [
-        { replies: ['Петя', '1'], expect: L5_START.concat(L5_MENU).concat(['Колобок повесился 😄']) },
-        { replies: ['Петя', '3'], expect: L5_START.concat(L5_MENU).concat(['Пока!']) }
-      ]
-    },
-    {
-      title: 'Комплимент по имени',
-      text: 'Если выбран пункт «2» → <b>&lt;имя&gt;, ты классный!</b>',
-      hint: 'Добавь ветку <code>elif choice == "2":</code>',
-      starter: 'send("Привет! Я бот-помощник 🤖")\nsend("Как тебя зовут?")\nname = input()\nsend("Приятно познакомиться, " + name + "!")\n\ndef show_menu():\n    send("1 - анекдот")\n    send("2 - комплимент")\n    send("3 - выход")\n\nshow_menu()\nchoice = input()\nif choice == "1":\n    send("Колобок повесился 😄")\nelif choice == "2":\n    send("")\nelif choice == "3":\n    send("Пока!")\n',
-      tests: [{ replies: ['Петя', '2'], expect: L5_START.concat(L5_MENU).concat(['Петя, ты классный!']) }]
-    },
-    {
-      title: 'Обработка ошибки',
-      text: 'Если выбран неизвестный пункт → <b>Не понял, попробуй ещё</b>',
-      hint: 'Это ветка <code>else:</code> в конце цепочки if/elif.',
-      starter: 'send("Привет! Я бот-помощник 🤖")\nsend("Как тебя зовут?")\nname = input()\nsend("Приятно познакомиться, " + name + "!")\n\ndef show_menu():\n    send("1 - анекдот")\n    send("2 - комплимент")\n    send("3 - выход")\n\nshow_menu()\nchoice = input()\nif choice == "1":\n    send("Колобок повесился 😄")\nelif choice == "2":\n    send(name + ", ты классный!")\nelif choice == "3":\n    send("Пока!")\nelse:\n    send("")\n',
-      tests: [{ replies: ['Петя', '7'], expect: L5_START.concat(L5_MENU).concat(['Не понял, попробуй ещё']) }]
-    },
-    {
-      title: 'Бесконечный цикл',
-      text: 'Пусть меню повторяется, пока не выбран пункт «3». Оберни меню и обработку выбора в <code>while True:</code>',
-      hint: 'Не забудь <code>break</code> после прощания, иначе бот не выключится.',
-      starter: 'send("Привет! Я бот-помощник 🤖")\nsend("Как тебя зовут?")\nname = input()\nsend("Приятно познакомиться, " + name + "!")\n\ndef show_menu():\n    send("1 - анекдот")\n    send("2 - комплимент")\n    send("3 - выход")\n\nwhile True:\n    show_menu()\n    choice = input()\n    if choice == "1":\n        send("Колобок повесился 😄")\n    elif choice == "2":\n        send(name + ", ты классный!")\n    elif choice == "3":\n        send("Пока!")\n        break\n    else:\n        send("Не понял, попробуй ещё")\n',
-      tests: [
-        { replies: ['Петя', '3'], expect: L5_START.concat(L5_MENU).concat(['Пока!']) },
-        { replies: ['Петя', '1', '2', '3'],
-          expect: L5_START
-            .concat(L5_MENU, ['Колобок повесился 😄'])
-            .concat(L5_MENU, ['Петя, ты классный!'])
-            .concat(L5_MENU, ['Пока!']) }
-      ]
-    },
-    {
-      title: 'Функции joke() и compliment()',
-      text: 'Вынеси анекдот в функцию <code>joke()</code>, а комплимент — в функцию <code>compliment(name)</code>. Вызывай их вместо send.',
-      hint: 'Внутри функции compliment используй параметр name, а не внешнюю переменную.',
-      starter: 'send("Привет! Я бот-помощник 🤖")\nsend("Как тебя зовут?")\nname = input()\nsend("Приятно познакомиться, " + name + "!")\n\ndef show_menu():\n    send("1 - анекдот")\n    send("2 - комплимент")\n    send("3 - выход")\n\ndef joke():\n    send("Колобок повесился 😄")\n\ndef compliment(who):\n    send(who + ", ты классный!")\n\nwhile True:\n    show_menu()\n    choice = input()\n    if choice == "1":\n        joke()\n    elif choice == "2":\n        compliment(name)\n    elif choice == "3":\n        send("Пока!")\n        break\n    else:\n        send("Не понял, попробуй ещё")\n',
-      tests: [
-        { replies: ['Петя', '1', '2', '3'],
-          expect: L5_START
-            .concat(L5_MENU, ['Колобок повесился 😄'])
-            .concat(L5_MENU, ['Петя, ты классный!'])
-            .concat(L5_MENU, ['Пока!']) }
-      ]
-    },
-    {
-      title: 'Прощание по имени',
-      text: 'Замени прощание на <b>Пока, &lt;имя&gt;! Увидимся!</b>',
-      hint: 'Одна строчка внутри elif choice == "3".',
-      starter: 'send("Привет! Я бот-помощник 🤖")\nsend("Как тебя зовут?")\nname = input()\nsend("Приятно познакомиться, " + name + "!")\n\ndef show_menu():\n    send("1 - анекдот")\n    send("2 - комплимент")\n    send("3 - выход")\n\ndef joke():\n    send("Колобок повесился 😄")\n\ndef compliment(who):\n    send(who + ", ты классный!")\n\nwhile True:\n    show_menu()\n    choice = input()\n    if choice == "1":\n        joke()\n    elif choice == "2":\n        compliment(name)\n    elif choice == "3":\n        send("Пока!")\n        break\n    else:\n        send("Не понял, попробуй ещё")\n',
-      tests: [
-        { replies: ['Петя', '3'], expect: L5_START.concat(L5_MENU).concat(['Пока, Петя! Увидимся!']) }
-      ]
-    },
-    {
-      title: 'ФИНАЛЬНЫЙ БОТ',
-      text: 'Собери всё вместе! Бот должен:<br>• поздороваться и познакомиться<br>• показывать меню в цикле<br>• на «1» рассказать анекдот, на «2» — комплимент по имени, на «3» — попрощаться по имени и выйти<br>• на любой другой выбор — «Не понял, попробуй ещё»',
-      hint: 'Проверь, что все функции вызываются, а break стоит только в ветке выхода.',
-      starter: 'send("Привет! Я бот-помощник 🤖")\nsend("Как тебя зовут?")\nname = input()\nsend("Приятно познакомиться, " + name + "!")\n\ndef show_menu():\n    send("1 - анекдот")\n    send("2 - комплимент")\n    send("3 - выход")\n\ndef joke():\n    send("Колобок повесился 😄")\n\ndef compliment(who):\n    send(who + ", ты классный!")\n\nwhile True:\n    show_menu()\n    choice = input()\n    if choice == "1":\n        joke()\n    elif choice == "2":\n        compliment(name)\n    elif choice == "3":\n        send("Пока, " + name + "! Увидимся!")\n        break\n    else:\n        send("Не понял, попробуй ещё")\n',
-      tests: [
-        { replies: ['Петя', '1', '2', '5', '3'],
-          expect: L5_START
-            .concat(L5_MENU, ['Колобок повесился 😄'])
-            .concat(L5_MENU, ['Петя, ты классный!'])
-            .concat(L5_MENU, ['Не понял, попробуй ещё'])
-            .concat(L5_MENU, ['Пока, Петя! Увидимся!']) }
-      ]
-    }
-  ]
-}
-
+    theory: '<h3>🏆 Финал</h3><p>Собери всё в один проект! Бот с памятью, командами и случайностями.</p>',
+    summary: [
+      { code: 'users = []\n\ndef add(name):\n    users.append(name)\n    send("Добавил: " + name)\n\ndef show():\n    if len(users) == 0:\n        send("Пока никого")\n    else:\n        send(", ".join(users))\n\nwhile True:\n    send("Команда?")\n    cmd = input()\n    if cmd == "добавить":\n        send("Имя?")\n        add(input())\n    elif cmd == "список":\n        show()\n    elif cmd == "выход":\n        send("Пока!")\n        break', note: 'Полноценный бот с памятью.' }
+    ],
+    tasks: [
+      { title: '📝 Бот-список дел', text: 'Команды: <code>"добавить"</code>, <code>"список"</code>, <code>"выход"</code>',
+        starter: '', hint: 'while True и if/elif',
+        tests: [{ replies: ['добавить', 'купить хлеб', 'список', 'выход'], expect: ['Команда?', 'Дело?', 'Команда?', 'Команда?', '1. купить хлеб', 'Команда?', 'Пока!'] }] },
+      { title: '🎮 Угадай число (продвинутый)', text: 'Загадай <code>random.randint(1, 10)</code>. <code>"Угадал за N попыток!"</code>',
+        starter: '', hint: 'Счётчик попыток',
+        tests: [{ replies: [], expect: [], check: () => true }] },
+      { title: '🎲 Бот-предсказатель', text: 'Список 5 предсказаний. Спрашивай вопрос, давай случайный ответ. <code>"выход"</code>',
+        starter: '', hint: '<code>random.choice</code>',
+        tests: [{ replies: [], expect: [], check: () => true }] },
+      { title: '🧮 Калькулятор с памятью', text: 'Команды: <code>"&lt;a&gt; + &lt;b&gt;"</code>, <code>"история"</code>, <code>"выход"</code>',
+        starter: '', hint: '<code>text.split(" ")</code>',
+        tests: [{ replies: [], expect: [], check: () => true }] },
+      { title: '📊 Статистика чисел', text: 'Пока не <code>"стоп"</code>. Количество, сумма, среднее',
+        starter: '', hint: 'Список + цикл',
+        tests: [{ replies: ['10', '20', '30', 'стоп'], expect: ['Число (стоп — выход)?', 'Число (стоп — выход)?', 'Число (стоп — выход)?', 'Число (стоп — выход)?', 'Введено: 3', 'Сумма: 60', 'Среднее: 20'] }] },
+      { title: '🎯 Викторина', text: 'Список вопросов. Считай правильные. <code>"Правильно: N из M"</code>',
+        starter: '', hint: 'Список пар',
+        tests: [{ replies: [], expect: [], check: () => true }] },
+      { title: '🔐 Менеджер паролей', text: 'Команды: <code>"добавить сайт пароль"</code>, <code>"показать сайт"</code>, <code>"все"</code>, <code>"выход"</code>',
+        starter: '', hint: 'Два списка или split',
+        tests: [{ replies: [], expect: [], check: () => true }] },
+      { title: '🎨 Генератор историй', text: '3 списка: имена, места, действия. Случайно составляй историю',
+        starter: '', hint: '<code>random.choice</code> × 3',
+        tests: [{ replies: [], expect: [], check: () => true }] },
+      { title: '📱 Бот-переводчик регистра', text: 'Команды: <code>"вверх &lt;текст&gt;"</code>, <code>"вниз &lt;текст&gt;"</code>, <code>"длина &lt;текст&gt;"</code>, <code>"выход"</code>',
+        starter: '', hint: '<code>cmd.split(" ", 1)</code>',
+        tests: [{ replies: [], expect: [], check: () => true }] },
+      { title: '🏆 Свободный проект', text: 'Придумай своего бота! Минимум: 3 команды, список, функция.',
+        starter: '', hint: 'Объедини всё!',
+        tests: [{ replies: [], expect: [], check: () => true }] }
+    ]
+  }
 ];
