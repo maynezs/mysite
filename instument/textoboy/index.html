@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Текстобой— документы, Markdown, PDF и код</title>
+<meta name="description" content="Универсальный редактор документов: Word, Markdown, PDF и код с подсветкой синтаксиса.">
+<meta name="theme-color" content="#0b0f17">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Textoboy">
+<link rel="stylesheet" href="styles.css">
+<link id="hl-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<link id="hl-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" disabled>
+
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/docx-preview@0.3.5/dist/docx-preview.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/turndown@7.1.3/dist/turndown.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/turndown-plugin-gfm@1.0.2/dist/turndown-plugin-gfm.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.6/ace.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.6/ext-language_tools.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.6/ext-searchbox.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.6/theme-tomorrow_night.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.6/theme-chrome.min.js"></script>
+<script defer src="docx-export.js"></script>
+<script defer src="app.js"></script>
+<style id="print-style"></style>
+</head>
+<body data-theme="dark">
+
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+<symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></symbol>
+<symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8M7 3v5h7"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 11l5 5 5-5M4 21h16"/></symbol>
+<symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-5"/></symbol>
+<symbol id="i-redo" viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h5"/></symbol>
+<symbol id="i-bold" viewBox="0 0 24 24"><path d="M7 5h6a3.5 3.5 0 0 1 0 7H7Zm0 7h7a3.5 3.5 0 0 1 0 7H7Z"/></symbol>
+<symbol id="i-italic" viewBox="0 0 24 24"><path d="M19 5h-6M11 19H5M15 5 9 19"/></symbol>
+<symbol id="i-underline" viewBox="0 0 24 24"><path d="M7 4v7a5 5 0 0 0 10 0V4M5 21h14"/></symbol>
+<symbol id="i-strike" viewBox="0 0 24 24"><path d="M4 12h16M7 8a4 4 0 0 1 8-1M17 16a4 4 0 0 1-8 1"/></symbol>
+<symbol id="i-color" viewBox="0 0 24 24"><text x="12" y="14" text-anchor="middle" font-size="13" font-family="Georgia,serif" fill="currentColor" stroke="none">A</text><rect x="4" y="17" width="16" height="3.5" rx="1" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-highlight" viewBox="0 0 24 24"><path d="M4 19h6l9-9-4-4-9 9Z"/><path d="m14 5 4 4"/></symbol>
+<symbol id="i-eraser" viewBox="0 0 24 24"><path d="m4 16 8-8 6 6-4 4H6ZM10 20h10"/></symbol>
+<symbol id="i-left" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h13"/></symbol>
+<symbol id="i-center" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M6 18h12"/></symbol>
+<symbol id="i-right" viewBox="0 0 24 24"><path d="M4 6h16M10 12h10M7 18h13"/></symbol>
+<symbol id="i-justify" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+<symbol id="i-ul" viewBox="0 0 24 24"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+<symbol id="i-ol" viewBox="0 0 24 24"><path d="M10 6h11M10 12h11M10 18h11M4 4v4M3 8h2M3 12h2l-2 3h2"/></symbol>
+<symbol id="i-indent" viewBox="0 0 24 24"><path d="M4 6h16M11 12h9M4 18h16M4 10l3 2-3 2"/></symbol>
+<symbol id="i-outdent" viewBox="0 0 24 24"><path d="M4 6h16M11 12h9M4 18h16M7 10l-3 2 3 2"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24"><path d="m9 15 6-6M10 6l1-1a4 4 0 0 1 6 6l-1 1M14 18l-1 1a4 4 0 0 1-6-6l1-1"/></symbol>
+<symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8.5 11a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M4 17l5-5 4 4 3-2 4 4"/></symbol>
+<symbol id="i-table" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 10h18M3 15h18M9 5v14M15 5v14"/></symbol>
+<symbol id="i-hr" viewBox="0 0 24 24"><path d="M4 12h16M6 7h12M6 17h12" opacity=".55"/></symbol>
+<symbol id="i-pagebreak" viewBox="0 0 24 24"><path d="M6 3h12v6H6zM6 15h12v6H6M3 12h18"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="m9 18-6-6 6-6M15 6l6 6-6 6"/></symbol>
+<symbol id="i-quote" viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zM15 17h3l2-4V7h-6v6h3z"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24"><path d="M3 8h9M17 8h4M3 16h5M13 16h8"/><circle cx="14.5" cy="8" r="2.2"/><circle cx="10" cy="16" r="2.2"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10Z"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+<symbol id="i-print" viewBox="0 0 24 24"><path d="M7 8V3h10v5M7 18H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v7H7z"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4l11-11-4-4L4 16Z"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14"/></symbol>
+<symbol id="i-install" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 7v7M9 11l3 3 3-3"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-max" viewBox="0 0 24 24"><path d="M4 9V4h5M20 15v5h-5M15 4h5v5M9 20H4v-5"/></symbol>
+<symbol id="i-wrap" viewBox="0 0 24 24"><path d="M4 6h16M4 12h12a3 3 0 1 1 0 6h-4M13 15l-2 3 2 3M4 18h4"/></symbol>
+<symbol id="i-row" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 12h18M12 15v4M9 17h6"/></symbol>
+<symbol id="i-col" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M12 5v14M15 12h4M17 10v4"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2 6"/><path d="M20 5v6h-6"/></symbol>
+<symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+<symbol id="i-vk" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="4"/><text x="12" y="15.5" text-anchor="middle" font-size="9.5" font-weight="700" font-family="Arial,sans-serif" fill="currentColor" stroke="none">VK</text></symbol>
+</svg>
+
+<header class="topbar">
+  <div class="brand"><span class="logo">TB</span><span class="brand-txt">Текстобой</span></div>
+  <input id="fileName" class="file-name" value="Документ.docx" spellcheck="false" aria-label="Имя файла">
+  <span id="dirty" class="dirty" title="Есть несохранённые изменения"></span>
+  <div class="grow"></div>
+  <button class="ib" id="btnNew" title="Новый документ (Ctrl+N)"><svg class="i"><use href="#i-file"/></svg></button>
+  <button class="ib" id="btnOpen" title="Открыть (Ctrl+O)"><svg class="i"><use href="#i-folder"/></svg></button>
+  <button class="ib accent" id="btnSave" title="Сохранить (Ctrl+S)"><svg class="i"><use href="#i-save"/></svg></button>
+  <button class="ib danger" id="btnClose" title="Закрыть файл (Alt+W)" disabled><svg class="i"><use href="#i-close"/></svg></button>
+  <button class="ib" id="btnTheme" title="Тема"><svg class="i"><use href="#i-moon"/></svg></button>
+  <button class="ib" id="btnSettings" title="Оформление и параметры"><svg class="i"><use href="#i-settings"/></svg></button>
+  <button class="ib" id="btnInstall" title="Установить приложение" hidden><svg class="i"><use href="#i-install"/></svg></button>
+</header>
+
+<nav class="tabs" id="ribbonTabs" role="tablist">
+  <button class="tab active" data-tab="home">Главная</button>
+  <button class="tab" data-tab="insert">Вставка</button>
+  <button class="tab" data-tab="layout">Макет</button>
+  <button class="tab" data-tab="view">Вид</button>
+  <button class="tab" data-tab="code">Код</button>
+  <button class="tab tab-export" data-tab="export">Экспорт</button>
+  <button class="tab" data-tab="about">Об авторе</button>
+</nav>
+
+<section class="ribbon" id="ribbon">
+  <div class="panel active" data-panel="home"></div>
+  <div class="panel" data-panel="insert"></div>
+  <div class="panel" data-panel="layout"></div>
+  <div class="panel" data-panel="view"></div>
+  <div class="panel" data-panel="code"></div>
+
+  <div class="panel export-panel" data-panel="export">
+    <div class="export-grid" id="exportGrid">
+      <button class="card active" data-fmt="docx"><svg class="i"><use href="#i-file"/></svg><b>Word&nbsp;.docx</b><span>Стили, списки, таблицы, картинки</span></button>
+      <button class="card" data-fmt="html"><svg class="i"><use href="#i-code"/></svg><b>HTML</b><span>Автономная страница с CSS</span></button>
+      <button class="card" data-fmt="md"><svg class="i"><use href="#i-edit"/></svg><b>Markdown</b><span>GFM: таблицы, списки, код</span></button>
+      <button class="card" data-fmt="txt"><svg class="i"><use href="#i-file"/></svg><b>TXT</b><span>Только текст</span></button>
+      <button class="card" data-fmt="pdf"><svg class="i"><use href="#i-print"/></svg><b>PDF</b><span>Печать → «Сохранить как PDF»</span></button>
+      <button class="card" data-fmt="src"><svg class="i"><use href="#i-download"/></svg><b>Исходник</b><span>Оригинальный файл / код</span></button>
+    </div>
+    <div class="export-opts">
+      <label class="fld wide">Имя файла<input id="expName" type="text" value="Документ"></label>
+      <label class="fld">Лист<select id="expPage"><option>A4</option><option>A5</option><option>Letter</option><option>Legal</option></select></label>
+      <label class="fld">Ориентация<select id="expOrient"><option value="portrait">Книжная</option><option value="landscape">Альбомная</option></select></label>
+      <label class="fld">Шрифт<select id="expFont"></select></label>
+      <label class="fld">Кегль, пт<input id="expSize" type="number" min="6" max="72" step="0.5" value="11"></label>
+      <label class="fld">Интервал<select id="expLine"><option>1</option><option selected>1.15</option><option>1.5</option><option>2</option></select></label>
+      <div class="fld margins">Поля, см
+        <div class="mrow"><input id="mT" type="number" step="0.1" value="2" title="Верхнее"><input id="mR" type="number" step="0.1" value="1.5" title="Правое"><input id="mB" type="number" step="0.1" value="2" title="Нижнее"><input id="mL" type="number" step="0.1" value="3" title="Левое"></div>
+      </div>
+      <label class="chk"><input type="checkbox" id="expStyles" checked>Сохранять форматирование</label>
+      <label class="chk"><input type="checkbox" id="expImages" checked>Включать изображения</label>
+      <div class="export-actions">
+        <button class="btn primary" id="expDownload"><svg class="i"><use href="#i-download"/></svg>Скачать</button>
+        <button class="btn" id="expSaveAs"><svg class="i"><use href="#i-save"/></svg>Сохранить как…</button>
+      </div>
+      <p class="hint" id="expHint">DOCX собирается локально, ничего не отправляется на сервер.</p>
+    </div>
+  </div>
+
+  <div class="panel about-panel" data-panel="about">
+    <div class="about-hero">
+      <div class="hero-logo">D</div>
+      <div class="about-hero-txt">
+        <h3>Текстобой <span class="ver">v2.2</span></h3>
+        <p>Универсальный офлайн-редактор: Word&nbsp;(.docx) с точным отображением и настоящим экспортом, Markdown с живым предпросмотром, PDF-просмотр и редактор кода с подсветкой синтаксиса. HTML открывается как код с изолированным просмотром страницы. Все файлы обрабатываются локально — ничего не отправляется на сервер.</p>
+      </div>
+    </div>
+    <div class="about-grid">
+      <div class="about-card">
+        <h4>Возможности</h4>
+        <ul>
+          <li>Word: точный вид файла, лист A4, экспорт .docx</li>
+          <li>Markdown: сплит-режим, GFM, экспорт MD / HTML / DOCX</li>
+          <li>HTML и код: Python, JS, CSS, Swift и ещё 20+ языков</li>
+          <li>PDF: просмотр, масштаб, извлечение текста</li>
+          <li>PWA: установка на домашний экран, офлайн-режим</li>
+        </ul>
+      </div>
+      <div class="about-card">
+        <h4>Горячие клавиши</h4>
+        <div class="keys">
+          <span><kbd>Ctrl</kbd>+<kbd>S</kbd> сохранить</span>
+          <span><kbd>Ctrl</kbd>+<kbd>O</kbd> открыть</span>
+          <span><kbd>Ctrl</kbd>+<kbd>N</kbd> новый документ</span>
+          <span><kbd>Alt</kbd>+<kbd>W</kbd> закрыть файл</span>
+          <span><kbd>Ctrl</kbd>+<kbd>F</kbd> найти</span>
+          <span><kbd>Ctrl</kbd>+<kbd>H</kbd> заменить в коде</span>
+          <span><kbd>Ctrl</kbd>+<kbd>G</kbd> перейти к строке</span>
+          <span><kbd>Ctrl</kbd>+<kbd>E</kbd> вкладка «Экспорт»</span>
+          <span><kbd>Ctrl</kbd>+<kbd>P</kbd> печать / PDF</span>
+        </div>
+      </div>
+      <div class="about-card author-card">
+        <h4>Автор</h4>
+        <p>Дизайн и разработка — ArchiGPT. Идеи, баг-репорты и отзывы приветствуются в сообщениях сообщества.</p>
+        <a class="btn vk" href="https://vk.ru/archigpt" target="_blank" rel="noopener">
+          <svg class="i"><use href="#i-vk"/></svg>Автор: vk.ru/archigpt
+        </a>
+      </div>
+      <div class="about-card">
+        <h4>Технологии</h4>
+        <p>ACE · marked · pdf.js · mammoth · docx-preview · JSZip · Turndown · highlight.js</p>
+        <p class="hint">Сборка .docx — собственный генератор OOXML, работает полностью в браузере.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modebar" id="modebar">
+  <span class="badge" id="kindBadge">—</span>
+  <div class="chips" id="viewChips"></div>
+  <div class="grow"></div>
+  <button class="ib sm" id="zoomOut" title="Уменьшить"><svg class="i"><use href="#i-minus"/></svg></button>
+  <span class="zoom-val" id="zoomVal">100%</span>
+  <button class="ib sm" id="zoomIn" title="Увеличить"><svg class="i"><use href="#i-plus"/></svg></button>
+</div>
+
+<main class="canvas" id="canvas">
+  <section class="welcome view active" id="v-welcome">
+    <div class="hero">
+      <div class="hero-logo">D</div>
+      <h1>Текстобой</h1>
+      <p>Word, Markdown, PDF и код — в одном приложении. Всё работает локально, в браузере.</p>
+      <div class="hero-actions">
+        <button class="btn primary lg" id="wNew"><svg class="i"><use href="#i-file"/></svg>Новый документ</button>
+        <button class="btn lg" id="wOpen"><svg class="i"><use href="#i-folder"/></svg>Открыть файл</button>
+      </div>
+      <div class="samples">
+        <span>Примеры:</span>
+        <button class="chip" data-sample="word">Word</button>
+        <button class="chip" data-sample="md">Markdown</button>
+        <button class="chip" data-sample="py">Python</button>
+        <button class="chip" data-sample="html">HTML</button>
+      </div>
+      <div class="chips-feature">
+        <span>DOCX → точный вид Word</span><span>Экспорт .docx</span><span>Markdown live</span>
+        <span>Python · HTML · JS · CSS · Swift</span><span>PDF‑просмотр</span><span>Офлайн PWA</span>
+      </div>
+      <p class="drop-hint">Перетащите файл в окно · Ctrl+O · Ctrl+S · Alt+W — закрыть</p>
+    </div>
+  </section>
+
+  <section class="view" id="v-page">
+    <div class="ruler" id="ruler"></div>
+    <div class="page-wrap"><div class="page"><div id="doc" class="doc" contenteditable="true" spellcheck="true"></div></div></div>
+  </section>
+
+  <section class="view" id="v-fidelity">
+    <div class="note">Точное отображение файла Word (только чтение).
+      <button class="btn sm" id="toEdit"><svg class="i"><use href="#i-edit"/></svg>Редактировать</button>
+    </div>
+    <div id="docxView" class="docx-host"></div>
+  </section>
+
+  <section class="view md-view" id="v-md">
+    <div class="md-tabs"><button class="active" data-md="split">Сплит</button><button data-md="edit">Редактор</button><button data-md="read">Просмотр</button></div>
+    <div class="md-split" id="mdSplit">
+      <div class="md-ed" id="aceMd"></div>
+      <div class="md-pv doc" id="mdPreview"></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-code"><div id="aceCode" class="ace-host"></div></section>
+
+  <section class="view" id="v-html">
+    <div class="note html-note">
+      <span>Просмотр HTML — изолированно, без выполнения скриптов.</span>
+      <label class="fld inline">Ширина
+        <select id="htmlWidth"><option value="auto">Авто</option><option value="375">375 px</option><option value="768">768 px</option><option value="1024">1024 px</option></select>
+      </label>
+      <button class="btn sm" id="htmlRefresh"><svg class="i"><use href="#i-refresh"/></svg>Обновить</button>
+      <button class="btn sm" id="htmlOpen"><svg class="i"><use href="#i-external"/></svg>В новой вкладке</button>
+      <button class="btn sm" id="htmlPrint"><svg class="i"><use href="#i-print"/></svg>Печать</button>
+    </div>
+    <div class="html-frame-wrap"><iframe id="htmlFrame" title="Просмотр HTML" sandbox="allow-same-origin allow-modals"></iframe></div>
+  </section>
+
+  <section class="view" id="v-pdf">
+    <div class="note">PDF — просмотр. Можно извлечь текст в редактируемый документ.
+      <button class="btn sm" id="pdfExtract"><svg class="i"><use href="#i-edit"/></svg>Извлечь текст</button>
+      <button class="btn sm" id="pdfSave"><svg class="i"><use href="#i-download"/></svg>Скачать PDF</button>
+    </div>
+    <div id="pdfPages" class="pdf-pages"></div>
+  </section>
+</main>
+
+<footer class="statusbar" id="statusbar">
+  <span id="stView">—</span><span id="stWords">0 слов</span><span id="stChars">0 символов</span>
+  <span class="grow"></span><span id="stSize">—</span><span id="stSaved">готово</span>
+</footer>
+
+<div class="overlay" id="sheetOverlay" hidden></div>
+<aside class="sheet" id="sheet" hidden aria-label="Оформление">
+  <div class="sheet-head"><b>Оформление и параметры</b><button class="ib" data-close title="Закрыть"><svg class="i"><use href="#i-close"/></svg></button></div>
+  <div class="sheet-body">
+    <section><h4>Тема</h4>
+      <div class="seg" data-seg="theme"><button data-v="dark">Тёмная</button><button data-v="light">Светлая</button><button data-v="auto">Системная</button></div>
+      <div class="swatches" id="accents"></div>
+    </section>
+    <section><h4>Интерфейс</h4>
+      <label class="fld">Шрифт<select data-set="uiFont"><option value="system">Системный</option><option value="humanist">Segoe / Roboto</option><option value="serif">Serif</option><option value="mono">Mono</option></select></label>
+      <label class="fld">Кегль интерфейса<input type="range" min="12" max="18" step="1" data-set="uiSize"></label>
+      <label class="fld">Плотность<select data-set="density"><option value="cozy">Свободная</option><option value="compact">Компактная</option></select></label>
+      <label class="chk"><input type="checkbox" data-set="statusBar">Строка состояния</label>
+    </section>
+    <section><h4>Документ</h4>
+      <label class="fld">Шрифт<select data-set="docFont" id="setDocFont"></select></label>
+      <label class="fld">Кегль, пт<input type="number" min="6" max="48" step="0.5" data-set="docSize"></label>
+      <label class="fld">Междустрочный интервал<select data-set="docLine"><option>1</option><option>1.15</option><option>1.5</option><option>2</option><option>2.5</option></select></label>
+      <label class="chk"><input type="checkbox" data-set="wrap">Перенос строк (soft wrap)</label>
+      <label class="chk"><input type="checkbox" data-set="hyphens">Автоматические переносы по слогам</label>
+      <label class="chk"><input type="checkbox" data-set="spell">Проверка орфографии</label>
+      <label class="chk"><input type="checkbox" data-set="darkPaper">Тёмный лист</label>
+      <label class="chk"><input type="checkbox" data-set="ruler">Линейка</label>
+      <label class="chk"><input type="checkbox" data-set="fit">Лист по ширине экрана (мобильный режим)</label>
+    </section>
+    <section><h4>Код и Markdown</h4>
+      <label class="fld">Кегль редактора<input type="number" min="10" max="24" data-set="codeSize"></label>
+      <label class="fld">Табуляция<input type="number" min="2" max="8" data-set="tabSize"></label>
+    </section>
+    <section><h4>Данные</h4>
+      <label class="chk"><input type="checkbox" data-set="autosave">Автосохранение в браузере</label>
+      <button class="btn" id="clearAuto"><svg class="i"><use href="#i-trash"/></svg>Удалить автосохранение</button>
+      <button class="btn" id="resetSet">Сбросить оформление</button>
+    </section>
+  </div>
+</aside>
+
+<div class="modal" id="findModal" hidden role="dialog" aria-modal="true" aria-label="Найти и заменить">
+  <div class="modal-box">
+    <div class="sheet-head"><b>Найти и заменить</b><button class="ib" data-close title="Закрыть"><svg class="i"><use href="#i-close"/></svg></button></div>
+    <label class="fld">Найти<input id="fQuery" type="text"></label>
+    <label class="fld">Заменить на<input id="fRepl" type="text"></label>
+    <label class="chk"><input type="checkbox" id="fCase">Учитывать регистр</label>
+    <div class="modal-actions">
+      <button class="btn" id="fNext">Найти далее</button>
+      <button class="btn" id="fOne">Заменить</button>
+      <button class="btn primary" id="fAll">Заменить все</button>
+    </div>
+    <p class="hint" id="fInfo"></p>
+  </div>
+</div>
+
+<div class="modal" id="dlg" hidden role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div class="sheet-head"><b id="dlgTitle">Параметры</b><button class="ib" data-close title="Закрыть"><svg class="i"><use href="#i-close"/></svg></button></div>
+    <div id="dlgFields"></div>
+    <div class="modal-actions"><button class="btn" data-close>Отмена</button><button class="btn primary" id="dlgOk">ОК</button></div>
+  </div>
+</div>
+
+<div class="drop" id="drop"><div><svg class="i xl"><use href="#i-download"/></svg><p>Отпустите файл</p></div></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="fileInput" hidden accept=".docx,.md,.markdown,.txt,.pdf,.html,.htm,.py,.js,.mjs,.ts,.tsx,.css,.scss,.less,.swift,.json,.xml,.yml,.yaml,.toml,.sql,.sh,.c,.cpp,.h,.java,.go,.rb,.php,.csv,.kt">
+<noscript><p style="padding:24px">Для работы приложения нужен JavaScript.</p></noscript>
+</body>
+</html>
