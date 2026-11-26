@@ -1,9 +1,9 @@
 {
-  "name": "DocEditor — документы, Markdown, PDF и код",
-  "short_name": "DocEditor",
+  "name": "Текстобой — документы, Markdown, PDF и код",
+  "short_name": "Текстобой",
   "description": "Word-подобный редактор с экспортом .docx, Markdown, PDF и подсветкой кода. Работает офлайн.",
-  "id": "/doceditor/",
-  "start_url": "./index.html",
+  "id": "/textoboy/",
+  "start_url": "./textoboy.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
@@ -16,7 +16,7 @@
     { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
   ],
   "shortcuts": [
-    { "name": "Новый документ", "url": "./index.html?new=1" },
-    { "name": "Открыть файл", "url": "./index.html?open=1" }
+    { "name": "Новый документ", "url": "./textoboy.html?new=1" },
+    { "name": "Открыть файл", "url": "./textoboy.html?open=1" }
   ]
 }
