@@ -14,16 +14,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%;overscroll-behavior:none}
+  html,body{
+    height:100%;width:100%;
+    overflow:hidden;overscroll-behavior:none;
+    -webkit-text-size-adjust:100%;
+  }
   body{
     font-family:'Inter',system-ui,-apple-system,sans-serif;
     background:#08080f;color:#eaeaf5;
-    min-height:100vh;min-height:100dvh;
-    overflow:hidden;position:relative;
-    touch-action:manipulation;
+    position:fixed;inset:0;
   }
+  /* фон */
   body::before{
-    content:'';position:fixed;inset:-25%;z-index:-1;
+    content:'';position:absolute;inset:-25%;z-index:-1;
     background:
       radial-gradient(circle at 18% 18%, rgba(255,77,109,.20), transparent 45%),
       radial-gradient(circle at 82% 28%, rgba(179,136,255,.20), transparent 45%),
@@ -31,45 +34,63 @@
       radial-gradient(circle at 75% 75%, rgba(6,214,160,.12), transparent 45%);
     filter:blur(40px);
     animation:drift 20s ease-in-out infinite alternate;
+    pointer-events:none;
   }
   @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(3%,-4%) scale(1.1)}}
 
+  /* ==================================================
+     КОРНЕВОЙ КОНТЕЙНЕР — всегда ровно вьюпорт
+     ================================================== */
+  .app-shell{
+    position:fixed;inset:0;
+    display:flex;justify-content:center;
+    overflow:hidden;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    padding-left:env(safe-area-inset-left,0px);
+    padding-right:env(safe-area-inset-right,0px);
+  }
   .app{
     position:relative;
-    width:100%;max-width:520px;
-    height:100vh;height:100dvh;
-    margin:0 auto;
-    display:flex;flex-direction:column;gap:4px;
-    padding-top:env(safe-area-inset-top);
-    padding-bottom:env(safe-area-inset-bottom);
-    padding-left:env(safe-area-inset-left);
-    padding-right:env(safe-area-inset-right);
+    display:flex;flex-direction:column;
+    width:100%;max-width:520px;height:100%;
+    overflow:hidden;
+    gap:0;
   }
 
-  /* ============ ВЕРХНИЙ HUD ============ */
+  /* ==================================================
+     ВЕРХНИЙ HUD
+     ================================================== */
   .top-hud{
     flex:0 0 auto;
     display:flex;gap:6px;
     padding:6px 8px 0;
     align-items:stretch;
+    min-height:56px;
   }
   .goal-col{
     flex:1 1 auto;min-width:0;
-    display:flex;flex-direction:column;gap:3px;
-    padding:5px 9px;
+    display:flex;flex-direction:column;justify-content:center;
+    gap:4px;
+    padding:6px 10px;
     background:rgba(255,255,255,.045);
     border:1px solid rgba(255,255,255,.08);
     border-radius:11px;
   }
-  .goal-label{
-    font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;
-    color:#8a8aa3;line-height:1;
+  .goal-head{
+    display:flex;align-items:baseline;justify-content:space-between;
+    gap:8px;min-width:0;
   }
-  .goal-text{
-    font-size:12px;font-weight:700;color:#eaeaf5;
-    line-height:1.2;display:flex;align-items:center;gap:5px;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    min-height:15px;
+  .goal-title{
+    font-size:11px;font-weight:700;color:#eaeaf5;
+    display:flex;align-items:center;gap:5px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    min-width:0;
+  }
+  .goal-progress{
+    font-size:11px;font-weight:700;color:#fff;
+    font-variant-numeric:tabular-nums;
+    white-space:nowrap;flex:none;
   }
   .goal-bar{
     height:4px;background:rgba(255,255,255,.08);
@@ -79,24 +100,36 @@
     height:100%;width:0%;
     background:linear-gradient(90deg,#06d6a0,#4cc9f0,#b388ff);
     transition:width .3s;border-radius:99px;
-    box-shadow:0 0 8px rgba(76,201,240,.4);
   }
+  .goal-meta{
+    display:flex;justify-content:space-between;
+    font-size:10px;color:#9a9ab8;
+    letter-spacing:.02em;font-variant-numeric:tabular-nums;
+    margin-top:1px;
+  }
+  .goal-meta b{
+    color:#fff;font-size:12px;font-weight:700;
+    margin-left:3px;letter-spacing:0;
+  }
+
   .next-col{
     flex:0 0 auto;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     gap:2px;padding:4px 6px;
     background:rgba(255,255,255,.045);
     border:1px solid rgba(255,255,255,.08);
-    border-radius:11px;min-width:88px;
+    border-radius:11px;
+    min-width:76px;
   }
   .next-label{
     font-size:8px;letter-spacing:.14em;text-transform:uppercase;
     color:#8a8aa3;line-height:1;
   }
   #next{display:block}
+
   .settings-btn{
     flex:0 0 auto;align-self:center;
-    width:34px;height:34px;border-radius:11px;
+    width:36px;height:36px;border-radius:11px;
     border:1px solid rgba(255,255,255,.12);
     background:rgba(255,255,255,.06);
     color:#fff;font-size:16px;cursor:pointer;
@@ -105,15 +138,23 @@
   }
   .settings-btn:active{transform:scale(.94);background:rgba(255,255,255,.14)}
 
-  /* ============ ИГРОВОЕ ПОЛЕ ============ */
+  /* ==================================================
+     ИГРОВОЕ ПОЛЕ — занимает всё свободное место
+     ================================================== */
   .stage{
-    flex:1 1 auto;min-height:0;
+    flex:1 1 0;
+    min-height:0;
+    position:relative;
     display:flex;align-items:center;justify-content:center;
-    padding:4px 8px;position:relative;
+    padding:4px 8px;
+    overflow:hidden;
   }
   .board-wrap{
     position:relative;
-    width:0;height:0;
+    width:0;height:0; /* размер выставляет JS */
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 10px 34px rgba(0,0,0,.55);
   }
   #board{
     width:100%;height:100%;display:block;
@@ -121,20 +162,40 @@
     touch-action:none;user-select:none;-webkit-user-select:none;
   }
 
-  /* ============ ОВЕРЛЕЙ ============ */
+  /* ==================================================
+     ФУТЕР (только автор)
+     ================================================== */
+  .footer{
+    flex:0 0 auto;
+    text-align:center;
+    font-size:9.5px;
+    color:#5d5d78;
+    padding:2px 8px 3px;
+    line-height:1;
+    letter-spacing:.03em;
+  }
+  .footer a{
+    color:#7d6fe0;text-decoration:none;
+    border-bottom:1px dotted rgba(125,111,224,.45);
+  }
+
+  /* ==================================================
+     ОВЕРЛЕЙ поверх поля
+     ================================================== */
   .overlay{
     position:absolute;inset:0;
     border-radius:12px;
-    background:rgba(8,8,16,.85);
+    background:rgba(8,8,16,.88);
     backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
     display:none;
     align-items:center;justify-content:center;
     padding:14px;z-index:5;overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
   }
   .overlay.show{display:flex}
   .overlay::-webkit-scrollbar{width:5px}
   .overlay::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:9px}
-  .overlay-card{width:100%;max-width:100%;text-align:center}
+  .overlay-card{width:100%;max-width:300px;text-align:center;margin:auto}
   .overlay-card h2{
     font-family:'Unbounded',sans-serif;
     font-size:17px;letter-spacing:.04em;
@@ -162,27 +223,9 @@
     padding:3px 10px;margin-bottom:10px;
   }
 
-  /* ============ НИЖНИЙ HUD ============ */
-  .bottom-hud{
-    flex:0 0 auto;
-    display:flex;align-items:center;justify-content:space-between;
-    padding:2px 12px 4px;gap:8px;
-    font-size:10.5px;color:#9a9ab8;min-height:22px;
-  }
-  .bottom-stats{display:flex;gap:12px}
-  .bottom-stats b{
-    color:#fff;font-size:13px;
-    font-variant-numeric:tabular-nums;margin-left:2px;
-  }
-  .author{
-    font-size:9px;color:#5d5d78;white-space:nowrap;
-  }
-  .author a{
-    color:#7d6fe0;text-decoration:none;
-    border-bottom:1px dotted rgba(125,111,224,.45);
-  }
-
-  /* ============ КНОПКИ ============ */
+  /* ==================================================
+     КНОПКИ
+     ================================================== */
   .btn{
     font-family:inherit;font-weight:600;font-size:13px;
     cursor:pointer;border:0;border-radius:12px;
@@ -198,7 +241,9 @@
   .btn.ghost{background:rgba(255,255,255,.08);color:#eaeaf5}
   .btn.ghost:active{background:rgba(255,255,255,.16)}
 
-  /* ============ МОДАЛКА ============ */
+  /* ==================================================
+     МОДАЛКА НАСТРОЕК
+     ================================================== */
   .modal{
     position:fixed;inset:0;z-index:100;display:none;
     align-items:center;justify-content:center;
@@ -209,6 +254,7 @@
   .modal-content{
     position:relative;width:100%;max-width:400px;
     max-height:86vh;overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
     background:rgba(22,22,38,.96);
     border:1px solid rgba(255,255,255,.12);
     border-radius:20px;padding:22px 18px;
@@ -252,7 +298,7 @@
     border-color:transparent;color:#050510;
   }
 
-  /* ============ ДОСТИЖЕНИЯ ============ */
+  /* достижения */
   .ach-item{
     display:flex;gap:10px;align-items:flex-start;
     padding:9px;border-radius:11px;
@@ -277,7 +323,7 @@
     background:linear-gradient(90deg,#06d6a0,#4cc9f0);transition:width .35s}
   .ach-item.on .ach-fill{background:linear-gradient(90deg,#ffd166,#ff4d6d)}
 
-  /* ============ РЕКОРДЫ ============ */
+  /* рекорды */
   .lb-list{list-style:none;display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
   .lb-list li{
     display:flex;align-items:center;gap:8px;font-size:12px;
@@ -292,9 +338,9 @@
   .lb-list li:nth-child(3){background:linear-gradient(90deg,rgba(255,150,90,.18),rgba(255,255,255,.03))}
   .lb-list li.empty{justify-content:center;color:#7d7d99;font-size:11.5px;background:none}
 
-  /* ============ ТОСТЫ ============ */
+  /* тосты */
   #toasts{
-    position:fixed;top:calc(80px + env(safe-area-inset-top));
+    position:fixed;top:calc(74px + env(safe-area-inset-top,0px));
     left:50%;transform:translateX(-50%);
     z-index:80;display:flex;flex-direction:column;gap:6px;
     pointer-events:none;max-width:min(300px,90vw);
@@ -314,55 +360,62 @@
   @keyframes toastIn{from{opacity:0;transform:translateX(60px) scale(.9)}to{opacity:1;transform:none}}
   @keyframes toastOut{to{opacity:0;transform:translateX(60px) scale(.92)}}
 
-  /* ============ АДАПТИВ ============ */
+  /* компактная подстройка под низкие экраны */
   @media (max-height:620px){
-    .top-hud{min-height:52px}
-    .goal-label{font-size:8px}
-    .goal-text{font-size:11px}
-    .bottom-hud{min-height:20px;font-size:10px}
-    .bottom-stats b{font-size:12px}
-    .next-col{min-width:78px}
+    .top-hud{min-height:50px;padding-top:4px}
+    .goal-title{font-size:10.5px}
+    .goal-progress{font-size:10.5px}
+    .goal-meta{font-size:9.5px}
+    .goal-meta b{font-size:11px}
+    .settings-btn{width:32px;height:32px;font-size:14px}
+    .next-col{min-width:70px;padding:3px 5px}
+    .footer{font-size:9px;padding:1px 8px 2px}
   }
   @media (max-width:360px){
-    .next-col{min-width:76px;padding:3px 4px}
-    .goal-text{font-size:11px}
-    .settings-btn{width:30px;height:30px;font-size:14px}
-  }
-  @media (min-width:901px){
-    .app{max-width:560px}
+    .top-hud{gap:5px;padding:5px 6px 0}
+    .goal-col{padding:5px 8px}
+    .goal-title{font-size:10px}
+    .goal-meta{font-size:9.5px}
+    .next-col{min-width:68px}
   }
 </style>
 </head>
 <body>
 
-<div class="app">
-  <header class="top-hud">
-    <div class="goal-col">
-      <div class="goal-label" id="goalLabel">Цель</div>
-      <div class="goal-text" id="goalText">—</div>
-      <div class="goal-bar"><div class="goal-fill" id="goalFill"></div></div>
-    </div>
-    <div class="next-col">
-      <div class="next-label">Дальше</div>
-      <canvas id="next"></canvas>
-    </div>
-    <button class="settings-btn" id="btnSettings" aria-label="Настройки">⚙️</button>
-  </header>
+<div class="app-shell">
+  <div class="app">
 
-  <main class="stage" id="stage">
-    <div class="board-wrap" id="boardWrap">
-      <canvas id="board"></canvas>
-      <div class="overlay" id="overlay"><div class="overlay-card" id="overlayCard"></div></div>
-    </div>
-  </main>
+    <header class="top-hud">
+      <div class="goal-col">
+        <div class="goal-head">
+          <span class="goal-title" id="goalTitle">—</span>
+          <span class="goal-progress" id="goalProgress">0 / 0</span>
+        </div>
+        <div class="goal-bar"><div class="goal-fill" id="goalFill"></div></div>
+        <div class="goal-meta">
+          <span>Ур. <b id="level">1</b></span>
+          <span>Очки: <b id="score">0</b></span>
+        </div>
+      </div>
+      <div class="next-col">
+        <div class="next-label">Дальше</div>
+        <canvas id="next"></canvas>
+      </div>
+      <button class="settings-btn" id="btnSettings" aria-label="Настройки">⚙️</button>
+    </header>
 
-  <footer class="bottom-hud">
-    <div class="bottom-stats">
-      <span>Очки: <b id="score">0</b></span>
-      <span>Ур: <b id="level">1</b></span>
-    </div>
-    <div class="author">Автор: <a href="https://vk.ru/archigpt" target="_blank" rel="noopener">vk.ru/archigpt</a></div>
-  </footer>
+    <main class="stage" id="stage">
+      <div class="board-wrap" id="boardWrap">
+        <canvas id="board"></canvas>
+        <div class="overlay" id="overlay"><div class="overlay-card" id="overlayCard"></div></div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      Автор: <a href="https://vk.ru/archigpt" target="_blank" rel="noopener">vk.ru/archigpt</a>
+    </footer>
+
+  </div>
 </div>
 
 <div class="modal" id="settingsModal">
@@ -389,13 +442,6 @@ const EXTRA_COLORS = ['#ff6b35', '#ff9f1c', '#a8e10c', '#00f5d4', '#f15bb5',
                       '#9b5de5', '#fee440', '#00bbf9', '#f94144', '#90be6d',
                       '#ff8fab', '#7bdff2', '#c77dff', '#ffb703', '#80ed99'];
 const ALL_COLORS = BASE_COLORS.concat(EXTRA_COLORS);
-
-const COLOR_NAMES = [
-  'красных', 'жёлтых', 'зелёных', 'голубых', 'фиолетовых',
-  'оранжевых', 'янтарных', 'лаймовых', 'бирюзовых', 'розовых',
-  'сиреневых', 'золотых', 'небесных', 'алых', 'травяных',
-  'коралловых', 'мятных', 'лиловых', 'песочных', 'салатовых'
-];
 
 const CLEAR_FLASH = 220;
 const CHECK_DELAY = 70;
@@ -453,8 +499,8 @@ const nextCanvas = document.getElementById('next');
 const nctx = nextCanvas.getContext('2d');
 const scoreEl = document.getElementById('score');
 const levelEl = document.getElementById('level');
-const goalLabelEl = document.getElementById('goalLabel');
-const goalTextEl = document.getElementById('goalText');
+const goalTitleEl = document.getElementById('goalTitle');
+const goalProgressEl = document.getElementById('goalProgress');
 const goalFillEl = document.getElementById('goalFill');
 const overlay = document.getElementById('overlay');
 const overlayCard = document.getElementById('overlayCard');
@@ -472,14 +518,15 @@ canvas.width = COLS * CELL * DPR;
 canvas.height = ROWS * CELL * DPR;
 ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
 
-const NEXT_CELL = 16, NEXT_W = 5, NEXT_H = 4;
+const NEXT_CELL = 15, NEXT_W = 4, NEXT_H = 3;
 nextCanvas.width = NEXT_W * NEXT_CELL * DPR;
 nextCanvas.height = NEXT_H * NEXT_CELL * DPR;
 nextCanvas.style.width = (NEXT_W * NEXT_CELL) + 'px';
 nextCanvas.style.height = (NEXT_H * NEXT_CELL) + 'px';
 nctx.setTransform(DPR, 0, 0, DPR, 0, 0);
 
-let CELL_PX = 30; // размер клетки на экране (CSS-пиксели)
+let CELL_PX = 30;
+let lastBoardW = 0, lastBoardH = 0;
 
 /* ============================================================
    УТИЛИТЫ
@@ -536,19 +583,32 @@ function drawStone(g, x, y, size) {
 }
 
 /* ============================================================
-   АДАПТИВНОЕ ПОЛЕ
+   АДАПТИВНОЕ ПОЛЕ — подгоняем под контейнер stage
    ============================================================ */
 function resizeBoard() {
+  if (!stageEl || !boardWrap) return;
   const rect = stageEl.getBoundingClientRect();
-  const padW = 16, padH = 8;
-  const availW = rect.width - padW;
-  const availH = rect.height - padH;
-  const H = Math.min(availH, availW * 2);
-  const W = H / 2;
-  if (W < 50 || H < 100) return;
-  boardWrap.style.width = W + 'px';
-  boardWrap.style.height = H + 'px';
-  CELL_PX = W / COLS;
+  const cs = getComputedStyle(stageEl);
+  const padX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+  const padY = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+  const availW = Math.max(0, rect.width - padX);
+  const availH = Math.max(0, rect.height - padY);
+  if (availW < 40 || availH < 80) return; /* ещё не размечен */
+
+  let w = availW;
+  let h = w * (ROWS / COLS);
+  if (h > availH) { h = availH; w = h * (COLS / ROWS); }
+  w = Math.floor(w);
+  h = Math.floor(h);
+  if (w < 40 || h < 80) return;
+  if (w === lastBoardW && h === lastBoardH) return;
+
+  lastBoardW = w;
+  lastBoardH = h;
+  boardWrap.style.width = w + 'px';
+  boardWrap.style.height = h + 'px';
+  CELL_PX = w / COLS;
+  render();
 }
 
 /* ============================================================
@@ -1046,19 +1106,14 @@ function genGoal(lvl) {
   if (type === 'collect') {
     g.color = rnd(colorCount());
     g.target = 6 + L * 2;
-    g.label = 'Собрать';
   } else if (type === 'clear') {
     g.target = 15 + L * 5;
-    g.label = 'Очистить';
   } else if (type === 'stones') {
     g.target = 3 + Math.min(12, Math.floor(L * 0.7));
-    g.label = 'Камни';
   } else if (type === 'bonus') {
     g.target = 1 + Math.floor(L / 2);
-    g.label = 'Бонусы';
   } else {
     g.target = 400 + L * 200;
-    g.label = 'Очки';
   }
   return g;
 }
@@ -1151,29 +1206,39 @@ function updateHUD() {
 
 function updateGoalUI() {
   if (mode === 'endless') {
-    goalLabelEl.textContent = 'Режим';
-    goalTextEl.innerHTML = '♾️ Бесконечный';
-    goalFillEl.style.width = ((gameCleared % 25) / 25 * 100) + '%';
+    const within = gameCleared % 25;
+    goalTitleEl.innerHTML = '♾️ Бесконечный';
+    goalProgressEl.textContent = within + ' / 25';
+    goalFillEl.style.width = (within / 25 * 100) + '%';
     return;
   }
   if (!levelGoal) {
-    goalLabelEl.textContent = 'Цель';
-    goalTextEl.textContent = '—';
+    goalTitleEl.textContent = 'Цель';
+    goalProgressEl.textContent = '—';
     goalFillEl.style.width = '0%';
     return;
   }
   const p = Math.min(levelGoal.progress, levelGoal.target);
   const t = levelGoal.target;
-  let icon = '🎯';
+  let iconHtml = '🎯';
   if (levelGoal.type === 'collect') {
     const col = ALL_COLORS[levelGoal.color];
-    icon = '<span style="display:inline-block;width:11px;height:11px;border-radius:3px;background:' +
-           col + ';box-shadow:0 0 6px ' + col + ';vertical-align:middle"></span>';
-  } else if (levelGoal.type === 'clear') icon = '🧹';
-  else if (levelGoal.type === 'stones') icon = '🪨';
-  else if (levelGoal.type === 'bonus') icon = '⭐';
-  goalLabelEl.textContent = levelGoal.label;
-  goalTextEl.innerHTML = icon + ' ' + p + ' / ' + t;
+    iconHtml = '<span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:' +
+      col + ';box-shadow:0 0 5px ' + col + ';vertical-align:middle;margin-right:5px"></span>';
+  } else if (levelGoal.type === 'clear') iconHtml = '🧹 ';
+  else if (levelGoal.type === 'stones') iconHtml = '🪨 ';
+  else if (levelGoal.type === 'bonus') iconHtml = '⭐ ';
+  else if (levelGoal.type === 'score') iconHtml = '💫 ';
+
+  const labelMap = {
+    collect: 'Собрать',
+    clear: 'Очистить',
+    stones: 'Камни',
+    bonus: 'Бонусы',
+    score: 'Очки',
+  };
+  goalTitleEl.innerHTML = iconHtml + (labelMap[levelGoal.type] || 'Цель');
+  goalProgressEl.textContent = p + ' / ' + t;
   goalFillEl.style.width = (t > 0 ? (p / t * 100) : 0) + '%';
 }
 
@@ -1344,7 +1409,6 @@ function update(dt) {
       if (canMove(0, 1)) piece.y++;
       else lockPiece();
     }
-    // авто-софт-дроп при удержании пальца внизу
     if (touch && touch.totalDrop > 30) {
       const now = performance.now();
       if (now - touch.lastMoveT > 110 && now - touch.lastDropT > 60) {
@@ -1472,6 +1536,7 @@ function escapeHtml(s) {
 function showOverlay(html) {
   overlayCard.innerHTML = html;
   overlay.classList.add('show');
+  overlay.scrollTop = 0;
 }
 function hideOverlay() {
   overlay.classList.remove('show');
@@ -1485,21 +1550,18 @@ function showMenu() {
     '<span class="badge">Кубоцвет</span>' +
     '<h2>ТРИ В РЯД</h2>' +
     '<p>3+ одинаковых рядом схлопываются.<br>' +
-    '4 — бомба, 5 — молния, 6+ — радуга.<br>' +
-    '<span style="color:#a0a0c0">Свайп ←→ — движение, свайп ↓ — сброс.<br>' +
-    'Тап слева/справа — смена цветов.</span></p>' +
+    '4 — бомба, 5 — молния, 6+ — радуга.</p>' +
     (hasProg
-      ? '<button class="btn primary" id="btnContinue">▶ Продолжить — уровень ' + prog.level + '</button>'
+      ? '<button class="btn primary" id="btnContinue">▶ Продолжить — ур. ' + prog.level + '</button>'
       : '') +
     '<button class="btn ' + (hasProg ? 'ghost' : 'primary') + '" id="btnCamp">' +
       (hasProg ? '🎮 Кампания с начала' : '🎮 Кампания') + '</button>' +
-    '<button class="btn ghost" id="btnEndless">♾️ Бесконечный режим</button>'
+    '<button class="btn ghost" id="btnEndless">♾️ Бесконечный</button>'
   );
   const cont = document.getElementById('btnContinue');
   if (cont) cont.addEventListener('click', () => startCampaign(loadProgress().level));
   document.getElementById('btnCamp').addEventListener('click', () => startCampaign(1));
   document.getElementById('btnEndless').addEventListener('click', () => startEndless());
-  updateHUD();
 }
 
 function showLevelComplete(bonus) {
@@ -1541,8 +1603,8 @@ function showGameOverEndless() {
     (isRecord ? '<span class="badge">новый рекорд!</span>' : '') +
     '<div class="final">' + score + '</div>' +
     '<input id="nameInput" maxlength="12" placeholder="Твоё имя" autocomplete="off">' +
-    '<button class="btn primary" id="btnSave">💾 Сохранить рекорд</button>' +
-    '<button class="btn ghost" id="btnRestart">Играть снова</button>' +
+    '<button class="btn primary" id="btnSave">💾 Сохранить</button>' +
+    '<button class="btn ghost" id="btnRestart">Ещё раз</button>' +
     '<button class="btn ghost" id="btnQuit">В меню</button>'
   );
 
@@ -1587,6 +1649,7 @@ function closeSettings() {
     startMusic();
   }
   prevStateBeforeSettings = null;
+  setTimeout(resizeBoard, 30);
 }
 
 function toggleSound() {
@@ -1618,7 +1681,7 @@ function renderSettings() {
         '<span><b>' + achCount + '</b> / ' + ACHIEVEMENTS.length + '</span>' +
       '</div>' +
       '<button class="btn ghost" id="btnShowAch">🏅 Все достижения</button>' +
-      '<button class="btn ghost" id="btnShowRec">🏆 Рекорды (бесконечный)</button>' +
+      '<button class="btn ghost" id="btnShowRec">🏆 Рекорды (беск.)</button>' +
       (canResume ? '<button class="btn primary" id="btnResume">▶ Продолжить</button>' : '') +
       '<button class="btn ghost" id="btnQuitMenu">🏠 В меню</button>';
 
@@ -1725,7 +1788,6 @@ canvas.addEventListener('touchmove', (e) => {
     touch.movedFar = true;
   }
 
-  // горизонтальное движение
   touch.accumX += dx;
   const moveTh = touchMoveThreshold();
   while (Math.abs(touch.accumX) >= moveTh) {
@@ -1735,7 +1797,6 @@ canvas.addEventListener('touchmove', (e) => {
     touch.lastMoveT = performance.now();
   }
 
-  // вертикальный софт-дроп
   if (dy > 0) {
     touch.accumDropY += dy;
     touch.totalDrop += dy;
@@ -1758,13 +1819,11 @@ canvas.addEventListener('touchend', (e) => {
   const velocity = dur > 0 ? dy / dur : 0;
 
   if (state === 'playing') {
-    // резкий свайп вниз = мгновенный сброс
     const isQuickDownSwipe = dur < 400 && dy > 60 &&
       Math.abs(dy) > Math.abs(dx) * 1.4 && velocity > 0.35;
     if (isQuickDownSwipe) {
       hardDrop();
     } else if (!touch.movedFar && dur < 300) {
-      // тап = смена цветов (слева/справа)
       const rect = canvas.getBoundingClientRect();
       const tapXRel = (touch.sx - rect.left) / rect.width;
       shufflePiece(tapXRel < 0.5);
@@ -1774,8 +1833,6 @@ canvas.addEventListener('touchend', (e) => {
 }, { passive: false });
 
 canvas.addEventListener('touchcancel', () => { touch = null; }, { passive: false });
-
-// блокируем контекстное меню на долгий тап
 canvas.addEventListener('contextmenu', e => e.preventDefault());
 
 /* ============================================================
@@ -1812,7 +1869,7 @@ settingsModal.addEventListener('click', (e) => {
 });
 
 /* ============================================================
-   PWA: МАНИФЕСТ + ИКОНКИ
+   PWA
    ============================================================ */
 function makeIconPNG(size) {
   const c = document.createElement('canvas');
@@ -1898,26 +1955,48 @@ function setupPWA() {
       { type: 'application/manifest+json' }
     ));
     document.head.appendChild(mlink);
-  } catch (e) { /* PWA недоступен — не критично */ }
+  } catch (e) { /* PWA недоступен */ }
 }
 
 /* ============================================================
    СТАРТ
    ============================================================ */
 setupPWA();
-resizeBoard();
 nextPiece = makePiece();
 drawNext();
 updateHUD();
 showMenu();
 requestAnimationFrame(loop);
 
-window.addEventListener('resize', () => {
-  resizeBoard();
-  render();
-});
+/* Первичная подгонка поля: несколько попыток на случай,
+   когда safe-area ещё не применилась (iOS standalone) */
+requestAnimationFrame(resizeBoard);
+setTimeout(resizeBoard, 50);
+setTimeout(resizeBoard, 150);
+setTimeout(resizeBoard, 400);
+setTimeout(resizeBoard, 900);
+
+/* Реакция на изменения размеров (в т.ч. safe-area в standalone) */
+if (window.ResizeObserver) {
+  const ro = new ResizeObserver(() => resizeBoard());
+  ro.observe(stageEl);
+}
+
+window.addEventListener('resize', () => { resizeBoard(); });
 window.addEventListener('orientationchange', () => {
-  setTimeout(() => { resizeBoard(); render(); }, 150);
+  setTimeout(resizeBoard, 150);
+  setTimeout(resizeBoard, 400);
+});
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', () => resizeBoard());
+  window.visualViewport.addEventListener('scroll', () => resizeBoard());
+}
+
+window.addEventListener('pageshow', (e) => {
+  if (e.persisted) {
+    setTimeout(resizeBoard, 100);
+  }
 });
 
 })();
