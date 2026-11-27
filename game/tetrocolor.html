@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#08080f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Цветопад">
+<title>ЦВЕТОПАД — три в ряд</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    background:#08080f;color:#eaeaf5;
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+    padding:calc(14px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right))
+            calc(14px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left));
+    overflow-x:hidden;position:relative;
+  }
+  body::before{
+    content:'';position:fixed;inset:-25%;z-index:-1;
+    background:
+      radial-gradient(circle at 18% 18%, rgba(255,77,109,.20), transparent 45%),
+      radial-gradient(circle at 82% 28%, rgba(179,136,255,.20), transparent 45%),
+      radial-gradient(circle at 50% 92%, rgba(76,201,240,.16), transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(6,214,160,.12), transparent 45%);
+    filter:blur(40px);
+    animation:drift 20s ease-in-out infinite alternate;
+  }
+  @keyframes drift{ from{transform:translate(0,0) scale(1)} to{transform:translate(3%,-4%) scale(1.1)} }
+
+  .app{width:100%;max-width:1040px}
+  header{text-align:center;margin-bottom:14px}
+  h1{
+    font-family:'Unbounded',sans-serif;font-size:clamp(24px,5vw,44px);
+    letter-spacing:.1em;line-height:1.1;
+    background:linear-gradient(100deg,#ff4d6d,#ffd166,#06d6a0,#4cc9f0,#b388ff,#ff4d6d);
+    background-size:300% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:shine 7s linear infinite;
+  }
+  @keyframes shine{ to{background-position:300% 0} }
+  .sub{font-size:12.5px;color:#8a8aa3;margin-top:6px;letter-spacing:.02em}
+
+  main{
+    display:grid;grid-template-columns:190px minmax(0,auto) 210px;
+    gap:16px;align-items:start;justify-content:center;
+  }
+  .panel{
+    background:rgba(255,255,255,.045);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:18px;padding:16px;
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    box-shadow:0 18px 50px rgba(0,0,0,.45);
+  }
+  .panel h2{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#9a9ab8;margin-bottom:12px}
+
+  .stat{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+  .stat:last-of-type{border-bottom:none}
+  .stat span{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8a8aa3}
+  .stat b{font-size:19px;font-variant-numeric:tabular-nums;
+    background:linear-gradient(120deg,#fff,#b388ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  .goal{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07)}
+  .goal-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8a8aa3;margin-bottom:6px}
+  .goal-text{font-size:12.5px;font-weight:600;color:#eaeaf5;margin-bottom:8px;line-height:1.4;min-height:34px}
+  .goal-bar{height:8px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden}
+  .goal-fill{height:100%;width:0%;background:linear-gradient(90deg,#06d6a0,#4cc9f0,#b388ff);
+    border-radius:99px;transition:width .3s;box-shadow:0 0 12px rgba(76,201,240,.5)}
+
+  .next-wrap{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07);text-align:center}
+  .next-wrap .label{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8a8aa3;margin-bottom:6px}
+  #next{display:block;margin:0 auto}
+
+  .btn{
+    font-family:inherit;font-weight:600;font-size:14px;cursor:pointer;border:0;
+    border-radius:14px;padding:12px 20px;transition:transform .18s, box-shadow .18s, background .18s;
+    color:#fff;touch-action:manipulation;
+  }
+  .btn.primary{background:linear-gradient(135deg,#ff4d6d,#b388ff);box-shadow:0 8px 26px rgba(179,136,255,.35)}
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(179,136,255,.5)}
+  .btn.ghost{background:rgba(255,255,255,.08);color:#eaeaf5}
+  .btn.ghost:hover{background:rgba(255,255,255,.15)}
+  .btn.small{width:100%;padding:9px 12px;font-size:12.5px;margin-top:10px;border-radius:12px}
+  .btn:active{transform:scale(.97)}
+
+  .stage{
+    position:relative;border-radius:22px;padding:10px;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.09);
+    box-shadow:0 24px 70px rgba(0,0,0,.6), inset 0 0 70px rgba(130,120,255,.07);
+  }
+  .stage.shake{animation:shake .25s}
+  @keyframes shake{
+    0%,100%{transform:translate(0,0)}
+    25%{transform:translate(-4px,2px)}
+    50%{transform:translate(3px,-3px)}
+    75%{transform:translate(-2px,1px)}
+  }
+  #board{
+    display:block;height:min(68vh,620px);width:auto;max-width:100%;aspect-ratio:1/2;
+    border-radius:14px;background:rgba(0,0,0,.38);
+  }
+
+  .overlay{
+    position:absolute;inset:0;z-index:5;display:none;
+    align-items:center;justify-content:center;padding:18px;
+    background:rgba(8,8,16,.80);backdrop-filter:blur(8px);
+    border-radius:22px;
+  }
+  .overlay.show{display:flex}
+  .overlay-card{text-align:center;max-width:300px;width:100%}
+  .overlay-card.wide{max-width:430px;max-height:82%;overflow-y:auto;text-align:left}
+  .overlay-card.wide::-webkit-scrollbar{width:6px}
+  .overlay-card.wide::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:9px}
+  .overlay-card h2{font-family:'Unbounded',sans-serif;font-size:21px;letter-spacing:.06em;margin-bottom:12px;text-align:center}
+  .overlay-card p{font-size:13px;color:#9d9dbb;line-height:1.6;margin-bottom:16px;text-align:center}
+  .overlay-card .final{
+    font-family:'Unbounded',sans-serif;font-size:38px;margin:4px 0 14px;text-align:center;
+    background:linear-gradient(120deg,#ffd166,#ff4d6d,#b388ff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .overlay-card input{
+    width:100%;padding:12px 14px;border-radius:12px;margin-bottom:10px;
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);
+    color:#fff;font-family:inherit;font-size:14px;outline:none;text-align:center;
+  }
+  .overlay-card input:focus{border-color:#b388ff;box-shadow:0 0 0 3px rgba(179,136,255,.2)}
+  .overlay-card .btn{width:100%;margin-top:8px}
+  .badge{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:#ffd166;border:1px solid rgba(255,209,102,.35);border-radius:99px;padding:4px 12px;margin-bottom:12px}
+  .overlay-card > .badge{display:block;width:fit-content;margin-left:auto;margin-right:auto}
+
+  #leaderboard{list-style:none;display:flex;flex-direction:column;gap:6px}
+  #leaderboard li{
+    display:flex;align-items:center;gap:8px;font-size:13px;
+    padding:7px 10px;border-radius:11px;background:rgba(255,255,255,.045);
+  }
+  #leaderboard li .rank{font-size:11px;color:#8a8aa3;width:16px;flex:none}
+  #leaderboard li .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#cfcfe4}
+  #leaderboard li b{font-variant-numeric:tabular-nums;color:#fff}
+  #leaderboard li:nth-child(1){background:linear-gradient(90deg,rgba(255,209,102,.28),rgba(255,77,109,.14))}
+  #leaderboard li:nth-child(1) .nm{color:#fff}
+  #leaderboard li:nth-child(2){background:linear-gradient(90deg,rgba(255,255,255,.14),rgba(255,255,255,.04))}
+  #leaderboard li:nth-child(3){background:linear-gradient(90deg,rgba(255,150,90,.18),rgba(255,255,255,.03))}
+  #leaderboard li.empty{justify-content:center;color:#7d7d99;font-size:12px;background:none}
+
+  .hint{margin-top:14px;font-size:11px;line-height:1.7;color:#71718c;letter-spacing:.01em}
+  .hint b{color:#a0a0c0}
+
+  .touch{display:none;gap:8px;justify-content:center;margin-top:14px}
+  .touch button{
+    width:56px;height:50px;border-radius:16px;border:1px solid rgba(255,255,255,.1);
+    background:rgba(255,255,255,.06);color:#eaeaf5;font-size:18px;cursor:pointer;
+    backdrop-filter:blur(10px);transition:.15s;touch-action:manipulation;user-select:none;
+  }
+  .touch button:active{background:rgba(179,136,255,.35);transform:scale(.94)}
+
+  footer{
+    margin-top:18px;text-align:center;font-size:11.5px;color:#6c6c88;letter-spacing:.03em;
+    padding-bottom:4px;
+  }
+  footer a{color:#9a8cff;text-decoration:none;border-bottom:1px dotted rgba(154,140,255,.45)}
+  footer a:hover{color:#c2b8ff}
+
+  /* достижения */
+  .ach-item{
+    display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:13px;
+    background:rgba(255,255,255,.04);margin-bottom:7px;border:1px solid rgba(255,255,255,.05);
+  }
+  .ach-item.on{background:linear-gradient(100deg,rgba(255,209,102,.16),rgba(179,136,255,.10));
+    border-color:rgba(255,209,102,.35)}
+  .ach-icon{font-size:21px;line-height:1;width:26px;text-align:center;flex:none;filter:grayscale(1);opacity:.45}
+  .ach-item.on .ach-icon{filter:none;opacity:1}
+  .ach-body{flex:1;min-width:0}
+  .ach-name{font-size:12.5px;font-weight:700;color:#e6e6f5;margin-bottom:2px}
+  .ach-desc{font-size:11px;color:#8d8daa;line-height:1.35;margin-bottom:5px}
+  .ach-bar{height:5px;background:rgba(255,255,255,.08);border-radius:9px;overflow:hidden}
+  .ach-fill{height:100%;width:0%;border-radius:9px;
+    background:linear-gradient(90deg,#06d6a0,#4cc9f0);transition:width .35s}
+  .ach-item.on .ach-fill{background:linear-gradient(90deg,#ffd166,#ff4d6d)}
+
+  #toasts{position:fixed;top:calc(12px + env(safe-area-inset-top));right:calc(12px + env(safe-area-inset-right));
+    z-index:60;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:min(300px,80vw)}
+  .toast{
+    display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:14px;
+    background:rgba(22,20,38,.94);border:1px solid rgba(255,209,102,.45);
+    box-shadow:0 12px 34px rgba(0,0,0,.6);
+    animation:toastIn .38s cubic-bezier(.2,1.4,.5,1), toastOut .4s ease 3s forwards;
+  }
+  .toast .ti{font-size:22px;line-height:1}
+  .toast .tn{font-size:12.5px;font-weight:700;color:#ffd166}
+  .toast .td{font-size:10.5px;color:#a0a0bd;margin-top:1px}
+  @keyframes toastIn{from{opacity:0;transform:translateX(60px) scale(.9)}to{opacity:1;transform:none}}
+  @keyframes toastOut{to{opacity:0;transform:translateX(60px) scale(.92)}}
+
+  @media (max-width:900px){
+    main{grid-template-columns:1fr;justify-items:center;gap:12px}
+    .panel.left{width:100%;max-width:400px;padding:12px 16px}
+    .panel.left .stats-row{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+    .panel.left .stat{border-bottom:none;padding:4px 0}
+    .panel.left .stat b{font-size:18px}
+    .next-wrap{display:flex;align-items:center;gap:14px;justify-content:center;margin-top:10px}
+    .next-wrap .label{margin:0}
+    .panel.left .btn.small{width:48%;display:inline-block;margin-top:10px}
+    .panel.left .btn.small:last-of-type{float:right}
+    .panel.right{width:100%;max-width:400px}
+    .hint{display:none}
+    .touch{display:flex}
+    #board{height:min(52vh,480px)}
+    .overlay-card.wide{max-width:100%}
+  }
+  @media (max-width:420px){
+    #board{height:min(46vh,420px)}
+    .touch button{width:52px;height:46px;font-size:16px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>ЦВЕТОПАД</h1>
+    <p class="sub">три в ряд с падающими фигурами</p>
+  </header>
+
+  <main>
+    <aside class="panel left">
+      <div class="stats-row">
+        <div class="stat"><span>Очки</span><b id="score">0</b></div>
+        <div class="stat"><span>Уровень</span><b id="level">1</b></div>
+      </div>
+      <div class="goal">
+        <div class="goal-label" id="goalLabel">Цель уровня</div>
+        <div class="goal-text" id="goalText">—</div>
+        <div class="goal-bar"><div class="goal-fill" id="goalFill"></div></div>
+      </div>
+      <div class="next-wrap">
+        <span class="label">Дальше</span>
+        <canvas id="next"></canvas>
+      </div>
+      <button class="btn ghost small" id="btnPause">Пауза</button>
+      <button class="btn ghost small" id="btnSound">🔊 Звук</button>
+    </aside>
+
+    <div class="stage" id="stage">
+      <canvas id="board"></canvas>
+      <div class="overlay" id="overlay"><div class="overlay-card" id="overlayCard"></div></div>
+    </div>
+
+    <aside class="panel right">
+      <div id="lbBlock">
+        <h2>🏆 Рекорды</h2>
+        <ol id="leaderboard"></ol>
+      </div>
+      <div id="campBlock" style="display:none">
+        <h2>🎯 Кампания</h2>
+        <div class="stat"><span>Пройдено</span><b id="campLevel">0</b></div>
+        <div class="stat"><span>Достижения</span><b id="campAch">0</b></div>
+      </div>
+      <button class="btn ghost small" id="btnAch">🏅 Достижения</button>
+      <div class="hint">
+        <b>← →</b> двигать · <b>↑</b> меняет цвета<br>
+        <b>↓</b> ускорить · <b>Пробел</b> сброс<br>
+        3+ одинаковых рядом — схлопываются!
+      </div>
+    </aside>
+  </main>
+
+  <div class="touch">
+    <button data-act="left">◀</button>
+    <button data-act="shuffle">✦</button>
+    <button data-act="down">▼</button>
+    <button data-act="right">▶</button>
+    <button data-act="drop">⤓</button>
+  </div>
+
+  <footer>Автор: <a href="https://vk.ru/archigpt" target="_blank" rel="noopener">vk.ru/archigpt</a></footer>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ============================================================
+   КОНСТАНТЫ
+   ============================================================ */
+const COLS = 10, ROWS = 20, CELL = 32;
+const STONE = -1;
+
+const BASE_COLORS = ['#ff4d6d', '#ffd166', '#06d6a0', '#4cc9f0', '#b388ff'];
+const EXTRA_COLORS = ['#ff6b35', '#ff9f1c', '#a8e10c', '#00f5d4', '#f15bb5',
+                      '#9b5de5', '#fee440', '#00bbf9', '#f94144', '#90be6d',
+                      '#ff8fab', '#7bdff2', '#c77dff', '#ffb703', '#80ed99'];
+const ALL_COLORS = BASE_COLORS.concat(EXTRA_COLORS);
+
+const COLOR_NAMES = [
+  'красных', 'жёлтых', 'зелёных', 'голубых', 'фиолетовых',
+  'оранжевых', 'янтарных', 'лаймовых', 'бирюзовых', 'розовых',
+  'сиреневых', 'золотых', 'небесных', 'алых', 'травяных',
+  'коралловых', 'мятных', 'лиловых', 'песочных', 'салатовых'
+];
+
+const CLEAR_FLASH = 220;
+const CHECK_DELAY = 70;
+const GRAVITY_DELAY = 110;
+
+const SHAPES = [
+  [[0,0],[1,0],[2,0],[3,0]],
+  [[0,0],[1,0],[0,1],[1,1]],
+  [[0,0],[1,0],[2,0],[1,1]],
+  [[1,0],[2,0],[0,1],[1,1]],
+  [[0,0],[1,0],[1,1],[2,1]],
+  [[0,0],[0,1],[1,1],[2,1]],
+  [[2,0],[0,1],[1,1],[2,1]],
+];
+
+/* ============================================================
+   ДОСТИЖЕНИЯ
+   ============================================================ */
+const ACHIEVEMENTS = [
+  { id:'lvl1',    icon:'🎯', name:'Первый шаг',        desc:'Пройди 1-й уровень кампании',      stat:'bestLevel',  target:1 },
+  { id:'lvl10',   icon:'🔟', name:'Десятка',           desc:'Пройди 10 уровней',                stat:'bestLevel',  target:10 },
+  { id:'lvl25',   icon:'🎖️', name:'Четвертак',         desc:'Пройди 25 уровней',                stat:'bestLevel',  target:25 },
+  { id:'lvl50',   icon:'🏅', name:'Полтинник',         desc:'Пройди 50 уровней',                stat:'bestLevel',  target:50 },
+  { id:'lvl100',  icon:'👑', name:'Сотка',             desc:'Пройди 100 уровней',               stat:'bestLevel',  target:100 },
+  { id:'chain2',  icon:'⚡', name:'Первый каскад',     desc:'Собери цепочку из 2 очисток',      stat:'bestChain',  target:2 },
+  { id:'chain3',  icon:'🌊', name:'Тройной каскад',    desc:'Собери цепочку из 3 очисток',      stat:'bestChain',  target:3 },
+  { id:'chain5',  icon:'🌪️', name:'Каскадный шторм',   desc:'Собери цепочку из 5 очисток',      stat:'bestChain',  target:5 },
+  { id:'chain8',  icon:'🌀', name:'Каскадный бог',     desc:'Собери цепочку из 8 очисток',      stat:'bestChain',  target:8 },
+  { id:'bomb1',   icon:'💣', name:'Бомбист',           desc:'Создай первую бомбу (4 в ряд)',    stat:'bombs',      target:1 },
+  { id:'bomb25',  icon:'🧨', name:'Бомбардир',         desc:'Создай 25 бомб',                   stat:'bombs',      target:25 },
+  { id:'light1',  icon:'🌩️', name:'Громовержец',       desc:'Создай первую молнию (5 в ряд)',   stat:'lightnings', target:1 },
+  { id:'light25', icon:'☄️', name:'Повелитель молний', desc:'Создай 25 молний',                 stat:'lightnings', target:25 },
+  { id:'rain1',   icon:'🌈', name:'Радужный',          desc:'Создай первую радугу (6+ в ряд)',  stat:'rainbows',   target:1 },
+  { id:'rain10',  icon:'🦄', name:'Радужный мастер',   desc:'Создай 10 радуг',                  stat:'rainbows',   target:10 },
+  { id:'stone1',  icon:'🪨', name:'Камнебой',          desc:'Разбей первый камень',             stat:'stones',     target:1 },
+  { id:'stone50', icon:'⛏️', name:'Крушитель',          desc:'Разбей 50 камней',                 stat:'stones',     target:50 },
+  { id:'cell500', icon:'🧩', name:'Коллекционер',      desc:'Очисти 500 клеток',                stat:'cells',      target:500 },
+  { id:'cell5k',  icon:'🧹', name:'Уборщик',           desc:'Очисти 5000 клеток',               stat:'cells',      target:5000 },
+  { id:'score1k', icon:'💫', name:'Первая тысяча',     desc:'Набери 1000 очков всего',          stat:'totalScore', target:1000 },
+  { id:'score10k',icon:'💰', name:'Десять тысяч',      desc:'Набери 10 000 очков всего',        stat:'totalScore', target:10000 },
+  { id:'score100k',icon:'💎',name:'Сто тысяч',         desc:'Набери 100 000 очков всего',       stat:'totalScore', target:100000 },
+  { id:'end1k',   icon:'♾️', name:'Бесконечный старт', desc:'1000 очков в бесконечном режиме',  stat:'endlessBest',target:1000 },
+  { id:'end10k',  icon:'🏃', name:'Марафонец',         desc:'10 000 в бесконечном режиме',      stat:'endlessBest',target:10000 },
+  { id:'end50k',  icon:'🗿', name:'Титан',             desc:'50 000 в бесконечном режиме',      stat:'endlessBest',target:50000 },
+  { id:'games10', icon:'🎮', name:'Заядлый',           desc:'Сыграй 10 партий',                 stat:'games',      target:10 },
+  { id:'games50', icon:'🎰', name:'Азартный',          desc:'Сыграй 50 партий',                 stat:'games',      target:50 },
+  { id:'rec1',    icon:'📝', name:'Первый рекорд',     desc:'Сохрани первый рекорд',            stat:'records',    target:1 },
+  { id:'rec5',    icon:'📚', name:'Собиратель',        desc:'Сохрани 5 рекордов',               stat:'records',    target:5 },
+  { id:'grind',   icon:'🔥', name:'Мясорубка',         desc:'Очисти 50 клеток за один уровень', stat:'maxGameClears', target:50 },
+];
+
+/* ============================================================
+   DOM
+   ============================================================ */
+const canvas = document.getElementById('board');
+const ctx = canvas.getContext('2d');
+const nextCanvas = document.getElementById('next');
+const nctx = nextCanvas.getContext('2d');
+const scoreEl = document.getElementById('score');
+const levelEl = document.getElementById('level');
+const goalTextEl = document.getElementById('goalText');
+const goalLabelEl = document.getElementById('goalLabel');
+const goalFillEl = document.getElementById('goalFill');
+const overlay = document.getElementById('overlay');
+const overlayCard = document.getElementById('overlayCard');
+const lbEl = document.getElementById('leaderboard');
+const stage = document.getElementById('stage');
+const toastsEl = document.getElementById('toasts');
+
+/* ============================================================
+   CANVAS
+   ============================================================ */
+const DPR = Math.min(window.devicePixelRatio || 1, 2);
+canvas.width = COLS * CELL * DPR;
+canvas.height = ROWS * CELL * DPR;
+ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+const NEXT_CELL = 20, NEXT_W = 5, NEXT_H = 4;
+nextCanvas.width = NEXT_W * NEXT_CELL * DPR;
+nextCanvas.height = NEXT_H * NEXT_CELL * DPR;
+nextCanvas.style.width = (NEXT_W * NEXT_CELL) + 'px';
+nextCanvas.style.height = (NEXT_H * NEXT_CELL) + 'px';
+nctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+/* ============================================================
+   УТИЛИТЫ
+   ============================================================ */
+const rnd = n => Math.floor(Math.random() * n);
+
+function roundRect(g, x, y, w, h, r) {
+  g.beginPath();
+  g.moveTo(x + r, y);
+  g.arcTo(x + w, y, x + w, y + h, r);
+  g.arcTo(x + w, y + h, x, y + h, r);
+  g.arcTo(x, y + h, x, y, r);
+  g.arcTo(x, y, x + w, y, r);
+  g.closePath();
+}
+
+function paintCell(g, x, y, size, color, alpha = 1, glow = 10, pad = 2) {
+  const px = x + pad, py = y + pad, s = size - pad * 2;
+  const r = Math.min(9, s * 0.3);
+  g.save();
+  g.globalAlpha = alpha;
+  if (glow > 0) { g.shadowColor = color; g.shadowBlur = glow; }
+  g.fillStyle = color;
+  roundRect(g, px, py, s, s, r);
+  g.fill();
+  g.shadowBlur = 0;
+  const grd = g.createLinearGradient(px, py, px, py + s);
+  grd.addColorStop(0, 'rgba(255,255,255,.52)');
+  grd.addColorStop(.45, 'rgba(255,255,255,.06)');
+  grd.addColorStop(1, 'rgba(0,0,0,.24)');
+  g.fillStyle = grd;
+  roundRect(g, px, py, s, s, r);
+  g.fill();
+  g.restore();
+}
+
+function drawStone(g, x, y, size) {
+  g.save();
+  g.fillStyle = '#3a3d4d';
+  roundRect(g, x + 2, y + 2, size - 4, size - 4, 7);
+  g.fill();
+  g.fillStyle = '#4d5166';
+  roundRect(g, x + 4, y + 4, size - 8, (size - 8) * 0.38, 5);
+  g.fill();
+  g.strokeStyle = 'rgba(255,255,255,.14)';
+  g.lineWidth = 2;
+  g.beginPath();
+  g.moveTo(x + size * 0.3, y + size * 0.3);
+  g.lineTo(x + size * 0.7, y + size * 0.7);
+  g.moveTo(x + size * 0.7, y + size * 0.3);
+  g.lineTo(x + size * 0.3, y + size * 0.7);
+  g.stroke();
+  g.restore();
+}
+
+/* ============================================================
+   ХРАНИЛИЩЕ
+   ============================================================ */
+const STATS_KEY = 'cvetopad_stats_v2';
+const ACH_KEY = 'cvetopad_ach_v2';
+const PROG_KEY = 'cvetopad_progress_v2';
+const LS_KEY = 'cvetopad_match3_scores_v2';
+
+function loadJSON(key, def) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return def;
+    const v = JSON.parse(raw);
+    return v === null || v === undefined ? def : v;
+  } catch (e) { return def; }
+}
+function saveJSON(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+}
+
+let stats = Object.assign({
+  bestLevel: 0, bestChain: 0, bombs: 0, lightnings: 0, rainbows: 0,
+  stones: 0, cells: 0, totalScore: 0, endlessBest: 0, games: 0,
+  records: 0, maxGameClears: 0
+}, loadJSON(STATS_KEY, {}));
+
+let unlocked = loadJSON(ACH_KEY, {});
+if (typeof unlocked !== 'object' || Array.isArray(unlocked)) unlocked = {};
+
+function saveStats() { saveJSON(STATS_KEY, stats); saveJSON(ACH_KEY, unlocked); }
+
+function loadProgress() {
+  const p = loadJSON(PROG_KEY, { level: 1 });
+  if (!p || typeof p.level !== 'number' || p.level < 1) return { level: 1 };
+  return p;
+}
+function saveProgress(nextLevel) { saveJSON(PROG_KEY, { level: nextLevel }); }
+
+/* ============================================================
+   ЗВУК
+   ============================================================ */
+let audioCtx = null, masterGain = null;
+let sfxOn = true, musicOn = true;
+let musicTimer = null, musicStep = 0;
+
+function initAudio() {
+  if (audioCtx) { if (audioCtx.state === 'suspended') audioCtx.resume(); return; }
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return;
+  audioCtx = new AC();
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0.85;
+  masterGain.connect(audioCtx.destination);
+}
+
+function tone(freq, dur, type = 'sine', vol = 0.07, delay = 0, slideTo = 0) {
+  if (!audioCtx || !masterGain) return;
+  const t0 = audioCtx.currentTime + delay;
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type = type;
+  o.frequency.setValueAtTime(freq, t0);
+  if (slideTo) o.frequency.exponentialRampToValueAtTime(Math.max(20, slideTo), t0 + dur);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(vol, t0 + 0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  o.connect(g); g.connect(masterGain);
+  o.start(t0); o.stop(t0 + dur + 0.03);
+}
+
+function noise(dur, vol = 0.1, delay = 0) {
+  if (!audioCtx || !masterGain) return;
+  const sr = audioCtx.sampleRate;
+  const len = Math.floor(sr * dur);
+  const buf = audioCtx.createBuffer(1, len, sr);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+  const src = audioCtx.createBufferSource();
+  src.buffer = buf;
+  const flt = audioCtx.createBiquadFilter();
+  flt.type = 'lowpass';
+  flt.frequency.value = 1400;
+  const g = audioCtx.createGain();
+  const t0 = audioCtx.currentTime + delay;
+  g.gain.setValueAtTime(vol, t0);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  src.connect(flt); flt.connect(g); g.connect(masterGain);
+  src.start(t0);
+}
+
+const sfx = {
+  move()    { if (!sfxOn) return; tone(340, 0.04, 'square', 0.02); },
+  soft()    { if (!sfxOn) return; tone(220, 0.03, 'square', 0.014); },
+  shuffle() { if (!sfxOn) return;
+              tone(520, 0.05, 'triangle', 0.045, 0);
+              tone(690, 0.05, 'triangle', 0.045, 0.04);
+              tone(880, 0.06, 'triangle', 0.045, 0.08); },
+  lock()    { if (!sfxOn) return; tone(180, 0.1, 'triangle', 0.05, 0, 90); },
+  match(n)  { if (!sfxOn) return;
+              const base = 440 + Math.min(n, 6) * 55;
+              tone(base, 0.08, 'triangle', 0.04);
+              tone(base * 1.5, 0.1, 'sine', 0.03, 0.04); },
+  bomb()    { if (!sfxOn) return; noise(0.28, 0.13); tone(120, 0.3, 'sawtooth', 0.07, 0, 40); },
+  lightning() { if (!sfxOn) return; tone(1600, 0.18, 'sawtooth', 0.05, 0, 220); noise(0.14, 0.05); },
+  rainbow() { if (!sfxOn) return;
+              [523, 659, 784, 1046, 1318, 1568].forEach((f, i) =>
+                tone(f, 0.18, 'sine', 0.045, i * 0.05)); },
+  chain(n)  { if (!sfxOn) return; tone(600 + Math.min(n, 8) * 140, 0.12, 'sine', 0.04); },
+  stone()   { if (!sfxOn) return; noise(0.09, 0.06); },
+  ach()     { if (!sfxOn) return;
+              [784, 1046, 1318].forEach((f, i) => tone(f, 0.2, 'triangle', 0.06, i * 0.08)); },
+  levelUp() { if (!sfxOn) return;
+              [523, 659, 784, 1046, 1318].forEach((f, i) =>
+                tone(f, 0.18, 'triangle', 0.055, i * 0.07)); },
+  gameOver(){ if (!sfxOn) return;
+              [523, 440, 349, 262, 196].forEach((f, i) =>
+                tone(f, 0.3, 'sawtooth', 0.05, i * 0.12)); },
+  start()   { if (!sfxOn) return;
+              [392, 523, 659, 784].forEach((f, i) =>
+                tone(f, 0.15, 'triangle', 0.05, i * 0.07)); },
+};
+
+const MELODY = [0,4,7,12,9,7,4,7, 2,5,9,14,12,9,5,9];
+const BASS = [65.41, 55.00, 43.65, 49.00];
+
+function musicTick() {
+  if (!audioCtx || !musicOn || !masterGain) return;
+  const s = musicStep % 16;
+  if (s % 4 === 0) tone(BASS[Math.floor(s / 4)], 0.34, 'triangle', 0.05);
+  const f = 261.63 * Math.pow(2, MELODY[s] / 12);
+  tone(f, 0.13, 'square', 0.014);
+  if (s % 8 === 4) tone(f * 2, 0.09, 'sine', 0.01);
+  musicStep++;
+}
+
+function startMusic() {
+  if (musicTimer || !musicOn) return;
+  initAudio();
+  musicStep = 0;
+  musicTimer = setInterval(musicTick, 150);
+}
+function stopMusic() {
+  if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
+}
+
+/* ============================================================
+   СОСТОЯНИЕ
+   ============================================================ */
+let board = emptyBoard();
+let piece = null, nextPiece = null;
+let score = 0, level = 1, levelScore = 0;
+let state = 'menu';
+let mode = 'campaign';
+let dropTimer = 0;
+let resolve = null;
+let levelGoal = null;
+let lastGoalType = null;
+let maxChain = 0;
+let gameCleared = 0;
+let particles = [], popups = [];
+
+/* ============================================================
+   ДОСКА
+   ============================================================ */
+function emptyBoard() {
+  return Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+}
+
+function colorCount() {
+  return Math.min(ALL_COLORS.length, 5 + Math.floor(level / 50));
+}
+
+function makePiece() {
+  const shape = SHAPES[rnd(SHAPES.length)];
+  const n = colorCount();
+  const cells = shape.map(([x, y]) => ({ x, y, c: rnd(n) }));
+  if (Math.random() < 0.55 && n > 1) {
+    const i = rnd(cells.length);
+    let j = rnd(cells.length);
+    let guard = 0;
+    while (j === i && guard++ < 20) j = rnd(cells.length);
+    cells[j].c = cells[i].c;
+  }
+  const w = Math.max(...cells.map(c => c.x)) + 1;
+  return { cells, w, x: 0, y: 0, pulse: 0 };
+}
+
+function collides(p) {
+  for (const c of p.cells) {
+    const x = p.x + c.x, y = p.y + c.y;
+    if (x < 0 || x >= COLS || y >= ROWS) return true;
+    if (y >= 0 && board[y][x] !== null) return true;
+  }
+  return false;
+}
+
+function canMove(dx, dy) {
+  if (!piece) return false;
+  for (const c of piece.cells) {
+    const x = piece.x + c.x + dx, y = piece.y + c.y + dy;
+    if (x < 0 || x >= COLS || y >= ROWS) return false;
+    if (y >= 0 && board[y][x] !== null) return false;
+  }
+  return true;
+}
+
+/* гравитация: всё, что висит над пустотой, падает вниз */
+function applyGravity() {
+  for (let x = 0; x < COLS; x++) {
+    const col = [];
+    for (let y = ROWS - 1; y >= 0; y--) {
+      if (board[y][x] !== null) col.push(board[y][x]);
+    }
+    for (let y = ROWS - 1, i = 0; y >= 0; y--, i++) {
+      board[y][x] = i < col.length ? col[i] : null;
+    }
+  }
+}
+
+/* ============================================================
+   ГРУППЫ
+   ============================================================ */
+function findGroups() {
+  const visited = Array.from({ length: ROWS }, () => Array(COLS).fill(false));
+  const groups = [];
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLS; x++) {
+      const v = board[y][x];
+      if (v === null || v === STONE || visited[y][x]) continue;
+      const stack = [[x, y]];
+      visited[y][x] = true;
+      const cells = [];
+      while (stack.length) {
+        const [cx, cy] = stack.pop();
+        cells.push([cx, cy]);
+        for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]) {
+          const nx = cx + dx, ny = cy + dy;
+          if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) continue;
+          if (visited[ny][nx]) continue;
+          if (board[ny][nx] === v) {
+            visited[ny][nx] = true;
+            stack.push([nx, ny]);
+          }
+        }
+      }
+      if (cells.length >= 3) groups.push({ color: v, cells });
+    }
+  }
+  return groups;
+}
+
+function computeClear(groups) {
+  const clearSet = new Set();
+  const bonuses = [];
+  const colorCounts = new Array(ALL_COLORS.length).fill(0);
+
+  for (const g of groups) {
+    for (const [x, y] of g.cells) clearSet.add(y * COLS + x);
+
+    const n = g.cells.length;
+    let sx = 0, sy = 0;
+    for (const c of g.cells) { sx += c[0]; sy += c[1]; }
+    const ax = sx / n, ay = sy / n;
+    let best = g.cells[0], bestD = Infinity;
+    for (const c of g.cells) {
+      const d = (c[0] - ax) ** 2 + (c[1] - ay) ** 2;
+      if (d < bestD) { bestD = d; best = c; }
+    }
+    const [bx, by] = best;
+
+    if (n === 4) {
+      bonuses.push({ type: 'bomb', x: bx, y: by, color: g.color });
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          const nx = bx + dx, ny = by + dy;
+          if (nx >= 0 && nx < COLS && ny >= 0 && ny < ROWS) clearSet.add(ny * COLS + nx);
+        }
+      }
+    } else if (n === 5) {
+      bonuses.push({ type: 'lightning', x: bx, y: by, color: g.color });
+      for (let x = 0; x < COLS; x++) clearSet.add(by * COLS + x);
+      for (let y = 0; y < ROWS; y++) clearSet.add(y * COLS + bx);
+    } else if (n >= 6) {
+      bonuses.push({ type: 'rainbow', x: bx, y: by, color: g.color });
+      for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) {
+          if (board[y][x] === g.color) clearSet.add(y * COLS + x);
+        }
+      }
+    }
+  }
+
+  const stoneExtra = new Set();
+  for (const key of clearSet) {
+    const x = key % COLS, y = (key / COLS) | 0;
+    for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]) {
+      const nx = x + dx, ny = y + dy;
+      if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) continue;
+      if (board[ny][nx] === STONE) stoneExtra.add(ny * COLS + nx);
+    }
+  }
+  for (const key of stoneExtra) clearSet.add(key);
+
+  for (const key of [...clearSet]) {
+    const x = key % COLS, y = (key / COLS) | 0;
+    if (board[y][x] === null) clearSet.delete(key);
+  }
+
+  for (const key of clearSet) {
+    const x = key % COLS, y = (key / COLS) | 0;
+    const v = board[y][x];
+    if (v >= 0 && v < ALL_COLORS.length) colorCounts[v]++;
+  }
+
+  return { clearSet, bonuses, colorCounts };
+}
+
+function applyClear(clearSet, colorCounts, bonuses) {
+  let cleared = 0, stones = 0;
+  for (const key of clearSet) {
+    const x = key % COLS, y = (key / COLS) | 0;
+    const v = board[y][x];
+    if (v === null) continue;
+    if (v === STONE) {
+      stones++;
+      burst(x * CELL + CELL / 2, y * CELL + CELL / 2, '#8a90a8', 7);
+    } else {
+      cleared++;
+      burst(x * CELL + CELL / 2, y * CELL + CELL / 2, ALL_COLORS[v], 3);
+    }
+    board[y][x] = null;
+  }
+
+  const chain = resolve.chain;
+  let gained = (cleared * 10 + stones * 30) * chain;
+
+  let nBomb = 0, nLight = 0, nRain = 0;
+  for (const b of bonuses) {
+    gained += 100 * chain;
+    const px = b.x * CELL + CELL / 2, py = b.y * CELL + CELL / 2;
+    if (b.type === 'bomb') {
+      nBomb++;
+      popup('БОМБА', px, py, '#ff9f43', 22);
+      burst(px, py, '#ff9f43', 14);
+    } else if (b.type === 'lightning') {
+      nLight++;
+      popup('МОЛНИЯ', px, py, '#4cc9f0', 22);
+      burst(px, py, '#4cc9f0', 16);
+    } else {
+      nRain++;
+      popup('РАДУГА', px, py, '#b388ff', 24);
+      burst(px, py, '#b388ff', 20);
+    }
+  }
+
+  score += gained;
+  levelScore += gained;
+  gameCleared += cleared;
+
+  stats.cells += cleared;
+  stats.stones += stones;
+  stats.bombs += nBomb;
+  stats.lightnings += nLight;
+  stats.rainbows += nRain;
+  stats.totalScore += gained;
+  if (gameCleared > stats.maxGameClears) stats.maxGameClears = gameCleared;
+
+  if (levelGoal) {
+    if (levelGoal.type === 'clear') levelGoal.progress += cleared;
+    else if (levelGoal.type === 'collect') levelGoal.progress += colorCounts[levelGoal.color] || 0;
+    else if (levelGoal.type === 'stones') levelGoal.progress += stones;
+    else if (levelGoal.type === 'bonus') levelGoal.progress += bonuses.length;
+    else if (levelGoal.type === 'score') levelGoal.progress = levelScore;
+  }
+
+  if (chain > 1) {
+    popup('×' + chain, COLS * CELL / 2, ROWS * CELL * 0.35, '#ffd166', 28);
+  }
+
+  if (sfxOn) {
+    if (nRain > 0) sfx.rainbow();
+    else if (nLight > 0) sfx.lightning();
+    else if (nBomb > 0) sfx.bomb();
+    else sfx.match(cleared);
+    if (stones > 0) sfx.stone();
+    if (chain > 1) sfx.chain(chain);
+  }
+
+  updateHUD();
+  evalAchievements();
+  saveStats();
+}
+
+/* ============================================================
+   РЕЗОЛВ
+   ============================================================ */
+function startResolve() {
+  state = 'resolving';
+  resolve = {
+    phase: 'gravity', timer: GRAVITY_DELAY, chain: 0,
+    pendingClear: null, pendingBonuses: null, pendingColorCounts: null
+  };
+}
+
+function updateResolving(dt) {
+  if (!resolve) return;
+  resolve.timer -= dt;
+  if (resolve.timer > 0) return;
+
+  if (resolve.phase === 'gravity') {
+    applyGravity();
+    resolve.phase = 'check';
+    resolve.timer = CHECK_DELAY;
+    return;
+  }
+
+  if (resolve.phase === 'check') {
+    const groups = findGroups();
+    if (groups.length === 0) {
+      if (mode === 'campaign' && checkGoal()) { completeLevel(); return; }
+      if (mode === 'endless') {
+        const nl = 1 + Math.floor(gameCleared / 25);
+        if (nl > level) {
+          level = nl;
+          updateHUD();
+          popup('УРОВЕНЬ ' + level, COLS * CELL / 2, ROWS * CELL * 0.4, '#ffd166', 26);
+          sfx.levelUp();
+          placeStones(2);
+        }
+      }
+      spawnNext();
+      return;
+    }
+    resolve.chain++;
+    if (resolve.chain > maxChain) maxChain = resolve.chain;
+    if (resolve.chain > stats.bestChain) stats.bestChain = resolve.chain;
+
+    const res = computeClear(groups);
+    resolve.pendingClear = res.clearSet;
+    resolve.pendingBonuses = res.bonuses;
+    resolve.pendingColorCounts = res.colorCounts;
+    resolve.phase = 'flash';
+    resolve.timer = CLEAR_FLASH;
+    return;
+  }
+
+  if (resolve.phase === 'flash') {
+    applyClear(resolve.pendingClear, resolve.pendingColorCounts, resolve.pendingBonuses);
+    applyGravity();
+    resolve.phase = 'fall';
+    resolve.timer = 90;
+    resolve.pendingClear = null;
+    return;
+  }
+
+  if (resolve.phase === 'fall') {
+    resolve.phase = 'check';
+    resolve.timer = CHECK_DELAY;
+  }
+}
+
+/* ============================================================
+   СПАВН
+   ============================================================ */
+function spawnNext() {
+  resolve = null;
+  piece = nextPiece;
+  piece.x = Math.floor((COLS - piece.w) / 2);
+  piece.y = 0;
+  piece.pulse = 0;
+  nextPiece = makePiece();
+  drawNext();
+  if (collides(piece)) { gameOver(); return; }
+  state = 'playing';
+  dropTimer = 0;
+}
+
+/* ============================================================
+   ЦЕЛИ
+   ============================================================ */
+function genGoal(lvl) {
+  const types = ['collect', 'clear', 'stones', 'bonus', 'score'];
+  let type;
+  let guard = 0;
+  do { type = types[rnd(types.length)]; } while (type === lastGoalType && guard++ < 10);
+  lastGoalType = type;
+
+  const g = { type, progress: 0 };
+  const L = lvl;
+
+  if (type === 'collect') {
+    g.color = rnd(colorCount());
+    g.target = 6 + L * 2;
+    g.text = 'Собери ' + g.target + ' ' + (COLOR_NAMES[g.color] || 'клеток');
+  } else if (type === 'clear') {
+    g.target = 15 + L * 5;
+    g.text = 'Очисти ' + g.target + ' клеток';
+  } else if (type === 'stones') {
+    g.target = 3 + Math.min(12, Math.floor(L * 0.7));
+    g.text = 'Разбей ' + g.target + ' камней';
+  } else if (type === 'bonus') {
+    g.target = 1 + Math.floor(L / 2);
+    g.text = 'Сделай ' + g.target + ' бонус(а)';
+  } else {
+    g.target = 400 + L * 200;
+    g.text = 'Набери ' + g.target + ' очков';
+  }
+  return g;
+}
+
+function placeStones(count) {
+  let placed = 0, tries = 0;
+  while (placed < count && tries < 600) {
+    tries++;
+    const x = rnd(COLS);
+    const y = ROWS - 1 - rnd(3);
+    if (board[y][x] !== null) continue;
+    board[y][x] = STONE;
+    placed++;
+  }
+}
+
+function checkGoal() {
+  if (!levelGoal) return false;
+  return levelGoal.progress >= levelGoal.target;
+}
+
+function startLevel() {
+  board = emptyBoard();
+  levelScore = 0;
+  gameCleared = 0;
+  maxChain = 0;
+  piece = null;
+  resolve = null;
+  particles = [];
+  popups = [];
+  nextPiece = makePiece();
+  drawNext();
+
+  let stones = 0;
+  if (mode === 'campaign' && levelGoal && levelGoal.type === 'stones') {
+    stones = Math.min(22, Math.ceil(levelGoal.target * 1.5));
+  } else if (mode === 'endless') {
+    stones = Math.min(8, Math.floor(level / 2));
+  } else {
+    stones = Math.min(5, Math.floor(level / 4));
+  }
+  if (stones > 0) placeStones(stones);
+
+  updateHUD();
+  startMusic();
+  spawnNext();
+}
+
+function completeLevel() {
+  resolve = null;
+  state = 'levelcomplete';
+  stopMusic();
+  sfx.levelUp();
+  const bonus = 300 + level * 200;
+  score += bonus;
+  stats.totalScore += bonus;
+  if (level > stats.bestLevel) stats.bestLevel = level;
+  saveProgress(level + 1);
+  saveStats();
+  evalAchievements();
+  updateHUD();
+  showLevelComplete(bonus);
+}
+
+function gameOver() {
+  state = 'gameover';
+  piece = null;
+  resolve = null;
+  stopMusic();
+  sfx.gameOver();
+  shakeStage();
+
+  if (mode === 'endless') {
+    if (score > stats.endlessBest) stats.endlessBest = score;
+    saveStats();
+    evalAchievements();
+    showGameOverEndless();
+  } else {
+    saveStats();
+    showGameOverCampaign();
+  }
+}
+
+/* ============================================================
+   HUD
+   ============================================================ */
+function updateHUD() {
+  scoreEl.textContent = score;
+  levelEl.textContent = level;
+  goalLabelEl.textContent = mode === 'endless' ? 'Режим' : 'Цель уровня';
+  if (mode === 'endless') {
+    goalTextEl.textContent = 'Бесконечный — сколько продержишься?';
+    goalFillEl.style.width = Math.min(100, (level % 25) / 25 * 100) + '%';
+  } else {
+    updateGoalUI();
+  }
+  updateRightPanel();
+}
+
+function updateGoalUI() {
+  if (!levelGoal) {
+    goalTextEl.textContent = '—';
+    goalFillEl.style.width = '0%';
+    return;
+  }
+  goalTextEl.textContent = levelGoal.text;
+  const pct = Math.min(100, Math.max(0, (levelGoal.progress / levelGoal.target) * 100));
+  goalFillEl.style.width = pct + '%';
+}
+
+function updateRightPanel() {
+  const lb = document.getElementById('lbBlock');
+  const cb = document.getElementById('campBlock');
+  const playing = (state === 'playing' || state === 'resolving' || state === 'paused');
+  if (mode === 'endless' && playing) {
+    lb.style.display = '';
+    cb.style.display = 'none';
+  } else {
+    lb.style.display = 'none';
+    cb.style.display = '';
+    document.getElementById('campLevel').textContent = stats.bestLevel;
+    document.getElementById('campAch').textContent =
+      Object.keys(unlocked).length + ' / ' + ACHIEVEMENTS.length;
+  }
+  document.getElementById('btnAch').textContent =
+    '🏅 Достижения (' + Object.keys(unlocked).length + '/' + ACHIEVEMENTS.length + ')';
+}
+
+/* ============================================================
+   ЭФФЕКТЫ
+   ============================================================ */
+function burst(x, y, color, n) {
+  if (particles.length > 380) return;
+  for (let i = 0; i < n; i++) {
+    particles.push({
+      x, y,
+      vx: (Math.random() - 0.5) * 5,
+      vy: (Math.random() - 1) * 5,
+      life: 1,
+      color,
+      size: 2 + Math.random() * 3.5,
+    });
+  }
+}
+
+function popup(text, x, y, color, size) {
+  popups.push({ text, x, y, color, size: size || 22, life: 1 });
+}
+
+function shakeStage() {
+  stage.classList.remove('shake');
+  void stage.offsetWidth;
+  stage.classList.add('shake');
+}
+
+/* ============================================================
+   ДОСТИЖЕНИЯ
+   ============================================================ */
+function evalAchievements() {
+  let changed = false;
+  for (const a of ACHIEVEMENTS) {
+    if (unlocked[a.id]) continue;
+    const val = stats[a.stat] || 0;
+    if (val >= a.target) {
+      unlocked[a.id] = Date.now();
+      changed = true;
+      showToast(a);
+    }
+  }
+  if (changed) {
+    saveStats();
+    updateRightPanel();
+    if (sfxOn) sfx.ach();
+  }
+}
+
+function showToast(a) {
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = '<div class="ti">' + a.icon + '</div>' +
+                 '<div><div class="tn">' + escapeHtml(a.name) + '</div>' +
+                 '<div class="td">' + escapeHtml(a.desc) + '</div></div>';
+  toastsEl.appendChild(el);
+  setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 3500);
+}
+
+function showAchievements() {
+  const list = ACHIEVEMENTS.map(a => {
+    const on = !!unlocked[a.id];
+    const val = Math.min(stats[a.stat] || 0, a.target);
+    const pct = on ? 100 : Math.round(val / a.target * 100);
+    return '<div class="ach-item' + (on ? ' on' : '') + '">' +
+      '<div class="ach-icon">' + a.icon + '</div>' +
+      '<div class="ach-body">' +
+        '<div class="ach-name">' + escapeHtml(a.name) + (on ? ' ✓' : '') + '</div>' +
+        '<div class="ach-desc">' + escapeHtml(a.desc) + '</div>' +
+        '<div class="ach-bar"><div class="ach-fill" style="width:' + pct + '%"></div></div>' +
+      '</div></div>';
+  }).join('');
+
+  showOverlay(
+    '<h2>🏅 Достижения</h2>' +
+    '<p style="margin-bottom:12px">Открыто ' + Object.keys(unlocked).length +
+    ' из ' + ACHIEVEMENTS.length + '</p>' +
+    list +
+    '<button class="btn ghost" id="btnAchBack" style="margin-top:14px">Назад</button>',
+    true
+  );
+  document.getElementById('btnAchBack').addEventListener('click', () => {
+    if (state === 'paused') showPause();
+    else if (state === 'menu') showMenu();
+    else if (state === 'gameover') { if (mode === 'endless') showGameOverEndless(); else showGameOverCampaign(); }
+    else hideOverlay();
+  });
+}
+
+/* ============================================================
+   РЕНДЕР
+   ============================================================ */
+function render() {
+  const W = COLS * CELL, H = ROWS * CELL;
+  ctx.clearRect(0, 0, W, H);
+
+  ctx.strokeStyle = 'rgba(255,255,255,.035)';
+  ctx.lineWidth = 1;
+  for (let x = 1; x < COLS; x++) {
+    ctx.beginPath(); ctx.moveTo(x * CELL + .5, 0); ctx.lineTo(x * CELL + .5, H); ctx.stroke();
+  }
+  for (let y = 1; y < ROWS; y++) {
+    ctx.beginPath(); ctx.moveTo(0, y * CELL + .5); ctx.lineTo(W, y * CELL + .5); ctx.stroke();
+  }
+
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLS; x++) {
+      const v = board[y][x];
+      if (v === null) continue;
+      if (v === STONE) drawStone(ctx, x * CELL, y * CELL, CELL);
+      else paintCell(ctx, x * CELL, y * CELL, CELL, ALL_COLORS[v], 1, 9, 2);
+    }
+  }
+
+  if (state === 'resolving' && resolve && resolve.phase === 'flash' && resolve.pendingClear) {
+    const t = 1 - resolve.timer / CLEAR_FLASH;
+    const alpha = 0.85 * (1 - t);
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = 'rgba(255,255,255,' + alpha + ')';
+    for (const key of resolve.pendingClear) {
+      const x = key % COLS, y = (key / COLS) | 0;
+      ctx.fillRect(x * CELL, y * CELL, CELL, CELL);
+    }
+    ctx.restore();
+  }
+
+  if (piece && (state === 'playing' || state === 'paused')) {
+    const p = piece.pulse || 0;
+    for (const c of piece.cells) {
+      const px = (piece.x + c.x) * CELL;
+      const py = (piece.y + c.y) * CELL;
+      paintCell(ctx, px, py, CELL, ALL_COLORS[c.c], 1, 14 + p * 22, 2);
+    }
+  }
+
+  for (const p of particles) {
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, Math.max(0.5, p.size * p.life), 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  for (const p of popups) {
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, Math.min(1, p.life * 1.4));
+    ctx.font = '800 ' + p.size + "px 'Unbounded', sans-serif";
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur = 18;
+    ctx.fillStyle = p.color;
+    ctx.fillText(p.text, p.x, p.y);
+    ctx.restore();
+  }
+}
+
+function drawNext() {
+  nctx.clearRect(0, 0, NEXT_W * NEXT_CELL, NEXT_H * NEXT_CELL);
+  if (!nextPiece) return;
+  const cells = nextPiece.cells;
+  const minX = Math.min(...cells.map(c => c.x));
+  const maxX = Math.max(...cells.map(c => c.x));
+  const minY = Math.min(...cells.map(c => c.y));
+  const maxY = Math.max(...cells.map(c => c.y));
+  const w = maxX - minX + 1, h = maxY - minY + 1;
+  const ox = (NEXT_W - w) / 2 * NEXT_CELL;
+  const oy = (NEXT_H - h) / 2 * NEXT_CELL;
+  for (const c of cells) {
+    paintCell(nctx, ox + (c.x - minX) * NEXT_CELL, oy + (c.y - minY) * NEXT_CELL,
+      NEXT_CELL, ALL_COLORS[c.c], 1, 7, 2);
+  }
+}
+
+/* ============================================================
+   ЦИКЛ
+   ============================================================ */
+let lastTs = 0;
+
+function update(dt) {
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx; p.y += p.vy;
+    p.vy += 0.22; p.vx *= 0.99;
+    p.life -= 0.022;
+    if (p.life <= 0) particles.splice(i, 1);
+  }
+  for (let i = popups.length - 1; i >= 0; i--) {
+    const p = popups[i];
+    p.y -= 0.9;
+    p.life -= 0.014;
+    if (p.life <= 0) popups.splice(i, 1);
+  }
+  if (piece && piece.pulse > 0) piece.pulse = Math.max(0, piece.pulse - dt / 240);
+
+  if (state === 'playing') {
+    if (!piece) return;
+    dropTimer += dt;
+    const interval = Math.max(200, 800 - level * 25);
+    if (dropTimer >= interval) {
+      dropTimer = 0;
+      if (canMove(0, 1)) piece.y++;
+      else lockPiece();
+    }
+  } else if (state === 'resolving') {
+    updateResolving(dt);
+  }
+}
+
+function loop(ts) {
+  const dt = Math.min(60, ts - lastTs || 16);
+  lastTs = ts;
+  update(dt);
+  render();
+  requestAnimationFrame(loop);
+}
+
+/* ============================================================
+   ДЕЙСТВИЯ
+   ============================================================ */
+function move(dx) {
+  if (state !== 'playing' || !piece) return;
+  if (canMove(dx, 0)) { piece.x += dx; sfx.move(); }
+}
+
+function softDrop() {
+  if (state !== 'playing' || !piece) return;
+  if (canMove(0, 1)) { piece.y++; dropTimer = 0; sfx.soft(); }
+}
+
+function hardDrop() {
+  if (state !== 'playing' || !piece) return;
+  let d = 0;
+  while (canMove(0, 1)) { piece.y++; d++; }
+  if (d > 0) { score += d * 2; stats.totalScore += d * 2; updateHUD(); }
+  lockPiece();
+}
+
+function shufflePiece() {
+  if (state !== 'playing' || !piece) return;
+  const cs = piece.cells.map(c => c.c);
+  cs.unshift(cs.pop());
+  piece.cells.forEach((c, i) => { c.c = cs[i]; });
+  piece.pulse = 1;
+  sfx.shuffle();
+}
+
+function lockPiece() {
+  for (const c of piece.cells) {
+    const x = piece.x + c.x, y = piece.y + c.y;
+    if (y >= 0 && y < ROWS && x >= 0 && x < COLS) board[y][x] = c.c;
+  }
+  piece = null;
+  sfx.lock();
+  startResolve();
+}
+
+function togglePause() {
+  if (state === 'playing' || state === 'resolving') {
+    state = 'paused';
+    stopMusic();
+    showPause();
+  } else if (state === 'paused') {
+    state = 'playing';
+    dropTimer = 0;
+    hideOverlay();
+    startMusic();
+  }
+}
+
+/* ============================================================
+   СТАРТ РЕЖИМОВ
+   ============================================================ */
+function startCampaign(fromLevel) {
+  initAudio();
+  mode = 'campaign';
+  score = 0;
+  level = fromLevel || 1;
+  levelScore = 0;
+  lastGoalType = null;
+  levelGoal = genGoal(level);
+  stats.games++;
+  saveStats();
+  hideOverlay();
+  startLevel();
+  sfx.start();
+}
+
+function startEndless() {
+  initAudio();
+  mode = 'endless';
+  score = 0;
+  level = 1;
+  levelScore = 0;
+  levelGoal = null;
+  stats.games++;
+  saveStats();
+  hideOverlay();
+  startLevel();
+  sfx.start();
+}
+
+/* ============================================================
+   РЕКОРДЫ
+   ============================================================ */
+function loadScores() {
+  const arr = loadJSON(LS_KEY, []);
+  return Array.isArray(arr) ? arr : [];
+}
+
+function saveScore(name, sc) {
+  const list = loadScores();
+  list.push({ name: name || 'Игрок', score: sc, date: Date.now() });
+  list.sort((a, b) => b.score - a.score);
+  const top = list.slice(0, 10);
+  saveJSON(LS_KEY, top);
+  stats.records++;
+  saveStats();
+  evalAchievements();
+  return top;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, m => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[m]);
+}
+
+function renderLeaderboard() {
+  const list = loadScores();
+  if (!list.length) {
+    lbEl.innerHTML = '<li class="empty">Пока пусто — стань первым!</li>';
+    return;
+  }
+  lbEl.innerHTML = list.map((s, i) =>
+    '<li><span class="rank">' + (i + 1) + '</span>' +
+    '<span class="nm">' + escapeHtml(s.name) + '</span>' +
+    '<b>' + s.score + '</b></li>'
+  ).join('');
+}
+
+/* ============================================================
+   ОВЕРЛЕИ
+   ============================================================ */
+function showOverlay(html, wide) {
+  overlayCard.className = 'overlay-card' + (wide ? ' wide' : '');
+  overlayCard.innerHTML = html;
+  overlay.classList.add('show');
+}
+function hideOverlay() {
+  overlay.classList.remove('show');
+}
+
+function showMenu() {
+  state = 'menu';
+  const prog = loadProgress();
+  const hasProg = prog.level > 1;
+  showOverlay(
+    '<span class="badge">цветопад</span>' +
+    '<h2>ВЫБЕРИ РЕЖИМ</h2>' +
+    '<p>3+ одинаковых клетки рядом схлопываются.<br>' +
+    '4 — бомба · 5 — молния · 6+ — радуга.<br>' +
+    'Каждые 50 уровней — новый цвет!</p>' +
+    (hasProg
+      ? '<button class="btn primary" id="btnContinue">Продолжить — уровень ' + prog.level + '</button>'
+      : '') +
+    '<button class="btn ' + (hasProg ? 'ghost' : 'primary') + '" id="btnCamp">Кампания' + (hasProg ? ' (с начала)' : '') + '</button>' +
+    '<button class="btn ghost" id="btnEndless">♾️ Бесконечный режим</button>'
+  );
+
+  const cont = document.getElementById('btnContinue');
+  if (cont) cont.addEventListener('click', () => startCampaign(loadProgress().level));
+  document.getElementById('btnCamp').addEventListener('click', () => startCampaign(1));
+  document.getElementById('btnEndless').addEventListener('click', () => startEndless());
+  updateRightPanel();
+}
+
+function showPause() {
+  showOverlay(
+    '<h2>ПАУЗА</h2>' +
+    '<p>Очки: <b>' + score + '</b><br>Уровень: <b>' + level + '</b></p>' +
+    '<button class="btn primary" id="btnResume">Продолжить</button>' +
+    '<button class="btn ghost" id="btnQuit">В меню</button>'
+  );
+  document.getElementById('btnResume').addEventListener('click', togglePause);
+  document.getElementById('btnQuit').addEventListener('click', () => {
+    state = 'menu';
+    stopMusic();
+    showMenu();
+  });
+}
+
+function showLevelComplete(bonus) {
+  showOverlay(
+    '<span class="badge">уровень ' + level + ' пройден!</span>' +
+    '<h2>ОТЛИЧНО!</h2>' +
+    '<p>Бонус за уровень: <b>+' + bonus + '</b></p>' +
+    '<div class="final">' + score + '</div>' +
+    '<button class="btn primary" id="btnNext">Дальше →</button>'
+  );
+  document.getElementById('btnNext').addEventListener('click', () => {
+    level++;
+    levelGoal = genGoal(level);
+    hideOverlay();
+    startLevel();
+    updateHUD();
+  });
+}
+
+function showGameOverCampaign() {
+  showOverlay(
+    '<h2>УРОВЕНЬ НЕ ПРОЙДЕН</h2>' +
+    '<p>Очки: <b>' + score + '</b><br>Пройдено уровней: <b>' + stats.bestLevel + '</b></p>' +
+    '<button class="btn primary" id="btnRetry">Повторить уровень</button>' +
+    '<button class="btn ghost" id="btnQuit">В меню</button>'
+  );
+  document.getElementById('btnRetry').addEventListener('click', () => {
+    hideOverlay();
+    startLevel();
+  });
+  document.getElementById('btnQuit').addEventListener('click', () => showMenu());
+}
+
+function showGameOverEndless() {
+  const list = loadScores();
+  const isRecord = list.length < 10 || score > list[list.length - 1].score;
+  showOverlay(
+    '<h2>ИГРА ОКОНЧЕНА</h2>' +
+    (isRecord ? '<span class="badge">новый рекорд!</span>' : '') +
+    '<div class="final">' + score + '</div>' +
+    '<input id="nameInput" maxlength="12" placeholder="Твоё имя" autocomplete="off">' +
+    '<button class="btn primary" id="btnSave">Сохранить рекорд</button>' +
+    '<button class="btn ghost" id="btnRestart">Играть снова</button>' +
+    '<button class="btn ghost" id="btnQuit">В меню</button>'
+  );
+
+  const input = document.getElementById('nameInput');
+  const btnSave = document.getElementById('btnSave');
+  input.focus();
+
+  btnSave.addEventListener('click', () => {
+    saveScore(input.value.trim() || 'Игрок', score);
+    renderLeaderboard();
+    input.disabled = true;
+    btnSave.disabled = true;
+    btnSave.textContent = 'Сохранено ✓';
+    btnSave.style.opacity = '.6';
+  });
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') btnSave.click(); });
+  document.getElementById('btnRestart').addEventListener('click', () => startEndless());
+  document.getElementById('btnQuit').addEventListener('click', () => showMenu());
+}
+
+/* ============================================================
+   ВВОД
+   ============================================================ */
+window.addEventListener('keydown', (e) => {
+  const tag = e.target && e.target.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+  if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space'].includes(e.code)) {
+    e.preventDefault();
+  }
+
+  if (e.code === 'KeyP' || e.code === 'Escape') { togglePause(); return; }
+  if (state !== 'playing') return;
+
+  switch (e.code) {
+    case 'ArrowLeft': case 'KeyA': move(-1); break;
+    case 'ArrowRight': case 'KeyD': move(1); break;
+    case 'ArrowDown': case 'KeyS': softDrop(); break;
+    case 'ArrowUp': case 'KeyW': shufflePiece(); break;
+    case 'Space': hardDrop(); break;
+  }
+});
+
+document.querySelectorAll('.touch button').forEach(btn => {
+  const act = btn.dataset.act;
+  const fire = (ev) => {
+    ev.preventDefault();
+    if (state !== 'playing') return;
+    if (act === 'left') move(-1);
+    else if (act === 'right') move(1);
+    else if (act === 'down') softDrop();
+    else if (act === 'shuffle') shufflePiece();
+    else if (act === 'drop') hardDrop();
+  };
+  btn.addEventListener('touchstart', fire, { passive: false });
+  btn.addEventListener('click', fire);
+});
+
+document.getElementById('btnPause').addEventListener('click', togglePause);
+document.getElementById('btnAch').addEventListener('click', showAchievements);
+
+document.getElementById('btnSound').addEventListener('click', function () {
+  initAudio();
+  sfxOn = !sfxOn;
+  musicOn = sfxOn;
+  if (musicOn) { startMusic(); this.textContent = '🔊 Звук'; }
+  else { stopMusic(); this.textContent = '🔇 Тихо'; }
+});
+
+/* ============================================================
+   PWA: манифест + иконки
+   ============================================================ */
+function makeIconPNG(size) {
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  const g = c.getContext('2d');
+  const bg = g.createLinearGradient(0, 0, size, size);
+  bg.addColorStop(0, '#1c1236');
+  bg.addColorStop(1, '#08080f');
+  g.fillStyle = bg;
+  g.fillRect(0, 0, size, size);
+
+  const pad = size * 0.10;
+  const n = 3;
+  const cs = (size - pad * 2) / n;
+  for (let y = 0; y < n; y++) {
+    for (let x = 0; x < n; x++) {
+      const col = BASE_COLORS[(x + y * 2) % BASE_COLORS.length];
+      const px = pad + x * cs + cs * 0.09;
+      const py = pad + y * cs + cs * 0.09;
+      const s = cs * 0.82;
+      g.save();
+      g.shadowColor = col;
+      g.shadowBlur = size * 0.05;
+      g.fillStyle = col;
+      roundRect(g, px, py, s, s, s * 0.25);
+      g.fill();
+      g.restore();
+      const grd = g.createLinearGradient(px, py, px, py + s);
+      grd.addColorStop(0, 'rgba(255,255,255,.45)');
+      grd.addColorStop(1, 'rgba(0,0,0,.18)');
+      g.fillStyle = grd;
+      roundRect(g, px, py, s, s, s * 0.25);
+      g.fill();
+    }
+  }
+  return c.toDataURL('image/png');
+}
+
+function setupPWA() {
+  try {
+    const icon180 = makeIconPNG(180);
+    const icon192 = makeIconPNG(192);
+    const icon512 = makeIconPNG(512);
+
+    ['180x180', '152x152', '167x167', '192x192'].forEach(sz => {
+      const l = document.createElement('link');
+      l.rel = 'apple-touch-icon';
+      l.sizes = sz;
+      l.href = sz === '192x192' ? icon192 : icon180;
+      document.head.appendChild(l);
+    });
+    const fav = document.createElement('link');
+    fav.rel = 'icon';
+    fav.type = 'image/png';
+    fav.href = icon192;
+    document.head.appendChild(fav);
+
+    const manifest = {
+      name: 'Цветопад — три в ряд',
+      short_name: 'Цветопад',
+      description: 'Три в ряд с падающими фигурами',
+      start_url: location.href.split('#')[0],
+      scope: location.href.split('#')[0],
+      display: 'standalone',
+      orientation: 'portrait',
+      background_color: '#08080f',
+      theme_color: '#08080f',
+      lang: 'ru',
+      icons: [
+        { src: icon192, sizes: '192x192', type: 'image/png', purpose: 'any' },
+        { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'any' },
+        { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+      ]
+    };
+    const mlink = document.createElement('link');
+    mlink.rel = 'manifest';
+    mlink.href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' }));
+    document.head.appendChild(mlink);
+  } catch (e) { /* PWA-подсказки недоступны — не критично */ }
+}
+
+/* ============================================================
+   СТАРТ
+   ============================================================ */
+setupPWA();
+board = emptyBoard();
+nextPiece = makePiece();
+drawNext();
+updateHUD();
+renderLeaderboard();
+showMenu();
+requestAnimationFrame(loop);
+
+})();
+</script>
+</body>
+</html>
