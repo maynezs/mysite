@@ -7,21 +7,20 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Цветопад">
-<title>ЦВЕТОПАД — три в ряд</title>
+<meta name="apple-mobile-web-app-title" content="Кубоцвет">
+<title>Кубоцвет — три в ряд</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%}
+  html,body{height:100%;overscroll-behavior:none}
   body{
     font-family:'Inter',system-ui,-apple-system,sans-serif;
     background:#08080f;color:#eaeaf5;
-    min-height:100vh;display:flex;align-items:center;justify-content:center;
-    padding:calc(14px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right))
-            calc(14px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left));
-    overflow-x:hidden;position:relative;
+    min-height:100vh;min-height:100dvh;
+    overflow:hidden;position:relative;
+    touch-action:manipulation;
   }
   body::before{
     content:'';position:fixed;inset:-25%;z-index:-1;
@@ -33,254 +32,344 @@
     filter:blur(40px);
     animation:drift 20s ease-in-out infinite alternate;
   }
-  @keyframes drift{ from{transform:translate(0,0) scale(1)} to{transform:translate(3%,-4%) scale(1.1)} }
+  @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(3%,-4%) scale(1.1)}}
 
-  .app{width:100%;max-width:1040px}
-  header{text-align:center;margin-bottom:14px}
-  h1{
-    font-family:'Unbounded',sans-serif;font-size:clamp(24px,5vw,44px);
-    letter-spacing:.1em;line-height:1.1;
-    background:linear-gradient(100deg,#ff4d6d,#ffd166,#06d6a0,#4cc9f0,#b388ff,#ff4d6d);
-    background-size:300% 100%;
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-    animation:shine 7s linear infinite;
+  .app{
+    position:relative;
+    width:100%;max-width:520px;
+    height:100vh;height:100dvh;
+    margin:0 auto;
+    display:flex;flex-direction:column;gap:4px;
+    padding-top:env(safe-area-inset-top);
+    padding-bottom:env(safe-area-inset-bottom);
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
   }
-  @keyframes shine{ to{background-position:300% 0} }
-  .sub{font-size:12.5px;color:#8a8aa3;margin-top:6px;letter-spacing:.02em}
 
-  main{
-    display:grid;grid-template-columns:190px minmax(0,auto) 210px;
-    gap:16px;align-items:start;justify-content:center;
+  /* ============ ВЕРХНИЙ HUD ============ */
+  .top-hud{
+    flex:0 0 auto;
+    display:flex;gap:6px;
+    padding:6px 8px 0;
+    align-items:stretch;
   }
-  .panel{
+  .goal-col{
+    flex:1 1 auto;min-width:0;
+    display:flex;flex-direction:column;gap:3px;
+    padding:5px 9px;
     background:rgba(255,255,255,.045);
     border:1px solid rgba(255,255,255,.08);
-    border-radius:18px;padding:16px;
-    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-    box-shadow:0 18px 50px rgba(0,0,0,.45);
+    border-radius:11px;
   }
-  .panel h2{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#9a9ab8;margin-bottom:12px}
-
-  .stat{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06)}
-  .stat:last-of-type{border-bottom:none}
-  .stat span{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8a8aa3}
-  .stat b{font-size:19px;font-variant-numeric:tabular-nums;
-    background:linear-gradient(120deg,#fff,#b388ff);-webkit-background-clip:text;background-clip:text;color:transparent}
-
-  .goal{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07)}
-  .goal-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8a8aa3;margin-bottom:6px}
-  .goal-text{font-size:12.5px;font-weight:600;color:#eaeaf5;margin-bottom:8px;line-height:1.4;min-height:34px}
-  .goal-bar{height:8px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden}
-  .goal-fill{height:100%;width:0%;background:linear-gradient(90deg,#06d6a0,#4cc9f0,#b388ff);
-    border-radius:99px;transition:width .3s;box-shadow:0 0 12px rgba(76,201,240,.5)}
-
-  .next-wrap{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07);text-align:center}
-  .next-wrap .label{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8a8aa3;margin-bottom:6px}
-  #next{display:block;margin:0 auto}
-
-  .btn{
-    font-family:inherit;font-weight:600;font-size:14px;cursor:pointer;border:0;
-    border-radius:14px;padding:12px 20px;transition:transform .18s, box-shadow .18s, background .18s;
-    color:#fff;touch-action:manipulation;
+  .goal-label{
+    font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:#8a8aa3;line-height:1;
   }
-  .btn.primary{background:linear-gradient(135deg,#ff4d6d,#b388ff);box-shadow:0 8px 26px rgba(179,136,255,.35)}
-  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(179,136,255,.5)}
-  .btn.ghost{background:rgba(255,255,255,.08);color:#eaeaf5}
-  .btn.ghost:hover{background:rgba(255,255,255,.15)}
-  .btn.small{width:100%;padding:9px 12px;font-size:12.5px;margin-top:10px;border-radius:12px}
-  .btn:active{transform:scale(.97)}
+  .goal-text{
+    font-size:12px;font-weight:700;color:#eaeaf5;
+    line-height:1.2;display:flex;align-items:center;gap:5px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    min-height:15px;
+  }
+  .goal-bar{
+    height:4px;background:rgba(255,255,255,.08);
+    border-radius:99px;overflow:hidden;
+  }
+  .goal-fill{
+    height:100%;width:0%;
+    background:linear-gradient(90deg,#06d6a0,#4cc9f0,#b388ff);
+    transition:width .3s;border-radius:99px;
+    box-shadow:0 0 8px rgba(76,201,240,.4);
+  }
+  .next-col{
+    flex:0 0 auto;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:2px;padding:4px 6px;
+    background:rgba(255,255,255,.045);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:11px;min-width:88px;
+  }
+  .next-label{
+    font-size:8px;letter-spacing:.14em;text-transform:uppercase;
+    color:#8a8aa3;line-height:1;
+  }
+  #next{display:block}
+  .settings-btn{
+    flex:0 0 auto;align-self:center;
+    width:34px;height:34px;border-radius:11px;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.06);
+    color:#fff;font-size:16px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:.15s;touch-action:manipulation;
+  }
+  .settings-btn:active{transform:scale(.94);background:rgba(255,255,255,.14)}
 
+  /* ============ ИГРОВОЕ ПОЛЕ ============ */
   .stage{
-    position:relative;border-radius:22px;padding:10px;
-    background:rgba(255,255,255,.03);
-    border:1px solid rgba(255,255,255,.09);
-    box-shadow:0 24px 70px rgba(0,0,0,.6), inset 0 0 70px rgba(130,120,255,.07);
+    flex:1 1 auto;min-height:0;
+    display:flex;align-items:center;justify-content:center;
+    padding:4px 8px;position:relative;
   }
-  .stage.shake{animation:shake .25s}
-  @keyframes shake{
-    0%,100%{transform:translate(0,0)}
-    25%{transform:translate(-4px,2px)}
-    50%{transform:translate(3px,-3px)}
-    75%{transform:translate(-2px,1px)}
+  .board-wrap{
+    position:relative;
+    width:0;height:0;
   }
   #board{
-    display:block;height:min(68vh,620px);width:auto;max-width:100%;aspect-ratio:1/2;
-    border-radius:14px;background:rgba(0,0,0,.38);
+    width:100%;height:100%;display:block;
+    border-radius:12px;background:rgba(0,0,0,.38);
+    touch-action:none;user-select:none;-webkit-user-select:none;
   }
 
+  /* ============ ОВЕРЛЕЙ ============ */
   .overlay{
-    position:absolute;inset:0;z-index:5;display:none;
-    align-items:center;justify-content:center;padding:18px;
-    background:rgba(8,8,16,.80);backdrop-filter:blur(8px);
-    border-radius:22px;
+    position:absolute;inset:0;
+    border-radius:12px;
+    background:rgba(8,8,16,.85);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    display:none;
+    align-items:center;justify-content:center;
+    padding:14px;z-index:5;overflow-y:auto;
   }
   .overlay.show{display:flex}
-  .overlay-card{text-align:center;max-width:300px;width:100%}
-  .overlay-card.wide{max-width:430px;max-height:82%;overflow-y:auto;text-align:left}
-  .overlay-card.wide::-webkit-scrollbar{width:6px}
-  .overlay-card.wide::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:9px}
-  .overlay-card h2{font-family:'Unbounded',sans-serif;font-size:21px;letter-spacing:.06em;margin-bottom:12px;text-align:center}
-  .overlay-card p{font-size:13px;color:#9d9dbb;line-height:1.6;margin-bottom:16px;text-align:center}
+  .overlay::-webkit-scrollbar{width:5px}
+  .overlay::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:9px}
+  .overlay-card{width:100%;max-width:100%;text-align:center}
+  .overlay-card h2{
+    font-family:'Unbounded',sans-serif;
+    font-size:17px;letter-spacing:.04em;
+    margin-bottom:10px;line-height:1.2;
+  }
+  .overlay-card p{
+    font-size:12px;color:#9d9dbb;
+    line-height:1.5;margin-bottom:12px;
+  }
   .overlay-card .final{
-    font-family:'Unbounded',sans-serif;font-size:38px;margin:4px 0 14px;text-align:center;
+    font-family:'Unbounded',sans-serif;font-size:30px;
+    margin:4px 0 12px;
     background:linear-gradient(120deg,#ffd166,#ff4d6d,#b388ff);
     -webkit-background-clip:text;background-clip:text;color:transparent;
   }
   .overlay-card input{
-    width:100%;padding:12px 14px;border-radius:12px;margin-bottom:10px;
+    width:100%;padding:11px 12px;border-radius:11px;margin-bottom:8px;
     background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);
-    color:#fff;font-family:inherit;font-size:14px;outline:none;text-align:center;
+    color:#fff;font-family:inherit;font-size:13px;outline:none;text-align:center;
   }
   .overlay-card input:focus{border-color:#b388ff;box-shadow:0 0 0 3px rgba(179,136,255,.2)}
-  .overlay-card .btn{width:100%;margin-top:8px}
-  .badge{display:inline-block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
-    color:#ffd166;border:1px solid rgba(255,209,102,.35);border-radius:99px;padding:4px 12px;margin-bottom:12px}
-  .overlay-card > .badge{display:block;width:fit-content;margin-left:auto;margin-right:auto}
-
-  #leaderboard{list-style:none;display:flex;flex-direction:column;gap:6px}
-  #leaderboard li{
-    display:flex;align-items:center;gap:8px;font-size:13px;
-    padding:7px 10px;border-radius:11px;background:rgba(255,255,255,.045);
+  .badge{
+    display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    color:#ffd166;border:1px solid rgba(255,209,102,.35);border-radius:99px;
+    padding:3px 10px;margin-bottom:10px;
   }
-  #leaderboard li .rank{font-size:11px;color:#8a8aa3;width:16px;flex:none}
-  #leaderboard li .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#cfcfe4}
-  #leaderboard li b{font-variant-numeric:tabular-nums;color:#fff}
-  #leaderboard li:nth-child(1){background:linear-gradient(90deg,rgba(255,209,102,.28),rgba(255,77,109,.14))}
-  #leaderboard li:nth-child(1) .nm{color:#fff}
-  #leaderboard li:nth-child(2){background:linear-gradient(90deg,rgba(255,255,255,.14),rgba(255,255,255,.04))}
-  #leaderboard li:nth-child(3){background:linear-gradient(90deg,rgba(255,150,90,.18),rgba(255,255,255,.03))}
-  #leaderboard li.empty{justify-content:center;color:#7d7d99;font-size:12px;background:none}
 
-  .hint{margin-top:14px;font-size:11px;line-height:1.7;color:#71718c;letter-spacing:.01em}
-  .hint b{color:#a0a0c0}
-
-  .touch{display:none;gap:8px;justify-content:center;margin-top:14px}
-  .touch button{
-    width:56px;height:50px;border-radius:16px;border:1px solid rgba(255,255,255,.1);
-    background:rgba(255,255,255,.06);color:#eaeaf5;font-size:18px;cursor:pointer;
-    backdrop-filter:blur(10px);transition:.15s;touch-action:manipulation;user-select:none;
+  /* ============ НИЖНИЙ HUD ============ */
+  .bottom-hud{
+    flex:0 0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:2px 12px 4px;gap:8px;
+    font-size:10.5px;color:#9a9ab8;min-height:22px;
   }
-  .touch button:active{background:rgba(179,136,255,.35);transform:scale(.94)}
-
-  footer{
-    margin-top:18px;text-align:center;font-size:11.5px;color:#6c6c88;letter-spacing:.03em;
-    padding-bottom:4px;
+  .bottom-stats{display:flex;gap:12px}
+  .bottom-stats b{
+    color:#fff;font-size:13px;
+    font-variant-numeric:tabular-nums;margin-left:2px;
   }
-  footer a{color:#9a8cff;text-decoration:none;border-bottom:1px dotted rgba(154,140,255,.45)}
-  footer a:hover{color:#c2b8ff}
+  .author{
+    font-size:9px;color:#5d5d78;white-space:nowrap;
+  }
+  .author a{
+    color:#7d6fe0;text-decoration:none;
+    border-bottom:1px dotted rgba(125,111,224,.45);
+  }
 
-  /* достижения */
+  /* ============ КНОПКИ ============ */
+  .btn{
+    font-family:inherit;font-weight:600;font-size:13px;
+    cursor:pointer;border:0;border-radius:12px;
+    padding:11px 16px;transition:.18s;
+    color:#fff;touch-action:manipulation;
+    width:100%;margin-top:8px;display:block;
+  }
+  .btn.primary{
+    background:linear-gradient(135deg,#ff4d6d,#b388ff);
+    box-shadow:0 8px 22px rgba(179,136,255,.35);
+  }
+  .btn.primary:active{transform:scale(.97)}
+  .btn.ghost{background:rgba(255,255,255,.08);color:#eaeaf5}
+  .btn.ghost:active{background:rgba(255,255,255,.16)}
+
+  /* ============ МОДАЛКА ============ */
+  .modal{
+    position:fixed;inset:0;z-index:100;display:none;
+    align-items:center;justify-content:center;
+    padding:16px;background:rgba(8,8,16,.82);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  }
+  .modal.show{display:flex}
+  .modal-content{
+    position:relative;width:100%;max-width:400px;
+    max-height:86vh;overflow-y:auto;
+    background:rgba(22,22,38,.96);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:20px;padding:22px 18px;
+    box-shadow:0 24px 70px rgba(0,0,0,.7);
+  }
+  .modal-content::-webkit-scrollbar{width:6px}
+  .modal-content::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:9px}
+  .modal-close{
+    position:absolute;top:10px;right:10px;
+    width:32px;height:32px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.15);
+    background:rgba(255,255,255,.08);color:#fff;
+    font-size:14px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .modal-close:active{transform:scale(.94)}
+  .modal-content h2{
+    font-family:'Unbounded',sans-serif;font-size:18px;
+    margin-bottom:16px;text-align:center;
+  }
+  .modal-content > p{
+    font-size:12px;color:#9d9dbb;text-align:center;margin-bottom:12px;
+  }
+  .settings-row{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);
+    font-size:13px;
+  }
+  .settings-row:last-of-type{border-bottom:none}
+  .settings-row span{color:#cfcfe4}
+  .settings-row b{color:#fff;font-variant-numeric:tabular-nums}
+  .toggle-btn{
+    padding:6px 14px;border-radius:99px;
+    border:1px solid rgba(255,255,255,.18);
+    background:rgba(255,255,255,.08);color:#fff;
+    font-family:inherit;font-size:12px;font-weight:600;
+    cursor:pointer;min-width:60px;
+  }
+  .toggle-btn.on{
+    background:linear-gradient(135deg,#06d6a0,#4cc9f0);
+    border-color:transparent;color:#050510;
+  }
+
+  /* ============ ДОСТИЖЕНИЯ ============ */
   .ach-item{
-    display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:13px;
-    background:rgba(255,255,255,.04);margin-bottom:7px;border:1px solid rgba(255,255,255,.05);
+    display:flex;gap:10px;align-items:flex-start;
+    padding:9px;border-radius:11px;
+    background:rgba(255,255,255,.04);
+    margin-bottom:6px;border:1px solid rgba(255,255,255,.05);
   }
-  .ach-item.on{background:linear-gradient(100deg,rgba(255,209,102,.16),rgba(179,136,255,.10));
-    border-color:rgba(255,209,102,.35)}
-  .ach-icon{font-size:21px;line-height:1;width:26px;text-align:center;flex:none;filter:grayscale(1);opacity:.45}
+  .ach-item.on{
+    background:linear-gradient(100deg,rgba(255,209,102,.16),rgba(179,136,255,.10));
+    border-color:rgba(255,209,102,.35);
+  }
+  .ach-icon{
+    font-size:20px;line-height:1;width:24px;
+    text-align:center;flex:none;
+    filter:grayscale(1);opacity:.45;
+  }
   .ach-item.on .ach-icon{filter:none;opacity:1}
   .ach-body{flex:1;min-width:0}
-  .ach-name{font-size:12.5px;font-weight:700;color:#e6e6f5;margin-bottom:2px}
-  .ach-desc{font-size:11px;color:#8d8daa;line-height:1.35;margin-bottom:5px}
-  .ach-bar{height:5px;background:rgba(255,255,255,.08);border-radius:9px;overflow:hidden}
+  .ach-name{font-size:12px;font-weight:700;color:#e6e6f5;margin-bottom:2px}
+  .ach-desc{font-size:10.5px;color:#8d8daa;line-height:1.35;margin-bottom:4px}
+  .ach-bar{height:4px;background:rgba(255,255,255,.08);border-radius:9px;overflow:hidden}
   .ach-fill{height:100%;width:0%;border-radius:9px;
     background:linear-gradient(90deg,#06d6a0,#4cc9f0);transition:width .35s}
   .ach-item.on .ach-fill{background:linear-gradient(90deg,#ffd166,#ff4d6d)}
 
-  #toasts{position:fixed;top:calc(12px + env(safe-area-inset-top));right:calc(12px + env(safe-area-inset-right));
-    z-index:60;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:min(300px,80vw)}
-  .toast{
-    display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:14px;
-    background:rgba(22,20,38,.94);border:1px solid rgba(255,209,102,.45);
-    box-shadow:0 12px 34px rgba(0,0,0,.6);
-    animation:toastIn .38s cubic-bezier(.2,1.4,.5,1), toastOut .4s ease 3s forwards;
+  /* ============ РЕКОРДЫ ============ */
+  .lb-list{list-style:none;display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+  .lb-list li{
+    display:flex;align-items:center;gap:8px;font-size:12px;
+    padding:7px 10px;border-radius:10px;background:rgba(255,255,255,.045);
   }
-  .toast .ti{font-size:22px;line-height:1}
-  .toast .tn{font-size:12.5px;font-weight:700;color:#ffd166}
-  .toast .td{font-size:10.5px;color:#a0a0bd;margin-top:1px}
+  .lb-list li .rank{font-size:10px;color:#8a8aa3;width:14px;flex:none}
+  .lb-list li .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#cfcfe4}
+  .lb-list li b{font-variant-numeric:tabular-nums;color:#fff}
+  .lb-list li:nth-child(1){background:linear-gradient(90deg,rgba(255,209,102,.28),rgba(255,77,109,.14))}
+  .lb-list li:nth-child(1) .nm{color:#fff}
+  .lb-list li:nth-child(2){background:linear-gradient(90deg,rgba(255,255,255,.14),rgba(255,255,255,.04))}
+  .lb-list li:nth-child(3){background:linear-gradient(90deg,rgba(255,150,90,.18),rgba(255,255,255,.03))}
+  .lb-list li.empty{justify-content:center;color:#7d7d99;font-size:11.5px;background:none}
+
+  /* ============ ТОСТЫ ============ */
+  #toasts{
+    position:fixed;top:calc(80px + env(safe-area-inset-top));
+    left:50%;transform:translateX(-50%);
+    z-index:80;display:flex;flex-direction:column;gap:6px;
+    pointer-events:none;max-width:min(300px,90vw);
+  }
+  .toast{
+    display:flex;gap:9px;align-items:center;
+    padding:9px 13px;border-radius:12px;
+    background:rgba(22,20,38,.95);
+    border:1px solid rgba(255,209,102,.45);
+    box-shadow:0 12px 34px rgba(0,0,0,.6);
+    animation:toastIn .38s cubic-bezier(.2,1.4,.5,1),toastOut .4s ease 3s forwards;
+    pointer-events:none;
+  }
+  .toast .ti{font-size:20px;line-height:1}
+  .toast .tn{font-size:12px;font-weight:700;color:#ffd166}
+  .toast .td{font-size:10px;color:#a0a0bd;margin-top:1px}
   @keyframes toastIn{from{opacity:0;transform:translateX(60px) scale(.9)}to{opacity:1;transform:none}}
   @keyframes toastOut{to{opacity:0;transform:translateX(60px) scale(.92)}}
 
-  @media (max-width:900px){
-    main{grid-template-columns:1fr;justify-items:center;gap:12px}
-    .panel.left{width:100%;max-width:400px;padding:12px 16px}
-    .panel.left .stats-row{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
-    .panel.left .stat{border-bottom:none;padding:4px 0}
-    .panel.left .stat b{font-size:18px}
-    .next-wrap{display:flex;align-items:center;gap:14px;justify-content:center;margin-top:10px}
-    .next-wrap .label{margin:0}
-    .panel.left .btn.small{width:48%;display:inline-block;margin-top:10px}
-    .panel.left .btn.small:last-of-type{float:right}
-    .panel.right{width:100%;max-width:400px}
-    .hint{display:none}
-    .touch{display:flex}
-    #board{height:min(52vh,480px)}
-    .overlay-card.wide{max-width:100%}
+  /* ============ АДАПТИВ ============ */
+  @media (max-height:620px){
+    .top-hud{min-height:52px}
+    .goal-label{font-size:8px}
+    .goal-text{font-size:11px}
+    .bottom-hud{min-height:20px;font-size:10px}
+    .bottom-stats b{font-size:12px}
+    .next-col{min-width:78px}
   }
-  @media (max-width:420px){
-    #board{height:min(46vh,420px)}
-    .touch button{width:52px;height:46px;font-size:16px}
+  @media (max-width:360px){
+    .next-col{min-width:76px;padding:3px 4px}
+    .goal-text{font-size:11px}
+    .settings-btn{width:30px;height:30px;font-size:14px}
+  }
+  @media (min-width:901px){
+    .app{max-width:560px}
   }
 </style>
 </head>
 <body>
+
 <div class="app">
-  <header>
-    <h1>ЦВЕТОПАД</h1>
-    <p class="sub">три в ряд с падающими фигурами</p>
+  <header class="top-hud">
+    <div class="goal-col">
+      <div class="goal-label" id="goalLabel">Цель</div>
+      <div class="goal-text" id="goalText">—</div>
+      <div class="goal-bar"><div class="goal-fill" id="goalFill"></div></div>
+    </div>
+    <div class="next-col">
+      <div class="next-label">Дальше</div>
+      <canvas id="next"></canvas>
+    </div>
+    <button class="settings-btn" id="btnSettings" aria-label="Настройки">⚙️</button>
   </header>
 
-  <main>
-    <aside class="panel left">
-      <div class="stats-row">
-        <div class="stat"><span>Очки</span><b id="score">0</b></div>
-        <div class="stat"><span>Уровень</span><b id="level">1</b></div>
-      </div>
-      <div class="goal">
-        <div class="goal-label" id="goalLabel">Цель уровня</div>
-        <div class="goal-text" id="goalText">—</div>
-        <div class="goal-bar"><div class="goal-fill" id="goalFill"></div></div>
-      </div>
-      <div class="next-wrap">
-        <span class="label">Дальше</span>
-        <canvas id="next"></canvas>
-      </div>
-      <button class="btn ghost small" id="btnPause">Пауза</button>
-      <button class="btn ghost small" id="btnSound">🔊 Звук</button>
-    </aside>
-
-    <div class="stage" id="stage">
+  <main class="stage" id="stage">
+    <div class="board-wrap" id="boardWrap">
       <canvas id="board"></canvas>
       <div class="overlay" id="overlay"><div class="overlay-card" id="overlayCard"></div></div>
     </div>
-
-    <aside class="panel right">
-      <div id="lbBlock">
-        <h2>🏆 Рекорды</h2>
-        <ol id="leaderboard"></ol>
-      </div>
-      <div id="campBlock" style="display:none">
-        <h2>🎯 Кампания</h2>
-        <div class="stat"><span>Пройдено</span><b id="campLevel">0</b></div>
-        <div class="stat"><span>Достижения</span><b id="campAch">0</b></div>
-      </div>
-      <button class="btn ghost small" id="btnAch">🏅 Достижения</button>
-      <div class="hint">
-        <b>← →</b> двигать · <b>↑</b> меняет цвета<br>
-        <b>↓</b> ускорить · <b>Пробел</b> сброс<br>
-        3+ одинаковых рядом — схлопываются!
-      </div>
-    </aside>
   </main>
 
-  <div class="touch">
-    <button data-act="left">◀</button>
-    <button data-act="shuffle">✦</button>
-    <button data-act="down">▼</button>
-    <button data-act="right">▶</button>
-    <button data-act="drop">⤓</button>
-  </div>
+  <footer class="bottom-hud">
+    <div class="bottom-stats">
+      <span>Очки: <b id="score">0</b></span>
+      <span>Ур: <b id="level">1</b></span>
+    </div>
+    <div class="author">Автор: <a href="https://vk.ru/archigpt" target="_blank" rel="noopener">vk.ru/archigpt</a></div>
+  </footer>
+</div>
 
-  <footer>Автор: <a href="https://vk.ru/archigpt" target="_blank" rel="noopener">vk.ru/archigpt</a></footer>
+<div class="modal" id="settingsModal">
+  <div class="modal-content">
+    <button class="modal-close" id="btnCloseSettings">✕</button>
+    <div id="settingsBody"></div>
+  </div>
 </div>
 
 <div id="toasts"></div>
@@ -322,9 +411,6 @@ const SHAPES = [
   [[2,0],[0,1],[1,1],[2,1]],
 ];
 
-/* ============================================================
-   ДОСТИЖЕНИЯ
-   ============================================================ */
 const ACHIEVEMENTS = [
   { id:'lvl1',    icon:'🎯', name:'Первый шаг',        desc:'Пройди 1-й уровень кампании',      stat:'bestLevel',  target:1 },
   { id:'lvl10',   icon:'🔟', name:'Десятка',           desc:'Пройди 10 уровней',                stat:'bestLevel',  target:10 },
@@ -355,7 +441,7 @@ const ACHIEVEMENTS = [
   { id:'games50', icon:'🎰', name:'Азартный',          desc:'Сыграй 50 партий',                 stat:'games',      target:50 },
   { id:'rec1',    icon:'📝', name:'Первый рекорд',     desc:'Сохрани первый рекорд',            stat:'records',    target:1 },
   { id:'rec5',    icon:'📚', name:'Собиратель',        desc:'Сохрани 5 рекордов',               stat:'records',    target:5 },
-  { id:'grind',   icon:'🔥', name:'Мясорубка',         desc:'Очисти 50 клеток за один уровень', stat:'maxGameClears', target:50 },
+  { id:'grind',   icon:'🔥', name:'Мясорубка',         desc:'Очисти 50 клеток за уровень',      stat:'maxGameClears', target:50 },
 ];
 
 /* ============================================================
@@ -367,13 +453,15 @@ const nextCanvas = document.getElementById('next');
 const nctx = nextCanvas.getContext('2d');
 const scoreEl = document.getElementById('score');
 const levelEl = document.getElementById('level');
-const goalTextEl = document.getElementById('goalText');
 const goalLabelEl = document.getElementById('goalLabel');
+const goalTextEl = document.getElementById('goalText');
 const goalFillEl = document.getElementById('goalFill');
 const overlay = document.getElementById('overlay');
 const overlayCard = document.getElementById('overlayCard');
-const lbEl = document.getElementById('leaderboard');
-const stage = document.getElementById('stage');
+const stageEl = document.getElementById('stage');
+const boardWrap = document.getElementById('boardWrap');
+const settingsModal = document.getElementById('settingsModal');
+const settingsBody = document.getElementById('settingsBody');
 const toastsEl = document.getElementById('toasts');
 
 /* ============================================================
@@ -384,12 +472,14 @@ canvas.width = COLS * CELL * DPR;
 canvas.height = ROWS * CELL * DPR;
 ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
 
-const NEXT_CELL = 20, NEXT_W = 5, NEXT_H = 4;
+const NEXT_CELL = 16, NEXT_W = 5, NEXT_H = 4;
 nextCanvas.width = NEXT_W * NEXT_CELL * DPR;
 nextCanvas.height = NEXT_H * NEXT_CELL * DPR;
 nextCanvas.style.width = (NEXT_W * NEXT_CELL) + 'px';
 nextCanvas.style.height = (NEXT_H * NEXT_CELL) + 'px';
 nctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+let CELL_PX = 30; // размер клетки на экране (CSS-пиксели)
 
 /* ============================================================
    УТИЛИТЫ
@@ -446,12 +536,28 @@ function drawStone(g, x, y, size) {
 }
 
 /* ============================================================
+   АДАПТИВНОЕ ПОЛЕ
+   ============================================================ */
+function resizeBoard() {
+  const rect = stageEl.getBoundingClientRect();
+  const padW = 16, padH = 8;
+  const availW = rect.width - padW;
+  const availH = rect.height - padH;
+  const H = Math.min(availH, availW * 2);
+  const W = H / 2;
+  if (W < 50 || H < 100) return;
+  boardWrap.style.width = W + 'px';
+  boardWrap.style.height = H + 'px';
+  CELL_PX = W / COLS;
+}
+
+/* ============================================================
    ХРАНИЛИЩЕ
    ============================================================ */
-const STATS_KEY = 'cvetopad_stats_v2';
-const ACH_KEY = 'cvetopad_ach_v2';
-const PROG_KEY = 'cvetopad_progress_v2';
-const LS_KEY = 'cvetopad_match3_scores_v2';
+const STATS_KEY = 'kubotsvet_stats_v1';
+const ACH_KEY = 'kubotsvet_ach_v1';
+const PROG_KEY = 'kubotsvet_progress_v1';
+const LS_KEY = 'kubotsvet_scores_v1';
 
 function loadJSON(key, def) {
   try {
@@ -481,7 +587,10 @@ function loadProgress() {
   if (!p || typeof p.level !== 'number' || p.level < 1) return { level: 1 };
   return p;
 }
-function saveProgress(nextLevel) { saveJSON(PROG_KEY, { level: nextLevel }); }
+function saveProgress(nextLevel) {
+  const cur = loadProgress().level;
+  if (nextLevel > cur) saveJSON(PROG_KEY, { level: nextLevel });
+}
 
 /* ============================================================
    ЗВУК
@@ -591,7 +700,7 @@ function stopMusic() {
 }
 
 /* ============================================================
-   СОСТОЯНИЕ
+   ИГРОВОЕ СОСТОЯНИЕ
    ============================================================ */
 let board = emptyBoard();
 let piece = null, nextPiece = null;
@@ -651,7 +760,6 @@ function canMove(dx, dy) {
   return true;
 }
 
-/* гравитация: всё, что висит над пустотой, падает вниз */
 function applyGravity() {
   for (let x = 0; x < COLS; x++) {
     const col = [];
@@ -938,19 +1046,19 @@ function genGoal(lvl) {
   if (type === 'collect') {
     g.color = rnd(colorCount());
     g.target = 6 + L * 2;
-    g.text = 'Собери ' + g.target + ' ' + (COLOR_NAMES[g.color] || 'клеток');
+    g.label = 'Собрать';
   } else if (type === 'clear') {
     g.target = 15 + L * 5;
-    g.text = 'Очисти ' + g.target + ' клеток';
+    g.label = 'Очистить';
   } else if (type === 'stones') {
     g.target = 3 + Math.min(12, Math.floor(L * 0.7));
-    g.text = 'Разбей ' + g.target + ' камней';
+    g.label = 'Камни';
   } else if (type === 'bonus') {
     g.target = 1 + Math.floor(L / 2);
-    g.text = 'Сделай ' + g.target + ' бонус(а)';
+    g.label = 'Бонусы';
   } else {
     g.target = 400 + L * 200;
-    g.text = 'Набери ' + g.target + ' очков';
+    g.label = 'Очки';
   }
   return g;
 }
@@ -1021,8 +1129,6 @@ function gameOver() {
   resolve = null;
   stopMusic();
   sfx.gameOver();
-  shakeStage();
-
   if (mode === 'endless') {
     if (score > stats.endlessBest) stats.endlessBest = score;
     saveStats();
@@ -1040,43 +1146,35 @@ function gameOver() {
 function updateHUD() {
   scoreEl.textContent = score;
   levelEl.textContent = level;
-  goalLabelEl.textContent = mode === 'endless' ? 'Режим' : 'Цель уровня';
-  if (mode === 'endless') {
-    goalTextEl.textContent = 'Бесконечный — сколько продержишься?';
-    goalFillEl.style.width = Math.min(100, (level % 25) / 25 * 100) + '%';
-  } else {
-    updateGoalUI();
-  }
-  updateRightPanel();
+  updateGoalUI();
 }
 
 function updateGoalUI() {
+  if (mode === 'endless') {
+    goalLabelEl.textContent = 'Режим';
+    goalTextEl.innerHTML = '♾️ Бесконечный';
+    goalFillEl.style.width = ((gameCleared % 25) / 25 * 100) + '%';
+    return;
+  }
   if (!levelGoal) {
+    goalLabelEl.textContent = 'Цель';
     goalTextEl.textContent = '—';
     goalFillEl.style.width = '0%';
     return;
   }
-  goalTextEl.textContent = levelGoal.text;
-  const pct = Math.min(100, Math.max(0, (levelGoal.progress / levelGoal.target) * 100));
-  goalFillEl.style.width = pct + '%';
-}
-
-function updateRightPanel() {
-  const lb = document.getElementById('lbBlock');
-  const cb = document.getElementById('campBlock');
-  const playing = (state === 'playing' || state === 'resolving' || state === 'paused');
-  if (mode === 'endless' && playing) {
-    lb.style.display = '';
-    cb.style.display = 'none';
-  } else {
-    lb.style.display = 'none';
-    cb.style.display = '';
-    document.getElementById('campLevel').textContent = stats.bestLevel;
-    document.getElementById('campAch').textContent =
-      Object.keys(unlocked).length + ' / ' + ACHIEVEMENTS.length;
-  }
-  document.getElementById('btnAch').textContent =
-    '🏅 Достижения (' + Object.keys(unlocked).length + '/' + ACHIEVEMENTS.length + ')';
+  const p = Math.min(levelGoal.progress, levelGoal.target);
+  const t = levelGoal.target;
+  let icon = '🎯';
+  if (levelGoal.type === 'collect') {
+    const col = ALL_COLORS[levelGoal.color];
+    icon = '<span style="display:inline-block;width:11px;height:11px;border-radius:3px;background:' +
+           col + ';box-shadow:0 0 6px ' + col + ';vertical-align:middle"></span>';
+  } else if (levelGoal.type === 'clear') icon = '🧹';
+  else if (levelGoal.type === 'stones') icon = '🪨';
+  else if (levelGoal.type === 'bonus') icon = '⭐';
+  goalLabelEl.textContent = levelGoal.label;
+  goalTextEl.innerHTML = icon + ' ' + p + ' / ' + t;
+  goalFillEl.style.width = (t > 0 ? (p / t * 100) : 0) + '%';
 }
 
 /* ============================================================
@@ -1100,12 +1198,6 @@ function popup(text, x, y, color, size) {
   popups.push({ text, x, y, color, size: size || 22, life: 1 });
 }
 
-function shakeStage() {
-  stage.classList.remove('shake');
-  void stage.offsetWidth;
-  stage.classList.add('shake');
-}
-
 /* ============================================================
    ДОСТИЖЕНИЯ
    ============================================================ */
@@ -1122,7 +1214,6 @@ function evalAchievements() {
   }
   if (changed) {
     saveStats();
-    updateRightPanel();
     if (sfxOn) sfx.ach();
   }
 }
@@ -1135,36 +1226,6 @@ function showToast(a) {
                  '<div class="td">' + escapeHtml(a.desc) + '</div></div>';
   toastsEl.appendChild(el);
   setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 3500);
-}
-
-function showAchievements() {
-  const list = ACHIEVEMENTS.map(a => {
-    const on = !!unlocked[a.id];
-    const val = Math.min(stats[a.stat] || 0, a.target);
-    const pct = on ? 100 : Math.round(val / a.target * 100);
-    return '<div class="ach-item' + (on ? ' on' : '') + '">' +
-      '<div class="ach-icon">' + a.icon + '</div>' +
-      '<div class="ach-body">' +
-        '<div class="ach-name">' + escapeHtml(a.name) + (on ? ' ✓' : '') + '</div>' +
-        '<div class="ach-desc">' + escapeHtml(a.desc) + '</div>' +
-        '<div class="ach-bar"><div class="ach-fill" style="width:' + pct + '%"></div></div>' +
-      '</div></div>';
-  }).join('');
-
-  showOverlay(
-    '<h2>🏅 Достижения</h2>' +
-    '<p style="margin-bottom:12px">Открыто ' + Object.keys(unlocked).length +
-    ' из ' + ACHIEVEMENTS.length + '</p>' +
-    list +
-    '<button class="btn ghost" id="btnAchBack" style="margin-top:14px">Назад</button>',
-    true
-  );
-  document.getElementById('btnAchBack').addEventListener('click', () => {
-    if (state === 'paused') showPause();
-    else if (state === 'menu') showMenu();
-    else if (state === 'gameover') { if (mode === 'endless') showGameOverEndless(); else showGameOverCampaign(); }
-    else hideOverlay();
-  });
 }
 
 /* ============================================================
@@ -1208,9 +1269,8 @@ function render() {
   if (piece && (state === 'playing' || state === 'paused')) {
     const p = piece.pulse || 0;
     for (const c of piece.cells) {
-      const px = (piece.x + c.x) * CELL;
-      const py = (piece.y + c.y) * CELL;
-      paintCell(ctx, px, py, CELL, ALL_COLORS[c.c], 1, 14 + p * 22, 2);
+      paintCell(ctx, (piece.x + c.x) * CELL, (piece.y + c.y) * CELL,
+                CELL, ALL_COLORS[c.c], 1, 14 + p * 22, 2);
     }
   }
 
@@ -1284,6 +1344,14 @@ function update(dt) {
       if (canMove(0, 1)) piece.y++;
       else lockPiece();
     }
+    // авто-софт-дроп при удержании пальца внизу
+    if (touch && touch.totalDrop > 30) {
+      const now = performance.now();
+      if (now - touch.lastMoveT > 110 && now - touch.lastDropT > 60) {
+        softDrop();
+        touch.lastDropT = now;
+      }
+    }
   } else if (state === 'resolving') {
     updateResolving(dt);
   }
@@ -1318,10 +1386,11 @@ function hardDrop() {
   lockPiece();
 }
 
-function shufflePiece() {
+function shufflePiece(reverse) {
   if (state !== 'playing' || !piece) return;
   const cs = piece.cells.map(c => c.c);
-  cs.unshift(cs.pop());
+  if (reverse) cs.push(cs.shift());
+  else cs.unshift(cs.pop());
   piece.cells.forEach((c, i) => { c.c = cs[i]; });
   piece.pulse = 1;
   sfx.shuffle();
@@ -1337,19 +1406,6 @@ function lockPiece() {
   startResolve();
 }
 
-function togglePause() {
-  if (state === 'playing' || state === 'resolving') {
-    state = 'paused';
-    stopMusic();
-    showPause();
-  } else if (state === 'paused') {
-    state = 'playing';
-    dropTimer = 0;
-    hideOverlay();
-    startMusic();
-  }
-}
-
 /* ============================================================
    СТАРТ РЕЖИМОВ
    ============================================================ */
@@ -1363,6 +1419,7 @@ function startCampaign(fromLevel) {
   levelGoal = genGoal(level);
   stats.games++;
   saveStats();
+  evalAchievements();
   hideOverlay();
   startLevel();
   sfx.start();
@@ -1377,6 +1434,7 @@ function startEndless() {
   levelGoal = null;
   stats.games++;
   saveStats();
+  evalAchievements();
   hideOverlay();
   startLevel();
   sfx.start();
@@ -1408,24 +1466,10 @@ function escapeHtml(s) {
   })[m]);
 }
 
-function renderLeaderboard() {
-  const list = loadScores();
-  if (!list.length) {
-    lbEl.innerHTML = '<li class="empty">Пока пусто — стань первым!</li>';
-    return;
-  }
-  lbEl.innerHTML = list.map((s, i) =>
-    '<li><span class="rank">' + (i + 1) + '</span>' +
-    '<span class="nm">' + escapeHtml(s.name) + '</span>' +
-    '<b>' + s.score + '</b></li>'
-  ).join('');
-}
-
 /* ============================================================
-   ОВЕРЛЕИ
+   ОВЕРЛЕЙ
    ============================================================ */
-function showOverlay(html, wide) {
-  overlayCard.className = 'overlay-card' + (wide ? ' wide' : '');
+function showOverlay(html) {
   overlayCard.innerHTML = html;
   overlay.classList.add('show');
 }
@@ -1438,45 +1482,31 @@ function showMenu() {
   const prog = loadProgress();
   const hasProg = prog.level > 1;
   showOverlay(
-    '<span class="badge">цветопад</span>' +
-    '<h2>ВЫБЕРИ РЕЖИМ</h2>' +
-    '<p>3+ одинаковых клетки рядом схлопываются.<br>' +
-    '4 — бомба · 5 — молния · 6+ — радуга.<br>' +
-    'Каждые 50 уровней — новый цвет!</p>' +
+    '<span class="badge">Кубоцвет</span>' +
+    '<h2>ТРИ В РЯД</h2>' +
+    '<p>3+ одинаковых рядом схлопываются.<br>' +
+    '4 — бомба, 5 — молния, 6+ — радуга.<br>' +
+    '<span style="color:#a0a0c0">Свайп ←→ — движение, свайп ↓ — сброс.<br>' +
+    'Тап слева/справа — смена цветов.</span></p>' +
     (hasProg
-      ? '<button class="btn primary" id="btnContinue">Продолжить — уровень ' + prog.level + '</button>'
+      ? '<button class="btn primary" id="btnContinue">▶ Продолжить — уровень ' + prog.level + '</button>'
       : '') +
-    '<button class="btn ' + (hasProg ? 'ghost' : 'primary') + '" id="btnCamp">Кампания' + (hasProg ? ' (с начала)' : '') + '</button>' +
+    '<button class="btn ' + (hasProg ? 'ghost' : 'primary') + '" id="btnCamp">' +
+      (hasProg ? '🎮 Кампания с начала' : '🎮 Кампания') + '</button>' +
     '<button class="btn ghost" id="btnEndless">♾️ Бесконечный режим</button>'
   );
-
   const cont = document.getElementById('btnContinue');
   if (cont) cont.addEventListener('click', () => startCampaign(loadProgress().level));
   document.getElementById('btnCamp').addEventListener('click', () => startCampaign(1));
   document.getElementById('btnEndless').addEventListener('click', () => startEndless());
-  updateRightPanel();
-}
-
-function showPause() {
-  showOverlay(
-    '<h2>ПАУЗА</h2>' +
-    '<p>Очки: <b>' + score + '</b><br>Уровень: <b>' + level + '</b></p>' +
-    '<button class="btn primary" id="btnResume">Продолжить</button>' +
-    '<button class="btn ghost" id="btnQuit">В меню</button>'
-  );
-  document.getElementById('btnResume').addEventListener('click', togglePause);
-  document.getElementById('btnQuit').addEventListener('click', () => {
-    state = 'menu';
-    stopMusic();
-    showMenu();
-  });
+  updateHUD();
 }
 
 function showLevelComplete(bonus) {
   showOverlay(
-    '<span class="badge">уровень ' + level + ' пройден!</span>' +
+    '<span class="badge">Уровень ' + level + ' пройден!</span>' +
     '<h2>ОТЛИЧНО!</h2>' +
-    '<p>Бонус за уровень: <b>+' + bonus + '</b></p>' +
+    '<p>Бонус: <b>+' + bonus + '</b></p>' +
     '<div class="final">' + score + '</div>' +
     '<button class="btn primary" id="btnNext">Дальше →</button>'
   );
@@ -1492,8 +1522,8 @@ function showLevelComplete(bonus) {
 function showGameOverCampaign() {
   showOverlay(
     '<h2>УРОВЕНЬ НЕ ПРОЙДЕН</h2>' +
-    '<p>Очки: <b>' + score + '</b><br>Пройдено уровней: <b>' + stats.bestLevel + '</b></p>' +
-    '<button class="btn primary" id="btnRetry">Повторить уровень</button>' +
+    '<p>Очки: <b>' + score + '</b><br>Лучший уровень: <b>' + stats.bestLevel + '</b></p>' +
+    '<button class="btn primary" id="btnRetry">Повторить</button>' +
     '<button class="btn ghost" id="btnQuit">В меню</button>'
   );
   document.getElementById('btnRetry').addEventListener('click', () => {
@@ -1511,7 +1541,7 @@ function showGameOverEndless() {
     (isRecord ? '<span class="badge">новый рекорд!</span>' : '') +
     '<div class="final">' + score + '</div>' +
     '<input id="nameInput" maxlength="12" placeholder="Твоё имя" autocomplete="off">' +
-    '<button class="btn primary" id="btnSave">Сохранить рекорд</button>' +
+    '<button class="btn primary" id="btnSave">💾 Сохранить рекорд</button>' +
     '<button class="btn ghost" id="btnRestart">Играть снова</button>' +
     '<button class="btn ghost" id="btnQuit">В меню</button>'
   );
@@ -1522,7 +1552,6 @@ function showGameOverEndless() {
 
   btnSave.addEventListener('click', () => {
     saveScore(input.value.trim() || 'Игрок', score);
-    renderLeaderboard();
     input.disabled = true;
     btnSave.disabled = true;
     btnSave.textContent = 'Сохранено ✓';
@@ -1534,56 +1563,256 @@ function showGameOverEndless() {
 }
 
 /* ============================================================
-   ВВОД
+   НАСТРОЙКИ / МОДАЛКА
+   ============================================================ */
+let prevStateBeforeSettings = null;
+let settingsView = 'main';
+
+function openSettings() {
+  if (settingsModal.classList.contains('show')) return;
+  prevStateBeforeSettings = state;
+  if (state === 'playing' || state === 'resolving') {
+    state = 'paused';
+    stopMusic();
+  }
+  settingsView = 'main';
+  renderSettings();
+  settingsModal.classList.add('show');
+}
+
+function closeSettings() {
+  settingsModal.classList.remove('show');
+  if (prevStateBeforeSettings === 'playing' || prevStateBeforeSettings === 'resolving') {
+    state = prevStateBeforeSettings;
+    startMusic();
+  }
+  prevStateBeforeSettings = null;
+}
+
+function toggleSound() {
+  initAudio();
+  sfxOn = !sfxOn;
+  musicOn = sfxOn;
+  if (musicOn) startMusic();
+  else stopMusic();
+}
+
+function renderSettings() {
+  if (settingsView === 'main') {
+    const prog = loadProgress();
+    const achCount = Object.keys(unlocked).length;
+    const canResume = prevStateBeforeSettings === 'playing' || prevStateBeforeSettings === 'resolving';
+    settingsBody.innerHTML =
+      '<h2>Настройки</h2>' +
+      '<div class="settings-row">' +
+        '<span>🔊 Звук</span>' +
+        '<button class="toggle-btn ' + (sfxOn ? 'on' : '') + '" id="btnSoundToggle">' +
+          (sfxOn ? 'Вкл' : 'Выкл') + '</button>' +
+      '</div>' +
+      '<div class="settings-row">' +
+        '<span>📊 Прогресс кампании</span>' +
+        '<span>Уровень <b>' + prog.level + '</b></span>' +
+      '</div>' +
+      '<div class="settings-row">' +
+        '<span>🏅 Достижения</span>' +
+        '<span><b>' + achCount + '</b> / ' + ACHIEVEMENTS.length + '</span>' +
+      '</div>' +
+      '<button class="btn ghost" id="btnShowAch">🏅 Все достижения</button>' +
+      '<button class="btn ghost" id="btnShowRec">🏆 Рекорды (бесконечный)</button>' +
+      (canResume ? '<button class="btn primary" id="btnResume">▶ Продолжить</button>' : '') +
+      '<button class="btn ghost" id="btnQuitMenu">🏠 В меню</button>';
+
+    document.getElementById('btnSoundToggle').addEventListener('click', () => {
+      toggleSound();
+      renderSettings();
+    });
+    document.getElementById('btnShowAch').addEventListener('click', () => {
+      settingsView = 'achievements';
+      renderSettings();
+    });
+    document.getElementById('btnShowRec').addEventListener('click', () => {
+      settingsView = 'records';
+      renderSettings();
+    });
+    const resumeBtn = document.getElementById('btnResume');
+    if (resumeBtn) resumeBtn.addEventListener('click', closeSettings);
+    document.getElementById('btnQuitMenu').addEventListener('click', () => {
+      prevStateBeforeSettings = null;
+      settingsModal.classList.remove('show');
+      stopMusic();
+      showMenu();
+    });
+  } else if (settingsView === 'achievements') {
+    const achHtml = ACHIEVEMENTS.map(a => {
+      const on = !!unlocked[a.id];
+      const val = Math.min(stats[a.stat] || 0, a.target);
+      const pct = on ? 100 : Math.round(val / a.target * 100);
+      return '<div class="ach-item' + (on ? ' on' : '') + '">' +
+        '<div class="ach-icon">' + a.icon + '</div>' +
+        '<div class="ach-body">' +
+          '<div class="ach-name">' + escapeHtml(a.name) + (on ? ' ✓' : '') + '</div>' +
+          '<div class="ach-desc">' + escapeHtml(a.desc) + '</div>' +
+          '<div class="ach-bar"><div class="ach-fill" style="width:' + pct + '%"></div></div>' +
+        '</div></div>';
+    }).join('');
+    settingsBody.innerHTML =
+      '<h2>🏅 Достижения</h2>' +
+      '<p>Открыто ' + Object.keys(unlocked).length + ' из ' + ACHIEVEMENTS.length + '</p>' +
+      achHtml +
+      '<button class="btn ghost" id="btnBack">← Назад</button>';
+    document.getElementById('btnBack').addEventListener('click', () => {
+      settingsView = 'main';
+      renderSettings();
+    });
+  } else if (settingsView === 'records') {
+    const list = loadScores();
+    const listHtml = list.length
+      ? list.map((s, i) =>
+          '<li><span class="rank">' + (i + 1) + '</span>' +
+          '<span class="nm">' + escapeHtml(s.name) + '</span>' +
+          '<b>' + s.score + '</b></li>').join('')
+      : '<li class="empty">Пока пусто — стань первым!</li>';
+    settingsBody.innerHTML =
+      '<h2>🏆 Рекорды</h2>' +
+      '<p>Только бесконечный режим</p>' +
+      '<ol class="lb-list">' + listHtml + '</ol>' +
+      '<button class="btn ghost" id="btnBack">← Назад</button>';
+    document.getElementById('btnBack').addEventListener('click', () => {
+      settingsView = 'main';
+      renderSettings();
+    });
+  }
+}
+
+/* ============================================================
+   СЕНСОРНОЕ УПРАВЛЕНИЕ (СВАЙПЫ)
+   ============================================================ */
+let touch = null;
+
+function touchMoveThreshold() { return Math.max(14, CELL_PX * 0.5); }
+function touchDropThreshold() { return Math.max(18, CELL_PX * 0.7); }
+
+canvas.addEventListener('touchstart', (e) => {
+  if (state !== 'playing') return;
+  if (e.touches.length > 1) return;
+  e.preventDefault();
+  const t = e.touches[0];
+  touch = {
+    sx: t.clientX, sy: t.clientY,
+    lx: t.clientX, ly: t.clientY,
+    t0: performance.now(),
+    accumX: 0,
+    accumDropY: 0,
+    totalDrop: 0,
+    movedFar: false,
+    lastMoveT: performance.now(),
+    lastDropT: 0,
+  };
+}, { passive: false });
+
+canvas.addEventListener('touchmove', (e) => {
+  if (!touch) return;
+  e.preventDefault();
+  if (state !== 'playing') { touch = null; return; }
+  if (e.touches.length > 1) return;
+  const t = e.touches[0];
+  const dx = t.clientX - touch.lx;
+  const dy = t.clientY - touch.ly;
+  touch.lx = t.clientX;
+  touch.ly = t.clientY;
+
+  if (Math.hypot(t.clientX - touch.sx, t.clientY - touch.sy) > 12) {
+    touch.movedFar = true;
+  }
+
+  // горизонтальное движение
+  touch.accumX += dx;
+  const moveTh = touchMoveThreshold();
+  while (Math.abs(touch.accumX) >= moveTh) {
+    const dir = touch.accumX > 0 ? 1 : -1;
+    move(dir);
+    touch.accumX -= dir * moveTh;
+    touch.lastMoveT = performance.now();
+  }
+
+  // вертикальный софт-дроп
+  if (dy > 0) {
+    touch.accumDropY += dy;
+    touch.totalDrop += dy;
+    const dropTh = touchDropThreshold();
+    while (touch.accumDropY >= dropTh) {
+      softDrop();
+      touch.accumDropY -= dropTh;
+      touch.lastMoveT = performance.now();
+      touch.lastDropT = performance.now();
+    }
+  }
+}, { passive: false });
+
+canvas.addEventListener('touchend', (e) => {
+  if (!touch) return;
+  e.preventDefault();
+  const dur = performance.now() - touch.t0;
+  const dx = touch.lx - touch.sx;
+  const dy = touch.ly - touch.sy;
+  const velocity = dur > 0 ? dy / dur : 0;
+
+  if (state === 'playing') {
+    // резкий свайп вниз = мгновенный сброс
+    const isQuickDownSwipe = dur < 400 && dy > 60 &&
+      Math.abs(dy) > Math.abs(dx) * 1.4 && velocity > 0.35;
+    if (isQuickDownSwipe) {
+      hardDrop();
+    } else if (!touch.movedFar && dur < 300) {
+      // тап = смена цветов (слева/справа)
+      const rect = canvas.getBoundingClientRect();
+      const tapXRel = (touch.sx - rect.left) / rect.width;
+      shufflePiece(tapXRel < 0.5);
+    }
+  }
+  touch = null;
+}, { passive: false });
+
+canvas.addEventListener('touchcancel', () => { touch = null; }, { passive: false });
+
+// блокируем контекстное меню на долгий тап
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+/* ============================================================
+   КЛАВИАТУРА (десктоп)
    ============================================================ */
 window.addEventListener('keydown', (e) => {
   const tag = e.target && e.target.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-
   if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space'].includes(e.code)) {
     e.preventDefault();
   }
-
-  if (e.code === 'KeyP' || e.code === 'Escape') { togglePause(); return; }
+  if (e.code === 'KeyP' || e.code === 'Escape') {
+    if (settingsModal.classList.contains('show')) closeSettings();
+    else openSettings();
+    return;
+  }
   if (state !== 'playing') return;
-
   switch (e.code) {
     case 'ArrowLeft': case 'KeyA': move(-1); break;
     case 'ArrowRight': case 'KeyD': move(1); break;
     case 'ArrowDown': case 'KeyS': softDrop(); break;
-    case 'ArrowUp': case 'KeyW': shufflePiece(); break;
+    case 'ArrowUp': case 'KeyW': shufflePiece(false); break;
     case 'Space': hardDrop(); break;
   }
 });
 
-document.querySelectorAll('.touch button').forEach(btn => {
-  const act = btn.dataset.act;
-  const fire = (ev) => {
-    ev.preventDefault();
-    if (state !== 'playing') return;
-    if (act === 'left') move(-1);
-    else if (act === 'right') move(1);
-    else if (act === 'down') softDrop();
-    else if (act === 'shuffle') shufflePiece();
-    else if (act === 'drop') hardDrop();
-  };
-  btn.addEventListener('touchstart', fire, { passive: false });
-  btn.addEventListener('click', fire);
-});
-
-document.getElementById('btnPause').addEventListener('click', togglePause);
-document.getElementById('btnAch').addEventListener('click', showAchievements);
-
-document.getElementById('btnSound').addEventListener('click', function () {
-  initAudio();
-  sfxOn = !sfxOn;
-  musicOn = sfxOn;
-  if (musicOn) { startMusic(); this.textContent = '🔊 Звук'; }
-  else { stopMusic(); this.textContent = '🔇 Тихо'; }
+/* ============================================================
+   КНОПКИ UI
+   ============================================================ */
+document.getElementById('btnSettings').addEventListener('click', openSettings);
+document.getElementById('btnCloseSettings').addEventListener('click', closeSettings);
+settingsModal.addEventListener('click', (e) => {
+  if (e.target === settingsModal) closeSettings();
 });
 
 /* ============================================================
-   PWA: манифест + иконки
+   PWA: МАНИФЕСТ + ИКОНКИ
    ============================================================ */
 function makeIconPNG(size) {
   const c = document.createElement('canvas');
@@ -1594,7 +1823,6 @@ function makeIconPNG(size) {
   bg.addColorStop(1, '#08080f');
   g.fillStyle = bg;
   g.fillRect(0, 0, size, size);
-
   const pad = size * 0.10;
   const n = 3;
   const cs = (size - pad * 2) / n;
@@ -1628,13 +1856,18 @@ function setupPWA() {
     const icon192 = makeIconPNG(192);
     const icon512 = makeIconPNG(512);
 
-    ['180x180', '152x152', '167x167', '192x192'].forEach(sz => {
+    ['180x180', '152x152', '167x167'].forEach(sz => {
       const l = document.createElement('link');
       l.rel = 'apple-touch-icon';
       l.sizes = sz;
-      l.href = sz === '192x192' ? icon192 : icon180;
+      l.href = icon180;
       document.head.appendChild(l);
     });
+    const appleIcon = document.createElement('link');
+    appleIcon.rel = 'apple-touch-icon';
+    appleIcon.href = icon192;
+    document.head.appendChild(appleIcon);
+
     const fav = document.createElement('link');
     fav.rel = 'icon';
     fav.type = 'image/png';
@@ -1642,8 +1875,8 @@ function setupPWA() {
     document.head.appendChild(fav);
 
     const manifest = {
-      name: 'Цветопад — три в ряд',
-      short_name: 'Цветопад',
+      name: 'Кубоцвет — три в ряд',
+      short_name: 'Кубоцвет',
       description: 'Три в ряд с падающими фигурами',
       start_url: location.href.split('#')[0],
       scope: location.href.split('#')[0],
@@ -1660,22 +1893,32 @@ function setupPWA() {
     };
     const mlink = document.createElement('link');
     mlink.rel = 'manifest';
-    mlink.href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' }));
+    mlink.href = URL.createObjectURL(new Blob(
+      [JSON.stringify(manifest)],
+      { type: 'application/manifest+json' }
+    ));
     document.head.appendChild(mlink);
-  } catch (e) { /* PWA-подсказки недоступны — не критично */ }
+  } catch (e) { /* PWA недоступен — не критично */ }
 }
 
 /* ============================================================
    СТАРТ
    ============================================================ */
 setupPWA();
-board = emptyBoard();
+resizeBoard();
 nextPiece = makePiece();
 drawNext();
 updateHUD();
-renderLeaderboard();
 showMenu();
 requestAnimationFrame(loop);
+
+window.addEventListener('resize', () => {
+  resizeBoard();
+  render();
+});
+window.addEventListener('orientationchange', () => {
+  setTimeout(() => { resizeBoard(); render(); }, 150);
+});
 
 })();
 </script>
