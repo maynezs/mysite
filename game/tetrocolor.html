@@ -1144,7 +1144,7 @@ function makeLevel(L){
   const c1=Math.floor(rnd()*colors);
   if(type==='collect'){const need=Math.round(10+L*.65+rnd()*6);objs.push({type:'collect',color:c1,need:need});moves=Math.ceil(need/2.5)+8;}
   else if(type==='total'){const need=Math.round(18+L*.95+rnd()*8);objs.push({type:'total',need:need});moves=Math.ceil(need/3.1)+8;}
-  else if(type==='score'){const need=Math.round(700+L*150+rnd()*300);objs.push({type:'score',need:need});moves=16+Math.floor(L/6);}
+  else if(type==='score'){const need=Math.round(500+L*35+rnd()*200);objs.push({type:'score',need:need});moves=16+Math.floor(L/6);}
   else if(type==='spots'){const need=Math.min(12,3+Math.floor(L/7));objs.push({type:'spots',need:need});moves=need*3+8;}
   else if(type==='bonus'){const need=Math.min(6,1+Math.floor(L/14));objs.push({type:'bonus',need:need});moves=need*7+10;}
   else{const need=Math.min(5,2+Math.floor(L/30));objs.push({type:'combo',need:need});moves=22+need*2;}
