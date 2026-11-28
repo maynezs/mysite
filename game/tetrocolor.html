@@ -97,6 +97,7 @@ main{flex:1 1 auto;min-height:0;display:flex;gap:12px;padding:8px 14px;justify-c
   background:linear-gradient(100deg,rgba(124,58,237,.55),rgba(255,61,154,.4));border:1px solid rgba(255,255,255,.18)}
 .chip.ghost{background:rgba(255,255,255,.08);font-weight:600;color:var(--muted);font-size:11px}
 .chip.warn{background:linear-gradient(100deg,rgba(255,79,109,.6),rgba(255,176,32,.5));color:#fff}
+.chip.gold{background:linear-gradient(100deg,rgba(255,176,32,.3),rgba(255,61,154,.24));border-color:rgba(255,176,32,.5);color:#ffe6b0}
 .track{height:6px;border-radius:6px;background:rgba(255,255,255,.1);overflow:hidden}
 .track i{display:block;height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,var(--cyan),var(--lime));transition:width .3s}
 .mini-note{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.45}
@@ -139,6 +140,8 @@ main{flex:1 1 auto;min-height:0;display:flex;gap:12px;padding:8px 14px;justify-c
 .empty{font-size:11.5px;color:var(--muted);text-align:center;padding:10px 4px;line-height:1.5}
 .link-btn{display:block;width:100%;text-align:center;margin-top:7px;font-size:11px;font-weight:700;color:var(--cyan);padding:6px;border-radius:9px;background:rgba(34,211,238,.09);border:1px solid rgba(34,211,238,.24)}
 .link-btn:hover{background:rgba(34,211,238,.18)}
+.link-btn.gold{color:#ffe0a3;background:linear-gradient(100deg,rgba(255,176,32,.2),rgba(255,61,154,.16));border-color:rgba(255,176,32,.45)}
+.link-btn.gold:hover{filter:brightness(1.2)}
 
 #boardWrap{flex:0 0 auto;display:flex;align-items:center;justify-content:center;min-width:0}
 #boardBox{position:relative;border-radius:16px;overflow:hidden;box-shadow:0 16px 44px rgba(8,4,26,.55),0 0 0 1px rgba(255,255,255,.12)}
@@ -164,6 +167,8 @@ main{flex:1 1 auto;min-height:0;display:flex;gap:12px;padding:8px 14px;justify-c
 .obj-chip{display:flex;align-items:center;gap:5px;flex:0 0 auto;background:var(--panel);border:1px solid var(--brd);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:700}
 .obj-chip.done{border-color:rgba(110,231,58,.55);color:var(--lime)}
 .obj-chip i{width:9px;height:9px;border-radius:3px;display:block}
+.skip-chip{background:linear-gradient(100deg,rgba(255,176,32,.28),rgba(255,61,154,.2));border-color:rgba(255,176,32,.5);color:#ffe6b0;font-weight:800}
+.skip-chip:active{filter:brightness(1.3)}
 
 #gestureHint{display:none;flex:0 0 auto;align-items:center;gap:9px;margin:2px 12px 0;padding:6px 11px;border-radius:13px;
   background:linear-gradient(100deg,rgba(124,58,237,.28),rgba(34,211,238,.14));border:1px solid var(--brd);text-align:left;transition:filter .15s}
@@ -222,6 +227,7 @@ h2.m-h{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(19px,4
   background:linear-gradient(100deg,var(--magenta),var(--amber));box-shadow:0 8px 24px rgba(255,61,154,.4),inset 0 2px 3px rgba(255,255,255,.35)}
 .btn-primary:hover{filter:brightness(1.1)}
 .btn-lime{background:linear-gradient(100deg,#3fae1a,var(--lime));border:none;color:#0e2a05}
+.btn-gold{background:linear-gradient(100deg,#ffb020,#ff7a18);border:none;color:#3a1c00;box-shadow:0 6px 20px rgba(255,176,32,.32)}
 .btn-row{display:flex;gap:8px;margin-top:8px}
 .seg{display:flex;gap:4px;background:rgba(255,255,255,.06);border:1px solid var(--brd);border-radius:13px;padding:4px;margin-bottom:10px}
 .seg button{flex:1;padding:8px 4px;border-radius:10px;font-size:12px;font-weight:700;color:var(--muted)}
@@ -248,6 +254,11 @@ h2.m-h{font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(19px,4
 #btnSave{flex:0 0 auto;width:auto;padding:11px 15px}
 #savedMsg{display:none;text-align:center;font-weight:800;color:var(--lime);font-size:13px;padding:9px;margin-bottom:6px;background:rgba(110,231,58,.11);border:1px solid rgba(110,231,58,.4);border-radius:12px}
 #savedMsg.show{display:block}
+#recordBonus{display:none;text-align:center;font-weight:800;color:#ffe0a3;font-size:12.5px;padding:10px;margin-bottom:9px;line-height:1.45;
+  background:linear-gradient(100deg,rgba(255,176,32,.18),rgba(255,61,154,.14));border:1px solid rgba(255,176,32,.5);border-radius:12px}
+#recordBonus.show{display:block;animation:pi .4s cubic-bezier(.2,1.4,.3,1)}
+#skipSources{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:12px}
+.skip-hero{font-size:44px;text-align:center;margin-bottom:6px}
 .rec-head,.rec-row{display:grid;grid-template-columns:32px 1fr 88px 46px 54px;align-items:center;gap:5px;padding:7px 8px}
 .rec-head{font-size:9px;text-transform:uppercase;letter-spacing:1.1px;color:var(--muted);font-weight:700;border-bottom:1px solid rgba(255,255,255,.13)}
 #recordsBody{max-height:min(330px,42vh);overflow-y:auto;margin:4px 0 10px}
@@ -384,6 +395,8 @@ body.mode-campaign .only-end{display:none!important}
           <span class="chip ghost" id="colorsChip">🎨 4 цвета</span>
         </div>
         <div class="mini-note" id="colorNote">Новый цвет на 51 уровне</div>
+        <button class="link-btn gold" id="btnSkipPanel">⏭️ Пропуск готов</button>
+        <div class="mini-note">Бесплатный пропуск — раз в 4 часа. Ещё один — за новый рекорд в бесконечном режиме.</div>
       </div>
       <div class="card acc-am only-camp">
         <h3>Задания уровня</h3>
@@ -433,8 +446,9 @@ body.mode-campaign .only-end{display:none!important}
         <h3>Прогресс кампании</h3>
         <div class="sub-row" style="margin:0">✅ Пройдено: <b id="campDone">0</b></div>
         <div class="sub-row">⭐ Звёзды: <b id="campStars">0</b></div>
+        <div class="sub-row">⏭️ Пропущено: <b id="campSkipped">0</b></div>
         <div class="sub-row">🏅 Максимум: <b id="campMax">1</b> ур.</div>
-        <div class="mini-note">Прогресс сохраняется автоматически</div>
+        <div class="mini-note">Прогресс и пропуски сохраняются автоматически</div>
       </div>
       <div class="card acc-lc only-end">
         <h3>🏆 Рейтинг</h3>
@@ -455,8 +469,8 @@ body.mode-campaign .only-end{display:none!important}
   </button>
 
   <footer id="foot">
-    <span class="keys"><kbd>← →</kbd> движение <kbd>↑</kbd> цвета местами <kbd>↓</kbd> вниз <kbd>Пробел</kbd> сброс <kbd>P</kbd> пауза · мышью тоже можно свайпать</span>
-    <a class="author" href="https://vk.ru/archigp" target="_blank" rel="noopener">Автор: vk.ru/archigp</a>
+    <span class="keys"><kbd>← →</kbd> движение <kbd>↑</kbd> цвета местами <kbd>↓</kbd> вниз <kbd>Пробел</kbd> сброс <kbd>P</kbd> пауза <kbd>K</kbd> пропуск · мышью тоже можно свайпать</span>
+    <a class="author" href="https://vk.ru/archigpt" target="_blank" rel="noopener">Автор: vk.ru/archigpt</a>
   </footer>
 </div>
 
@@ -470,11 +484,11 @@ body.mode-campaign .only-end{display:none!important}
       <button class="mode-card sel" data-mode="campaign">
         <span class="badge" id="campBadge">ур. 1</span>
         <span class="em">🎯</span><b>Кампания</b>
-        <span>Бесконечные уровни с разными заданиями: собери цвет, очисти ⭐-клетки, сделай комбо. Каждые 50 уровней — новый цвет (до 16).</span>
+        <span>Бесконечные уровни с разными заданиями. Каждые 50 уровней — новый цвет (до 16). Застрял? Уровень можно пропустить.</span>
       </button>
       <button class="mode-card" data-mode="endless">
         <span class="em">♾️</span><b>Бесконечный</b>
-        <span>Классика на скорость и очки до переполнения поля. Только здесь — таблица рейтинга и рекорды.</span>
+        <span>Классика на скорость и очки. Таблица рейтинга — только здесь. Новый рекорд даёт 🎟️ пропуск уровня.</span>
       </button>
     </div>
     <div class="prog-line" id="startProg"></div>
@@ -488,7 +502,22 @@ body.mode-campaign .only-end{display:none!important}
     <button class="btn" id="btnInstall">📲 Установить на телефон</button>
     <p class="sound-note">👆 Играется свайпами как официальный Tetris. <button class="inline-link" id="btnCoachStart">Показать жесты</button></p>
     <p class="sound-note" id="startNote">🔊 Звук включён — кнопка сверху выключит всё</p>
-    <p class="sound-note">Автор: <a href="https://vk.ru/archigp" target="_blank" rel="noopener">vk.ru/archigp</a></p>
+    <p class="sound-note">Автор: <a href="https://vk.ru/archigpt" target="_blank" rel="noopener">vk.ru/archigpt</a></p>
+  </div>
+</div>
+
+<!-- ПРОПУСК УРОВНЯ -->
+<div class="overlay" id="ovSkip" role="dialog" aria-modal="true">
+  <div class="modal">
+    <button class="x-btn" id="btnSkipX">✕</button>
+    <div class="skip-hero">⏭️</div>
+    <h2 class="m-h" id="skipTitle">ПРОПУСТИТЬ УРОВЕНЬ?</h2>
+    <p class="m-tag" id="skipInfo"></p>
+    <div id="skipSources"></div>
+    <button class="btn btn-primary btn-gold" id="btnSkipGo" data-autofocus>⏭️&nbsp; ПРОПУСТИТЬ</button>
+    <button class="btn btn-primary" id="btnSkipEndless" style="display:none">♾️&nbsp; ЗАРАБОТАТЬ ПРОПУСК</button>
+    <div class="btn-row"><button class="btn" id="btnSkipCancel">Отмена</button></div>
+    <p class="sound-note">⏳ Бесплатный пропуск восстанавливается раз в 4 часа реального времени.<br>🎟️ Каждый новый рекорд в бесконечном режиме даёт ещё один пропуск.</p>
   </div>
 </div>
 
@@ -522,7 +551,7 @@ body.mode-campaign .only-end{display:none!important}
       </div>
     </div>
     <button class="btn btn-primary" id="btnGestClose" data-autofocus>ПОНЯТНО, ИГРАЕМ!</button>
-    <p class="sound-note">Клавиатура тоже работает: ← → · ↑ / Z цвета · ↓ · Пробел · P</p>
+    <p class="sound-note">Клавиатура тоже работает: ← → · ↑ / Z цвета · ↓ · Пробел · P · K — пропуск</p>
   </div>
 </div>
 
@@ -533,6 +562,7 @@ body.mode-campaign .only-end{display:none!important}
     <h2 class="m-h">⏸️ ПАУЗА</h2>
     <div class="prog-line"><span class="chip" id="pauseMode">🎯 Кампания · ур. 1</span></div>
     <button class="btn btn-primary" id="btnResume" data-autofocus>▶&nbsp; ПРОДОЛЖИТЬ</button>
+    <div class="btn-row only-camp"><button class="btn btn-gold" id="btnSkipPause">⏭️ Пропустить уровень</button></div>
     <div class="btn-row">
       <button class="btn" id="btnRestart2">🔄 Заново</button>
       <button class="btn" id="btnSound2">🔊 Звук</button>
@@ -568,6 +598,7 @@ body.mode-campaign .only-end{display:none!important}
     </div>
     <div id="lvlObj" style="margin-bottom:12px"></div>
     <button class="btn btn-primary" id="btnNextLevel" data-autofocus>➡️&nbsp; СЛЕДУЮЩИЙ УРОВЕНЬ</button>
+    <div class="btn-row" id="lvlSkipRow"><button class="btn btn-gold" id="btnLvlSkip">⏭️ Пропустить уровень</button></div>
     <div class="btn-row"><button class="btn" id="btnLvlMenu">🏠 В меню</button></div>
   </div>
 </div>
@@ -578,6 +609,7 @@ body.mode-campaign .only-end{display:none!important}
     <h2 class="m-h" id="overTitle">ИГРА ОКОНЧЕНА</h2>
     <div class="over-score" id="overScore">0</div>
     <p class="over-best" id="overBest">🏆 Рекорд: <b>0</b></p>
+    <div id="recordBonus"></div>
     <div class="over-stats">
       <div><b id="ovLevel">1</b><span>уровень</span></div>
       <div><b id="ovCleared">0</b><span>🧊 кубики</span></div>
@@ -606,6 +638,7 @@ body.mode-campaign .only-end{display:none!important}
     <div id="recordsBody"></div>
     <button class="btn btn-primary" id="btnRecNew">♾️&nbsp; ИГРАТЬ НА РЕКОРД</button>
     <div class="btn-row"><button class="btn" id="btnRecClose">Закрыть</button></div>
+    <p class="sound-note">🎟️ Каждый новый рекорд здесь даёт +1 пропуск уровня в кампании</p>
   </div>
 </div>
 
@@ -615,24 +648,26 @@ body.mode-campaign .only-end{display:none!important}
     <button class="x-btn" id="btnHelpX">✕</button>
     <h2 class="m-h">❔ КАК ИГРАТЬ</h2>
     <div class="help-sec"><h4>👆 Жесты (телефон и мышь)</h4>
-      <p><b>Свайп ← →</b> — веди пальцем не отрывая, фигура точно идёт по колонкам. <b>Тап по правой половине</b> — цвета по часовой ↻, <b>по левой</b> — против ↺. <b>Потянуть вниз и держать</b> — мягкое падение (можно продолжать двигать). <b>Резкий свайп вниз</b> — мгновенный сброс.</p>
+      <p><b>Свайп ← →</b> — веди пальцем не отрывая, фигура точно идёт по колонкам. <b>Тап по правой половине</b> — цвета по часовой ↻, <b>по левой</b> — против ↺. <b>Потянуть вниз и держать</b> — мягкое падение. <b>Резкий свайп вниз</b> — мгновенный сброс.</p>
       <button class="link-btn" id="btnHelpGestures">показать анимацию жестов →</button></div>
     <div class="help-sec"><h4>🔀 Цвета меняются местами</h4>
-      <p>Фигуры не вращаются: набор цветов сохраняется, но кубики <b>переставляются по кругу</b> внутри фигуры. Подбирай раскраску под стопку!</p></div>
+      <p>Фигуры не вращаются: набор цветов сохраняется, но кубики <b>переставляются по кругу</b> внутри фигуры.</p></div>
     <div class="help-sec"><h4>🕳️ Гравитация и схлопывания</h4>
       <p>Кубик над пустой клеткой падает вниз. <b>3+ одноцветных</b> соседа схлопываются, кубики осыпаются и собирают новые тройки — <b>каскад = комбо</b> и множитель очков.</p></div>
     <div class="help-sec"><h4>🚀 Бонусы</h4>
-      <p><b>4 → 🚀</b> ряд+столбец, <b>5 → 💣</b> 3×3, <b>6+ → 🌈</b> весь цвет. Бонус ждёт на поле и срабатывает, когда попадает в схлопывание — цепные взрывы!</p></div>
+      <p><b>4 → 🚀</b> ряд+столбец, <b>5 → 💣</b> 3×3, <b>6+ → 🌈</b> весь цвет. Бонус срабатывает, когда попадает в схлопывание — цепные взрывы!</p></div>
     <div class="help-sec"><h4>🎯 Кампания</h4>
-      <p>Бесконечные уровни со своими заданиями: собрать N кубиков цвета, очистить <b>⭐-клетки</b>, набрать очки, взорвать бонусы, сделать комбо. Фигуры ограничены; не хватило или поле переполнилось — уровень проходится заново. Звёзды ⭐ за запас фигур. <b>Каждые 50 уровней +1 цвет</b> (до 16). Прогресс пишется в localStorage.</p></div>
+      <p>Бесконечные уровни со своими заданиями: собрать N кубиков цвета, очистить <b>⭐-клетки</b>, набрать очки, взорвать бонусы, сделать комбо. Фигуры ограничены. Звёзды ⭐ за запас фигур. <b>Каждые 50 уровней +1 цвет</b> (до 16).</p></div>
+    <div class="help-sec"><h4>⏭️ Пропуск уровня</h4>
+      <p>Кнопка в паузе, в итогах неудачи, в карточке уровня или клавиша <b>K</b>. <b>Один бесплатный пропуск раз в 4 часа</b> реального времени (таймер идёт даже когда игра закрыта). <b>Дополнительные 🎟️</b> — за каждый <b>новый рекорд в бесконечном режиме</b>, копятся без ограничения. Пропущенный уровень не даёт звёзд и очков, но открывает следующий.</p></div>
     <div class="help-sec"><h4>♾️ Бесконечный режим</h4>
       <p>Без заданий и лимитов, скорость растёт каждые 1200 очков. Только здесь ведётся <b>таблица рейтинга</b> — сначала пустая, заполняется вашими результатами.</p></div>
     <div class="help-sec"><h4>⌨️ Клавиатура</h4>
-      <div class="help-keys"><kbd>← →</kbd><kbd>↑ / X цвета</kbd><kbd>Z назад</kbd><kbd>↓ вниз</kbd><kbd>Пробел сброс</kbd><kbd>P пауза</kbd><kbd>M звук</kbd><kbd>R заново</kbd></div></div>
+      <div class="help-keys"><kbd>← →</kbd><kbd>↑ / X цвета</kbd><kbd>Z назад</kbd><kbd>↓ вниз</kbd><kbd>Пробел сброс</kbd><kbd>P пауза</kbd><kbd>K пропуск</kbd><kbd>M звук</kbd><kbd>R заново</kbd></div></div>
     <div class="help-sec"><h4>📲 Установка на телефон</h4>
-      <p>iPhone/iPad: Safari → <b>Поделиться</b> → <b>На экран «Домой»</b>. Android: меню браузера → <b>Установить приложение</b>. Появится своя иконка и полный экран.</p></div>
+      <p>iPhone/iPad: Safari → <b>Поделиться</b> → <b>На экран «Домой»</b>. Android: меню браузера → <b>Установить приложение</b>.</p></div>
     <button class="btn btn-primary" id="btnHelpClose" data-autofocus>ПОНЯТНО!</button>
-    <p class="sound-note">Автор: <a href="https://vk.ru/archigp" target="_blank" rel="noopener">vk.ru/archigp</a></p>
+    <p class="sound-note">Автор: <a href="https://vk.ru/archigpt" target="_blank" rel="noopener">vk.ru/archigpt</a></p>
   </div>
 </div>
 
@@ -660,6 +695,7 @@ const easeOut=p=>1-Math.pow(1-p,3);
 const easeIO=p=>p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
 const fmt=n=>Math.round(n).toLocaleString('ru-RU');
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function txt(el,v){if(el&&el.textContent!==v)el.textContent=v;}
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 function mix(hex,to,k){
   const n=parseInt(hex.slice(1),16),r=n>>16,g=(n>>8)&255,b=n&255;
@@ -685,6 +721,7 @@ const COLORS=BASE.map(function(entry){
 const BONUS={rocket:{emoji:'🚀',name:'Ракета'},bomb:{emoji:'💣',name:'Бомба'},rainbow:{emoji:'🌈',name:'Радуга'}};
 const BIDX={rocket:0,bomb:1,rainbow:2},BKEY=['rocket','bomb','rainbow'];
 const COLS=9,ROWS=16,LVL_STEP=1200;
+const SKIP_CD=4*60*60*1000;
 
 /* ============ ХРАНИЛИЩЕ ============ */
 const store={
@@ -692,13 +729,106 @@ const store={
   set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 };
 let settings=Object.assign({sound:true,mode:'campaign',quality:'auto',name:'',haptics:true,coachSeen:false},store.get('kcv2.settings',{}));
-let camp=Object.assign({level:1,maxLevel:1,done:0,stars:0,total:0,run:null},store.get('kcv2.camp',{}));
+if(!settings||typeof settings!=='object')settings={sound:true,mode:'campaign',quality:'auto',name:'',haptics:true,coachSeen:false};
+let camp=Object.assign({level:1,maxLevel:1,done:0,stars:0,total:0,run:null,skips:0,lastSkipAt:0,skipped:0},store.get('kcv2.camp',{}));
+camp.level=Math.max(1,camp.level|0);camp.maxLevel=Math.max(1,camp.maxLevel|0);
+camp.done=Math.max(0,camp.done|0);camp.stars=Math.max(0,camp.stars|0);camp.total=Math.max(0,camp.total|0);
+camp.skips=Math.max(0,camp.skips|0);camp.skipped=Math.max(0,camp.skipped|0);
+camp.lastSkipAt=Math.max(0,Number(camp.lastSkipAt)||0);
+if(!camp.run||typeof camp.run!=='object')camp.run=null;
 let endData=Object.assign({best:0,scores:[],run:null},store.get('kcv2.endless',{}));
-if(!Array.isArray(endData.scores))endData.scores=[];
-let soundOn=settings.sound,lastRecordId=null;
+endData.best=Math.max(0,endData.best|0);
+endData.scores=Array.isArray(endData.scores)?endData.scores.filter(r=>r&&typeof r.score==='number'&&typeof r.name==='string'):[];
+if(!endData.run||typeof endData.run!=='object')endData.run=null;
+let soundOn=settings.sound!==false,lastRecordId=null;
 const saveSettings=()=>store.set('kcv2.settings',settings);
 const saveCamp=()=>store.set('kcv2.camp',camp);
 const saveEnd=()=>store.set('kcv2.endless',endData);
+
+/* ============ ПРОПУСКИ ============ */
+function skipRemain(){
+  const last=camp.lastSkipAt||0,passed=Date.now()-last;
+  if(passed<0)return SKIP_CD;
+  return Math.max(0,SKIP_CD-passed);
+}
+const skipTimedReady=()=>skipRemain()<=0;
+const skipTokens=()=>Math.max(0,camp.skips|0);
+const skipCount=()=>(skipTimedReady()?1:0)+skipTokens();
+function fmtDur(ms){
+  const s=Math.max(0,Math.ceil(ms/1000));
+  const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
+  return h+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+}
+function useSkip(){
+  if(skipTimedReady()){camp.lastSkipAt=Date.now();return 'timed';}
+  if(skipTokens()>0){camp.skips=skipTokens()-1;return 'token';}
+  return null;
+}
+let skipWasReady=false;
+function updateSkipUI(){
+  const ready=skipTimedReady(),tokens=skipTokens(),total=(ready?1:0)+tokens;
+  const short=ready?('⏭️ Пропуск готов'+(tokens?' +'+tokens:'')):(tokens?('⏭️ Пропуск ×'+tokens):('⏭️ через '+fmtDur(skipRemain())));
+  txt(document.getElementById('btnSkipPanel'),short);
+  txt(document.getElementById('skipChipBtn'),short);
+  txt(document.getElementById('btnSkipPause'),total?('⏭️ Пропустить уровень ('+total+')'):('⏭️ Пропуск через '+fmtDur(skipRemain())));
+  txt(document.getElementById('btnLvlSkip'),total?('⏭️ Пропустить уровень ('+total+')'):'⏭️ Пропуск недоступен');
+  txt(document.getElementById('startSkip'),ready?'⏭️ Пропуск готов':('⏭️ Пропуск через '+fmtDur(skipRemain())));
+  txt(document.getElementById('campSkipped'),fmt(camp.skipped|0));
+  if(currentOv()==='ovSkip'){
+    renderSkipSources();
+    const go=document.getElementById('btnSkipGo'),earn=document.getElementById('btnSkipEndless');
+    if(go)go.style.display=total?'flex':'none';
+    if(earn)earn.style.display=total?'none':'flex';
+  }
+  if(ready&&!skipWasReady&&S.mode==='playing'&&S.gameMode==='campaign'){
+    showBanner('ПРОПУСК ГОТОВ ⏭️');Snd.bonus();
+  }
+  skipWasReady=ready;
+}
+function renderSkipSources(){
+  const box=$('#skipSources');
+  if(!box)return;
+  box.innerHTML='';
+  const add=function(t,gold){
+    const s=document.createElement('span');
+    s.className='chip '+(gold?'gold':'ghost');
+    s.textContent=t;box.appendChild(s);
+  };
+  add(skipTimedReady()?'⏳ Бесплатный: готов':('⏳ Бесплатный через '+fmtDur(skipRemain())),skipTimedReady());
+  add('🎟️ За рекорды: '+skipTokens(),skipTokens()>0);
+}
+function openSkip(){
+  if(S.gameMode!=='campaign')return;
+  $('#skipTitle').textContent='ПРОПУСТИТЬ УРОВЕНЬ '+S.campLevel+'?';
+  const total=skipCount();
+  $('#skipInfo').textContent=total
+    ? ('Уровень '+S.campLevel+' будет засчитан как пропущенный — без звёзд и очков. Сразу откроется уровень '+(S.campLevel+1)+'.')
+    : 'Пропуски закончились. Бесплатный восстанавливается раз в 4 часа, а дополнительный можно заработать прямо сейчас — поставьте новый рекорд в бесконечном режиме.';
+  renderSkipSources();
+  $('#btnSkipGo').style.display=total?'flex':'none';
+  $('#btnSkipEndless').style.display=total?'none':'flex';
+  openAux('ovSkip');
+}
+function doSkipLevel(){
+  if(S.gameMode!=='campaign')return;
+  const kind=useSkip();
+  if(!kind){openSkip();return;}
+  const next=S.campLevel+1;
+  camp.skipped=(camp.skipped|0)+1;
+  camp.level=Math.max(camp.level,next);
+  camp.maxLevel=Math.max(camp.maxLevel,next);
+  camp.run=null;saveCamp();
+  Snd.skip();
+  startCampaign(next,null);
+  showBanner('УРОВЕНЬ ПРОПУЩЕН ⏭️');
+  floater(COLS/2,ROWS/2,kind==='timed'?'⏳ бесплатный пропуск':'🎟️ пропуск за рекорд',{color:'#ffe0a3',size:.8});
+  updateSkipUI();
+}
+function skipToEarn(){
+  saveRun(true);
+  S.gameMode='endless';settings.mode='endless';saveSettings();
+  startEndless(endData.run);
+}
 
 /* ============ ВИБРАЦИЯ ============ */
 let lastHap=0;
@@ -804,6 +934,7 @@ const Snd={
   pop(cmb,i){const sc=[523,587,659,784,880,1047,1175,1319],n=sc[clamp((cmb-1)*2+i%3,0,7)];this.note(n,{type:'triangle',dur:.14,gain:.16});},
   mark(){this.note(1180,{type:'triangle',dur:.12,gain:.13});this.note(1560,{dur:.1,gain:.07,at:.05});},
   bonus(){[660,880,1320].forEach((f,i)=>this.note(f,{type:'triangle',dur:.16,gain:.12,at:i*.06}));},
+  skip(){this.noise({dur:.3,gain:.14,freq:400,slide:2600});[440,660,990].forEach((f,i)=>this.note(f,{type:'triangle',dur:.2,gain:.13,at:i*.06}));},
   rocket(){this.note(1300,{type:'sawtooth',dur:.3,gain:.14,slide:180});this.noise({dur:.26,gain:.12,freq:1400,slide:300});},
   bomb(){this.note(120,{dur:.42,gain:.42,slide:38});this.noise({dur:.34,gain:.26,freq:320,type:'lowpass',slide:60});},
   rainbow(){[523,659,784,1047,1319].forEach((f,i)=>this.note(f,{dur:.26,gain:.1,at:i*.05}));},
@@ -848,7 +979,7 @@ const mcv=$('#nextM'),mctx=mcv.getContext('2d');
 const boardBox=$('#boardBox'),mainEl=$('#main'),leftPanel=$('#leftPanel'),bannerEl=$('#banner'),dangerEl=$('#danger');
 let M={cell:38,w:342,h:608,dpr:1};
 let boardRect=null;
-const DPR=()=>Math.min(2,devicePixelRatio||1);
+const DPR=()=>Math.min(2,window.devicePixelRatio||1);
 let sprites=new Map(),beams=new Map(),bgSprite=null,markSprite=null;
 
 function blockSprite(ci,size,bonus){
@@ -859,13 +990,13 @@ function blockSprite(ci,size,bonus){
   cv.width=Math.ceil(size*dpr);cv.height=Math.ceil(size*dpr);
   const c=cv.getContext('2d');
   c.setTransform(dpr,0,0,dpr,0,0);
-  const C=COLORS[ci],pad=size*.06,sz=size-pad*2,x=pad,y=pad;
+  const C=COLORS[ci]||COLORS[0],pad=size*.06,sz=size-pad*2,x=pad,y=pad;
   const g=c.createLinearGradient(0,y,0,y+sz);
   g.addColorStop(0,C.light);g.addColorStop(.45,C.base);g.addColorStop(1,C.dark);
   rr(c,x,y,sz,sz,sz*.24);c.fillStyle=g;c.fill();
   c.lineWidth=Math.max(1,size*.03);c.strokeStyle=C.dark;c.stroke();
   rr(c,x+sz*.12,y+sz*.07,sz*.76,sz*.23,sz*.11);c.fillStyle='rgba(255,255,255,.26)';c.fill();
-  if(bonus){
+  if(bonus&&BONUS[bonus]){
     c.fillStyle='rgba(255,255,255,.94)';c.beginPath();c.arc(size/2,size/2,sz*.35,0,7);c.fill();
     c.font=Math.max(9,size*.48)+'px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';
     c.textAlign='center';c.textBaseline='middle';
@@ -883,7 +1014,7 @@ function beamSprite(ci){
   const cached=beams.get(ci);
   if(cached)return cached;
   const cv=document.createElement('canvas');cv.width=128;cv.height=32;
-  const c=cv.getContext('2d'),C=COLORS[ci],g=c.createLinearGradient(0,0,128,0);
+  const c=cv.getContext('2d'),C=COLORS[ci]||COLORS[0],g=c.createLinearGradient(0,0,128,0);
   g.addColorStop(0,'rgba(255,255,255,.95)');
   g.addColorStop(.35,'rgba('+C.glow+',.75)');
   g.addColorStop(1,'rgba('+C.glow+',0)');
@@ -946,7 +1077,7 @@ const Amb={
     }
   },
   resize(){
-    this.w=innerWidth;this.h=innerHeight;
+    this.w=window.innerWidth;this.h=window.innerHeight;
     this.cv.width=this.w;this.cv.height=this.h;
   },
   burst(nx,ny,n){
@@ -1171,6 +1302,7 @@ function hardDrop(){
 }
 function lockPiece(){
   const p=S.piece;
+  if(!p)return;
   let top=false;
   p.cells.forEach(function(cell,i){
     const bx=p.x+cell[0],by=p.y+cell[1];
@@ -1304,7 +1436,7 @@ function detonate(seeds){
     const at=s.depth*180;
     S.effects.push({type:s.b,x:s.x+.5,y:s.y+.5,at:S.time+at,dur:s.b==='rainbow'?560:400,c:s.c});
     schedule(at,function(){
-      Snd[s.b]();
+      if(Snd[s.b])Snd[s.b]();
       addShake(s.b==='rainbow'?6:s.b==='bomb'?5:3.5);
       haptic(28);
       if(s.b==='rainbow'&&!isLow())S.effects.push({type:'flash',at:S.time,dur:300,color:'255,255,255',alpha:.13});
@@ -1396,7 +1528,7 @@ function topOut(){
 function levelDone(win,topped){
   S.mode='levelend';S.piece=null;S.events=[];releaseAll();
   dangerEl.classList.remove('on');
-  const left=S.movesLeft,ratio=S.cfg.moves?left/S.cfg.moves:0;
+  const left=S.movesLeft,ratio=S.cfg&&S.cfg.moves?left/S.cfg.moves:0;
   const stars=win?(ratio>=.35?3:ratio>=.15?2:1):0;
   if(win){
     camp.done++;camp.stars+=stars;camp.total+=S.score;
@@ -1413,16 +1545,20 @@ function levelDone(win,topped){
 }
 function gameOver(){
   S.mode='over';S.piece=null;S.events=[];releaseAll();
-  S.newBest=S.score>endData.best;
-  if(S.newBest)endData.best=S.score;
+  S.newBest=S.score>endData.best&&S.score>0;
+  if(S.newBest){
+    endData.best=S.score;
+    camp.skips=skipTokens()+1;
+    saveCamp();
+  }
   endData.run=null;saveEnd();S.saved=false;
   addShake(5);Snd.over();Snd.stopMusic();
   dangerEl.classList.remove('on');
-  updateHeaderState();hudDirty=true;
+  updateHeaderState();hudDirty=true;updateSkipUI();
   setTimeout(function(){
     if(S.mode!=='over')return;
     const cur=currentOv();
-    if(cur==='ovRecords'||cur==='ovHelp'||cur==='ovGestures')auxReturn='ovOver';
+    if(cur==='ovRecords'||cur==='ovHelp'||cur==='ovGestures'||cur==='ovSkip')auxReturn='ovOver';
     else showOver();
   },700);
 }
@@ -1441,11 +1577,18 @@ function resetRun(){
   updateCombo();updateHeaderState();
 }
 function restorePiece(p){
-  if(!p)return null;
-  return {cells:p.c,colors:p.k,x:p.x||0,y:p.y||0,
-    w:Math.max.apply(null,p.c.map(c=>c[0]))+1,h:Math.max.apply(null,p.c.map(c=>c[1]))+1};
+  if(!p||!Array.isArray(p.c)||!Array.isArray(p.k)||!p.c.length)return null;
+  const cells=p.c.filter(c=>Array.isArray(c)&&c.length===2&&typeof c[0]==='number'&&typeof c[1]==='number');
+  if(!cells.length)return null;
+  const colors=cells.map(function(_,i){
+    const v=p.k[i];
+    return (typeof v==='number'&&v>=0&&v<COLORS.length)?(v|0):0;
+  });
+  return {cells:cells,colors:colors,x:p.x|0,y:p.y|0,
+    w:Math.max.apply(null,cells.map(c=>c[0]))+1,h:Math.max.apply(null,cells.map(c=>c[1]))+1};
 }
 function startCampaign(level,run){
+  level=Math.max(1,level|0);
   S.gameMode='campaign';
   document.body.className='mode-campaign'+(isLow()?' lite':'');
   S.campLevel=level;S.cfg=makeLevel(level);S.obj=S.cfg.objs;
@@ -1454,10 +1597,12 @@ function startCampaign(level,run){
   S.movesLeft=S.cfg.moves;
   if(run&&run.level===level){
     restoreGrid(run.grid);restoreMarks(run.marks);
-    S.score=run.score||0;S.displayScore=S.score;S.movesLeft=run.moves;
+    S.score=Math.max(0,run.score|0);S.displayScore=S.score;
+    S.movesLeft=clamp(run.moves|0,0,99);
     S.prog=Object.assign({collect:{},total:0,spots:0,bonus:0,combo:0},run.prog);
+    if(!S.prog.collect||typeof S.prog.collect!=='object')S.prog.collect={};
     S.stats=Object.assign({cleared:0,bonuses:0,pieces:0},run.stats);
-    S.maxCombo=run.maxCombo||0;
+    S.maxCombo=Math.max(0,run.maxCombo|0);
     S.piece=restorePiece(run.piece);S.next=restorePiece(run.next);
   }else{
     for(const m of S.cfg.marks)S.marks[m[1]][m[0]]=true;
@@ -1465,7 +1610,7 @@ function startCampaign(level,run){
   }
   buildObjUI();closeOvs();measure();
   if(!S.piece)spawnPiece();else{renderNext();S.phase='drop';}
-  hudDirty=true;updateHUD();saveRun(true);
+  hudDirty=true;updateHUD();updateSkipUI();saveRun(true);
 }
 function startEndless(run){
   S.gameMode='endless';
@@ -1474,9 +1619,10 @@ function startEndless(run){
   resetRun();
   if(run){
     restoreGrid(run.grid);
-    S.score=run.score||0;S.displayScore=S.score;S.level=run.level||1;
+    S.score=Math.max(0,run.score|0);S.displayScore=S.score;
+    S.level=Math.max(1,run.level|0);
     S.stats=Object.assign({cleared:0,bonuses:0,pieces:0},run.stats);
-    S.maxCombo=run.maxCombo||0;
+    S.maxCombo=Math.max(0,run.maxCombo|0);
     S.piece=restorePiece(run.piece);S.next=restorePiece(run.next);
   }
   buildObjUI();closeOvs();measure();
@@ -1490,7 +1636,7 @@ function startSelected(fresh){
 }
 function maybeCoach(){
   if(settings.coachSeen)return;
-  if(!(matchMedia('(pointer:coarse)').matches||innerWidth<=900))return;
+  if(!(matchMedia('(pointer:coarse)').matches||window.innerWidth<=900))return;
   settings.coachSeen=true;saveSettings();
   openAux('ovGestures');
 }
@@ -1502,7 +1648,10 @@ function restoreGrid(g){
   if(!Array.isArray(g))return;
   for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
     const v=g[y]&&g[y][x];
-    if(Array.isArray(v))S.grid[y][x]={c:v[0],b:v[1]>=0?BKEY[v[1]]:null,land:-9999};
+    if(Array.isArray(v)&&typeof v[0]==='number'&&v[0]>=0&&v[0]<COLORS.length){
+      const bi=(typeof v[1]==='number'&&v[1]>=0&&v[1]<BKEY.length)?BKEY[v[1]]:null;
+      S.grid[y][x]={c:v[0]|0,b:bi,land:-9999};
+    }
   }
 }
 function serMarks(){
@@ -1512,7 +1661,9 @@ function serMarks(){
 }
 function restoreMarks(a){
   S.marks=emptyMarks();
-  if(Array.isArray(a))for(const m of a)if(S.marks[m[1]])S.marks[m[1]][m[0]]=true;
+  if(Array.isArray(a))for(const m of a){
+    if(Array.isArray(m)&&S.marks[m[1]]&&m[0]>=0&&m[0]<COLS)S.marks[m[1]][m[0]]=true;
+  }
 }
 const serPiece=p=>p?{c:p.cells,k:p.colors,x:p.x,y:p.y}:null;
 let saveT=0;
@@ -1531,8 +1682,8 @@ function saveRun(force){
     saveEnd();
   }
 }
-addEventListener('pagehide',()=>saveRun(true));
-addEventListener('beforeunload',()=>saveRun(true));
+window.addEventListener('pagehide',()=>saveRun(true));
+window.addEventListener('beforeunload',()=>saveRun(true));
 
 /* ============ ЭФФЕКТЫ ============ */
 function addShake(n){if(!RM&&!isLow())S.shake=Math.min(10,Math.max(S.shake,n));}
@@ -1541,13 +1692,14 @@ function burst(x,y,ci,n){
   for(let i=0;i<n;i++){
     if(S.parts.length>=cap)S.parts.shift();
     const white=Math.random()<.28;
+    const C=COLORS[ci]||COLORS[0];
     S.parts.push({x:x,y:y,vx:rand(-3,3),vy:rand(-4.6,-1.4),g:9,life:rand(.4,.8),t0:S.time,
-      s:rand(.09,.19),c:white?'#fff':(Math.random()<.5?COLORS[ci].base:COLORS[ci].light),rot:rand(0,7),vr:rand(-6,6)});
+      s:rand(.09,.19),c:white?'#fff':(Math.random()<.5?C.base:C.light),rot:rand(0,7),vr:rand(-6,6)});
   }
 }
 function dot(x,y,ci){
   if(S.parts.length>=budget())return;
-  S.parts.push({x:x,y:y,vx:rand(-.4,.4),vy:rand(-1,0),g:2,life:.35,t0:S.time,s:.1,c:COLORS[ci].light,rot:0,vr:0});
+  S.parts.push({x:x,y:y,vx:rand(-.4,.4),vy:rand(-1,0),g:2,life:.35,t0:S.time,s:.1,c:(COLORS[ci]||COLORS[0]).light,rot:0,vr:0});
 }
 function floater(x,y,text,o){
   o=o||{};
@@ -1562,7 +1714,7 @@ function showBanner(t){
 }
 function confBoard(){
   const r=bcv.getBoundingClientRect();
-  Amb.burst((r.left+r.width/2)/innerWidth,(r.top+30)/innerHeight,isLow()?24:55);
+  Amb.burst((r.left+r.width/2)/window.innerWidth,(r.top+30)/window.innerHeight,isLow()?24:55);
 }
 
 /* ============ ЖЕСТЫ ============ */
@@ -1649,6 +1801,7 @@ document.addEventListener('pointerdown',()=>Snd.ensure(),{passive:true});
 /* ============ РЕНДЕР ============ */
 function renderBoard(tw){
   const ctx=bctx,t=S.time,cell=M.cell;
+  if(!ctx)return;
   ctx.clearRect(0,0,M.w,M.h);
   ctx.save();
   if(S.shake>0)ctx.translate(rand(-1,1)*S.shake*(cell/40),rand(-1,1)*S.shake*(cell/40));
@@ -1669,7 +1822,7 @@ function renderBoard(tw){
       pc.cells.forEach(function(c,i){
         const by=gy+c[1];
         if(by<0)return;
-        const C=COLORS[pc.colors[i]];
+        const C=COLORS[pc.colors[i]]||COLORS[0];
         rr(ctx,(pc.x+c[0])*cell+cell*.1,by*cell+cell*.1,cell*.8,cell*.8,cell*.2);
         ctx.fillStyle='rgba('+C.glow+',.08)';ctx.fill();
         ctx.strokeStyle='rgba('+C.glow+',.38)';ctx.stroke();
@@ -1719,7 +1872,7 @@ function renderBoard(tw){
     drawBlock(ctx,x*cell,dy*cell,cell,c.c,{scale:scale,sx:sx,sy:sy,alpha:alpha,flash:flash,rot:rot,bonus:c.b});
     if(c.b&&!c.pop&&!isLow()){
       const a=.35+.25*Math.sin(tw/300);
-      ctx.strokeStyle='rgba('+COLORS[c.c].glow+','+a+')';
+      ctx.strokeStyle='rgba('+(COLORS[c.c]||COLORS[0]).glow+','+a+')';
       ctx.lineWidth=cell*.07;
       ctx.beginPath();ctx.arc(x*cell+cell/2,dy*cell+cell/2,cell*.44,0,7);ctx.stroke();
     }
@@ -1806,7 +1959,7 @@ function renderEffects(ctx,t,cell){
       ctx.save();ctx.translate(ox,oy);ctx.rotate(-Math.PI/2);ctx.drawImage(sp,0,-th/2,head*oy,th);ctx.restore();
       ctx.restore();
     }else if(e.type==='bomb'){
-      const C=COLORS[e.c],r=easeOut(p)*cell*3.4;
+      const C=COLORS[e.c]||COLORS[0],r=easeOut(p)*cell*3.4;
       ctx.save();
       ctx.strokeStyle='rgba('+C.glow+','+((1-p)*.9)+')';
       ctx.lineWidth=Math.max(1,cell*.26*(1-p));
@@ -1846,6 +1999,7 @@ function renderEffects(ctx,t,cell){
   }
 }
 function drawMini(ctx,w,h,piece){
+  if(!ctx)return;
   const dpr=DPR();
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0,0,w,h);
@@ -1900,6 +2054,13 @@ function buildObjUI(){
     chip.appendChild(cs);bar.appendChild(chip);
     objUI.push({o:o,fi:fi,vl:vl,row:row,chip:chip,cs:cs,icon:m.icon});
   });
+  if(S.gameMode==='campaign'){
+    const sb=document.createElement('button');
+    sb.className='obj-chip skip-chip';sb.id='skipChipBtn';
+    sb.addEventListener('click',function(){Snd.ensure();Snd.click();openSkip();});
+    bar.appendChild(sb);
+  }
+  updateSkipUI();
 }
 function updateObjUI(){
   for(const u of objUI){
@@ -2009,9 +2170,10 @@ const currentOv=()=>{const o=document.querySelector('.overlay.open');return o?o.
 function openOv(id){
   document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('open'));
   const ov=document.getElementById(id);
+  if(!ov)return;
   ov.classList.add('open');
   const f=ov.querySelector('[data-autofocus]');
-  if(f&&id!=='ovOver')setTimeout(()=>f.focus({preventScroll:true}),60);
+  if(f&&id!=='ovOver')setTimeout(function(){try{f.focus({preventScroll:true});}catch(e){}},60);
 }
 function closeOvs(){document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('open'));}
 function releaseAll(){
@@ -2022,7 +2184,7 @@ function pauseGame(){
   if(S.mode!=='playing'||S.paused)return;
   S.paused=true;releaseAll();saveRun(true);Snd.duck(true);
   $('#pauseMode').textContent=S.gameMode==='campaign'?('🎯 Кампания · ур. '+S.campLevel):'♾️ Бесконечный режим';
-  updateQualUI();updateTogglesUI();openOv('ovPause');updateHeaderState();
+  updateQualUI();updateTogglesUI();updateSkipUI();openOv('ovPause');updateHeaderState();
 }
 function resumeGame(){
   if(S.mode!=='playing')return;
@@ -2053,7 +2215,7 @@ function showLevelEnd(win,stars,topped){
   }
   $('#lvlStars').style.display=win?'flex':'none';
   $('#lvlScore').textContent=fmt(S.score);
-  $('#lvlSub').textContent=win?('+'+stars+' ⭐ · всего пройдено: '+camp.done):'Задания не выполнены — попробуйте ещё раз';
+  $('#lvlSub').textContent=win?('+'+stars+' ⭐ · всего пройдено: '+camp.done):'Задания не выполнены — попробуйте ещё раз или пропустите уровень';
   $('#lvNum').textContent=S.campLevel;
   $('#lvMoves').textContent=S.movesLeft;
   $('#lvCleared').textContent=fmt(S.stats.cleared);
@@ -2072,12 +2234,19 @@ function showLevelEnd(win,stars,topped){
   const btn=$('#btnNextLevel');
   btn.textContent=win?'➡️  СЛЕДУЮЩИЙ УРОВЕНЬ':'🔄  ПОПРОБОВАТЬ СНОВА';
   btn.dataset.win=win?'1':'0';
+  $('#lvlSkipRow').style.display=win?'none':'flex';
+  updateSkipUI();
   openOv('ovLevel');
 }
 function showOver(){
   $('#overTitle').textContent=S.newBest?'🎉 НОВЫЙ РЕКОРД!':'ИГРА ОКОНЧЕНА';
   $('#overScore').textContent=fmt(S.score);
   $('#overBest').innerHTML='🏆 Рекорд: <b>'+fmt(endData.best)+'</b>';
+  const rb=$('#recordBonus');
+  if(S.newBest){
+    rb.textContent='🎟️ +1 пропуск уровня за новый рекорд! Доступно пропусков: '+skipCount();
+    rb.classList.add('show');
+  }else rb.classList.remove('show');
   $('#ovLevel').textContent=S.level;
   $('#ovCleared').textContent=fmt(S.stats.cleared);
   $('#ovBonuses').textContent=fmt(S.stats.bonuses);
@@ -2116,14 +2285,18 @@ function showStart(){
   $('#campBadge').textContent='ур. '+camp.level;
   const line=$('#startProg');
   line.innerHTML='';
-  const add=function(t){
-    const s=document.createElement('span');s.className='chip ghost';s.textContent=t;line.appendChild(s);
+  const add=function(t,id){
+    const s=document.createElement('span');s.className='chip ghost';
+    if(id)s.id=id;
+    s.textContent=t;line.appendChild(s);
   };
   if(S.gameMode==='campaign'){
     add('✅ Пройдено: '+camp.done);add('⭐ '+camp.stars);add('🏅 Макс: ур. '+camp.maxLevel);
     add('🎨 Цветов: '+Math.min(16,4+Math.floor((camp.level-1)/50)));
+    add('⏭️ Пропуск','startSkip');
   }else{
     add('🏆 Рекорд: '+fmt(endData.best));add('📋 Записей: '+endData.scores.length);
+    add('🎟️ Пропусков: '+skipCount());
   }
   const run=S.gameMode==='campaign'?camp.run:endData.run;
   $('#btnPlay').textContent=run?(S.gameMode==='campaign'?('▶  ПРОДОЛЖИТЬ УР. '+run.level):'▶  ПРОДОЛЖИТЬ ИГРУ'):'▶  ИГРАТЬ';
@@ -2131,7 +2304,7 @@ function showStart(){
   document.body.className=(S.gameMode==='campaign'?'mode-campaign':'mode-endless')+(isLow()?' lite':'');
   const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
   $('#btnInstall').style.display=standalone?'none':'flex';
-  renderRecords();updateTogglesUI();measure();openOv('ovStart');hudDirty=true;
+  renderRecords();updateTogglesUI();updateSkipUI();measure();openOv('ovStart');hudDirty=true;
 }
 function updateQualUI(){
   document.querySelectorAll('#qualSeg button').forEach(b=>b.classList.toggle('sel',b.dataset.q===settings.quality));
@@ -2159,7 +2332,7 @@ document.addEventListener('keydown',function(e){
     if(e.code==='KeyM'){toggleSound();e.preventDefault();return;}
     if(e.code==='Escape'){
       if(ov==='ovPause')resumeGame();
-      else if(ov==='ovRecords'||ov==='ovHelp'||ov==='ovInstall'||ov==='ovGestures')closeAux();
+      else if(ov==='ovRecords'||ov==='ovHelp'||ov==='ovInstall'||ov==='ovGestures'||ov==='ovSkip')closeAux();
       e.preventDefault();return;
     }
     if(e.code==='Enter'){
@@ -2167,6 +2340,7 @@ document.addEventListener('keydown',function(e){
       else if(ov==='ovPause')resumeGame();
       else if(ov==='ovOver')startEndless(null);
       else if(ov==='ovLevel')$('#btnNextLevel').click();
+      else if(ov==='ovSkip'){if(skipCount())doSkipLevel();else skipToEarn();}
       else closeAux();
       e.preventDefault();
     }
@@ -2183,6 +2357,7 @@ document.addEventListener('keydown',function(e){
     case 'KeyP':case 'Escape':pauseGame();e.preventDefault();break;
     case 'KeyM':toggleSound();e.preventDefault();break;
     case 'KeyR':startSelected(true);e.preventDefault();break;
+    case 'KeyK':if(S.gameMode==='campaign')openSkip();e.preventDefault();break;
   }
 });
 document.addEventListener('keyup',function(e){
@@ -2194,7 +2369,9 @@ function click(id,fn){
   const b=document.getElementById(id);
   if(!b)return;
   b.addEventListener('click',function(){
-    Snd.ensure();Snd.click();fn();b.blur();
+    Snd.ensure();Snd.click();
+    try{fn();}catch(err){console.error('Кубоцвет: действие '+id,err);}
+    b.blur();
   });
 }
 click('btnSound',toggleSound);
@@ -2234,6 +2411,13 @@ click('btnCoachStart',()=>openAux('ovGestures'));
 click('btnCoachPanel',()=>openAux('ovGestures'));
 click('btnCoachPause',()=>openAux('ovGestures'));
 click('btnHelpGestures',()=>openAux('ovGestures'));
+click('btnSkipPanel',openSkip);
+click('btnSkipPause',openSkip);
+click('btnLvlSkip',openSkip);
+click('btnSkipX',closeAux);
+click('btnSkipCancel',closeAux);
+click('btnSkipGo',doSkipLevel);
+click('btnSkipEndless',skipToEarn);
 click('btnInstall',openInstall);
 click('btnInstX',closeAux);
 click('btnInstClose',closeAux);
@@ -2247,7 +2431,7 @@ click('btnResetCamp',function(){
     return;
   }
   resetArm=false;b.textContent='🗑️ Сброс прогресса';
-  camp={level:1,maxLevel:1,done:0,stars:0,total:0,run:null};
+  camp={level:1,maxLevel:1,done:0,stars:0,total:0,run:null,skips:0,lastSkipAt:0,skipped:0};
   saveCamp();S.campLevel=1;exitToMenu();
 });
 $('#nameInput').addEventListener('keydown',function(e){
@@ -2269,11 +2453,12 @@ document.addEventListener('visibilitychange',function(){
   if(document.hidden){
     saveRun(true);
     if(S.mode==='playing'&&!S.paused)pauseGame();
-  }
+  }else updateSkipUI();
 });
-addEventListener('blur',function(){
+window.addEventListener('blur',function(){
   if(S.mode==='playing'&&!S.paused&&!currentOv())pauseGame();
 });
+window.addEventListener('focus',function(){updateSkipUI();});
 
 /* ============ PWA ============ */
 let installPrompt=null;
@@ -2324,7 +2509,7 @@ function setupPWA(){
     }).catch(function(){});
   }
 }
-addEventListener('beforeinstallprompt',function(e){e.preventDefault();installPrompt=e;});
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();installPrompt=e;});
 function openInstall(){
   const steps=$('#instSteps');
   steps.innerHTML='';
@@ -2358,10 +2543,10 @@ function doInstall(){
   installPrompt.prompt();
   installPrompt.userChoice.finally(function(){installPrompt=null;closeAux();});
 }
-addEventListener('appinstalled',function(){installPrompt=null;$('#btnInstall').style.display='none';});
+window.addEventListener('appinstalled',function(){installPrompt=null;$('#btnInstall').style.display='none';});
 
 /* ============ РАЗМЕРЫ ============ */
-function setVH(){document.documentElement.style.setProperty('--app-h',innerHeight+'px');}
+function setVH(){document.documentElement.style.setProperty('--app-h',window.innerHeight+'px');}
 function measure(){
   setVH();
   const dpr=DPR(),cs=getComputedStyle(mainEl);
@@ -2381,7 +2566,7 @@ function measure(){
   boardBox.style.width=M.w+'px';boardBox.style.height=M.h+'px';
   bcv.style.width=M.w+'px';bcv.style.height=M.h+'px';
   bcv.width=Math.round(M.w*dpr);bcv.height=Math.round(M.h*dpr);
-  bctx.setTransform(dpr,0,0,dpr,0,0);
+  if(bctx)bctx.setTransform(dpr,0,0,dpr,0,0);
   sprites=new Map();beams=new Map();
   buildBg();buildMark();
   ncv.style.width='92px';ncv.style.height='68px';
@@ -2392,10 +2577,10 @@ function measure(){
   boardRect=bcv.getBoundingClientRect();
 }
 if(window.ResizeObserver)new ResizeObserver(()=>measure()).observe(mainEl);
-addEventListener('resize',function(){measure();Amb.resize();});
-addEventListener('orientationchange',function(){setTimeout(function(){measure();Amb.resize();},250);});
+window.addEventListener('resize',function(){measure();Amb.resize();});
+window.addEventListener('orientationchange',function(){setTimeout(function(){measure();Amb.resize();},250);});
 if(window.visualViewport)visualViewport.addEventListener('resize',setVH);
-if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){sprites=new Map();measure();});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){sprites=new Map();measure();}).catch(function(){});
 
 /* ============ ЦИКЛ ============ */
 let lastT=performance.now(),lastShown=-1,frameErr=false;
@@ -2465,8 +2650,9 @@ function frame(now){
     if(shown!==lastShown){
       lastShown=shown;
       const s=fmt(shown);
-      document.getElementById('score').textContent=s;
-      document.getElementById('mScore').textContent=s;
+      const a=document.getElementById('score'),b=document.getElementById('mScore');
+      if(a)a.textContent=s;
+      if(b)b.textContent=s;
     }
     if(hudDirty)updateHUD();
     renderBoard(now);
@@ -2476,18 +2662,35 @@ function frame(now){
   }
 }
 
-/* ============ ИНИЦИАЛИЗАЦИЯ ============ */
-(function init(){
-  for(let y=12;y<ROWS;y++)for(let x=0;x<COLS;x++)
+/* ============ ЗАСТАВКА МЕНЮ ============ */
+function seedMenuBoard(){
+  S.grid=emptyGrid();
+  for(let y=12;y<ROWS;y++)for(let x=0;x<COLS;x++){
     if(Math.random()<.75)S.grid[y][x]={c:randInt(5),b:null,land:-9999};
-  S.grid[13][2].b='rocket';S.grid[14][6].b='bomb';
-  Amb.init();measure();applyQuality();updateQualUI();
-  renderRecords();updateTogglesUI();updateHeaderState();updateHUD();
-  showStart();
+  }
+  S.grid[13][2]={c:0,b:'rocket',land:-9999};
+  S.grid[14][6]={c:3,b:'bomb',land:-9999};
+}
+
+/* ============ ЗАПУСК (защищённый) ============ */
+function boot(){
+  try{seedMenuBoard();}catch(e){console.error('Кубоцвет: заставка',e);S.grid=emptyGrid();}
+  try{Amb.init();}catch(e){console.error('Кубоцвет: фон',e);}
+  try{measure();}catch(e){console.error('Кубоцвет: размеры',e);}
+  try{applyQuality();updateQualUI();}catch(e){}
+  skipWasReady=skipTimedReady();
+  try{renderRecords();}catch(e){}
+  try{updateTogglesUI();updateHeaderState();updateHUD();}catch(e){}
+  try{showStart();}catch(e){console.error('Кубоцвет: меню',e);openOv('ovStart');}
+  setInterval(function(){try{updateSkipUI();}catch(e){}},1000);
   requestAnimationFrame(frame);
+  setTimeout(function(){
+    if(S.mode==='menu'&&!currentOv()){try{showStart();}catch(e){openOv('ovStart');}}
+  },1200);
   if(window.requestIdleCallback)requestIdleCallback(setupPWA,{timeout:2500});
   else setTimeout(setupPWA,900);
-})();
+}
+boot();
 </script>
 </body>
 </html>
