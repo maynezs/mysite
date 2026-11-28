@@ -39,23 +39,23 @@
   @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(3%,-4%) scale(1.1)}}
 
   /* ==================================================
-     КОРНЕВОЙ КОНТЕЙНЕР — всегда ровно вьюпорт
+     КОРНЕВОЙ КОНТЕЙНЕР
      ================================================== */
   .app-shell{
     position:fixed;inset:0;
     display:flex;justify-content:center;
     overflow:hidden;
-    padding-top:env(safe-area-inset-top,0px);
-    padding-bottom:env(safe-area-inset-bottom,0px);
-    padding-left:env(safe-area-inset-left,0px);
-    padding-right:env(safe-area-inset-right,0px);
+    /* Гарантируем отступ от статус-бара и Dynamic Island */
+    padding-top:max(44px, env(safe-area-inset-top));
+    padding-bottom:max(10px, env(safe-area-inset-bottom));
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
   }
   .app{
     position:relative;
     display:flex;flex-direction:column;
     width:100%;max-width:520px;height:100%;
     overflow:hidden;
-    gap:0;
   }
 
   /* ==================================================
@@ -64,7 +64,8 @@
   .top-hud{
     flex:0 0 auto;
     display:flex;gap:6px;
-    padding:6px 8px 0;
+    padding:0 8px;
+    margin-bottom:6px;
     align-items:stretch;
     min-height:56px;
   }
@@ -139,38 +140,40 @@
   .settings-btn:active{transform:scale(.94);background:rgba(255,255,255,.14)}
 
   /* ==================================================
-     ИГРОВОЕ ПОЛЕ — занимает всё свободное место
+     ИГРОВОЕ ПОЛЕ
      ================================================== */
   .stage{
     flex:1 1 0;
     min-height:0;
     position:relative;
-    display:flex;align-items:center;justify-content:center;
-    padding:4px 8px;
+    display:flex;
+    padding:0 8px;
     overflow:hidden;
   }
   .board-wrap{
+    flex:1;
     position:relative;
-    width:0;height:0; /* размер выставляет JS */
+    width:100%;height:100%;
     border-radius:12px;
     overflow:hidden;
-    box-shadow:0 10px 34px rgba(0,0,0,.55);
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.08);
   }
   #board{
     width:100%;height:100%;display:block;
-    border-radius:12px;background:rgba(0,0,0,.38);
+    background:transparent;
     touch-action:none;user-select:none;-webkit-user-select:none;
   }
 
   /* ==================================================
-     ФУТЕР (только автор)
+     ФУТЕР
      ================================================== */
   .footer{
     flex:0 0 auto;
     text-align:center;
     font-size:9.5px;
     color:#5d5d78;
-    padding:2px 8px 3px;
+    padding:6px 8px 2px;
     line-height:1;
     letter-spacing:.03em;
   }
@@ -180,11 +183,10 @@
   }
 
   /* ==================================================
-     ОВЕРЛЕЙ поверх поля
+     ОВЕРЛЕЙ
      ================================================== */
   .overlay{
     position:absolute;inset:0;
-    border-radius:12px;
     background:rgba(8,8,16,.88);
     backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
     display:none;
@@ -242,7 +244,7 @@
   .btn.ghost:active{background:rgba(255,255,255,.16)}
 
   /* ==================================================
-     МОДАЛКА НАСТРОЕК
+     МОДАЛКА
      ================================================== */
   .modal{
     position:fixed;inset:0;z-index:100;display:none;
@@ -298,7 +300,7 @@
     border-color:transparent;color:#050510;
   }
 
-  /* достижения */
+  /* достижения и рекорды */
   .ach-item{
     display:flex;gap:10px;align-items:flex-start;
     padding:9px;border-radius:11px;
@@ -323,7 +325,6 @@
     background:linear-gradient(90deg,#06d6a0,#4cc9f0);transition:width .35s}
   .ach-item.on .ach-fill{background:linear-gradient(90deg,#ffd166,#ff4d6d)}
 
-  /* рекорды */
   .lb-list{list-style:none;display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
   .lb-list li{
     display:flex;align-items:center;gap:8px;font-size:12px;
@@ -340,7 +341,7 @@
 
   /* тосты */
   #toasts{
-    position:fixed;top:calc(74px + env(safe-area-inset-top,0px));
+    position:fixed;top:calc(94px + env(safe-area-inset-top,0px));
     left:50%;transform:translateX(-50%);
     z-index:80;display:flex;flex-direction:column;gap:6px;
     pointer-events:none;max-width:min(300px,90vw);
@@ -360,23 +361,23 @@
   @keyframes toastIn{from{opacity:0;transform:translateX(60px) scale(.9)}to{opacity:1;transform:none}}
   @keyframes toastOut{to{opacity:0;transform:translateX(60px) scale(.92)}}
 
-  /* компактная подстройка под низкие экраны */
   @media (max-height:620px){
-    .top-hud{min-height:50px;padding-top:4px}
+    .top-hud{min-height:50px;margin-bottom:4px}
     .goal-title{font-size:10.5px}
     .goal-progress{font-size:10.5px}
     .goal-meta{font-size:9.5px}
     .goal-meta b{font-size:11px}
     .settings-btn{width:32px;height:32px;font-size:14px}
     .next-col{min-width:70px;padding:3px 5px}
-    .footer{font-size:9px;padding:1px 8px 2px}
+    .footer{font-size:9px;padding:3px 8px 1px}
   }
   @media (max-width:360px){
-    .top-hud{gap:5px;padding:5px 6px 0}
+    .top-hud{gap:5px;padding:0 6px}
     .goal-col{padding:5px 8px}
     .goal-title{font-size:10px}
     .goal-meta{font-size:9.5px}
     .next-col{min-width:68px}
+    .stage{padding:0 6px}
   }
 </style>
 </head>
@@ -434,7 +435,7 @@
 /* ============================================================
    КОНСТАНТЫ
    ============================================================ */
-const COLS = 10, ROWS = 20, CELL = 32;
+const COLS = 10, ROWS = 20;
 const STONE = -1;
 
 const BASE_COLORS = ['#ff4d6d', '#ffd166', '#06d6a0', '#4cc9f0', '#b388ff'];
@@ -514,9 +515,7 @@ const toastsEl = document.getElementById('toasts');
    CANVAS
    ============================================================ */
 const DPR = Math.min(window.devicePixelRatio || 1, 2);
-canvas.width = COLS * CELL * DPR;
-canvas.height = ROWS * CELL * DPR;
-ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+let CELL_W = 30, CELL_H = 30;
 
 const NEXT_CELL = 15, NEXT_W = 4, NEXT_H = 3;
 nextCanvas.width = NEXT_W * NEXT_CELL * DPR;
@@ -524,9 +523,6 @@ nextCanvas.height = NEXT_H * NEXT_CELL * DPR;
 nextCanvas.style.width = (NEXT_W * NEXT_CELL) + 'px';
 nextCanvas.style.height = (NEXT_H * NEXT_CELL) + 'px';
 nctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-
-let CELL_PX = 30;
-let lastBoardW = 0, lastBoardH = 0;
 
 /* ============================================================
    УТИЛИТЫ
@@ -543,72 +539,68 @@ function roundRect(g, x, y, w, h, r) {
   g.closePath();
 }
 
-function paintCell(g, x, y, size, color, alpha = 1, glow = 10, pad = 2) {
-  const px = x + pad, py = y + pad, s = size - pad * 2;
-  const r = Math.min(9, s * 0.3);
+// Универсальная отрисовка клетки с учетом ширины и высоты
+function paintCell(g, x, y, w, h, color, alpha = 1, glow = 10, pad = 2) {
+  const px = x + pad, py = y + pad;
+  const sw = w - pad * 2, sh = h - pad * 2;
+  const r = Math.min(9, sw * 0.3, sh * 0.3);
   g.save();
   g.globalAlpha = alpha;
   if (glow > 0) { g.shadowColor = color; g.shadowBlur = glow; }
   g.fillStyle = color;
-  roundRect(g, px, py, s, s, r);
+  roundRect(g, px, py, sw, sh, r);
   g.fill();
   g.shadowBlur = 0;
-  const grd = g.createLinearGradient(px, py, px, py + s);
+  const grd = g.createLinearGradient(px, py, px, py + sh);
   grd.addColorStop(0, 'rgba(255,255,255,.52)');
   grd.addColorStop(.45, 'rgba(255,255,255,.06)');
   grd.addColorStop(1, 'rgba(0,0,0,.24)');
   g.fillStyle = grd;
-  roundRect(g, px, py, s, s, r);
+  roundRect(g, px, py, sw, sh, r);
   g.fill();
   g.restore();
 }
 
-function drawStone(g, x, y, size) {
+function drawStone(g, x, y, w, h) {
   g.save();
   g.fillStyle = '#3a3d4d';
-  roundRect(g, x + 2, y + 2, size - 4, size - 4, 7);
+  roundRect(g, x + 2, y + 2, w - 4, h - 4, 7);
   g.fill();
   g.fillStyle = '#4d5166';
-  roundRect(g, x + 4, y + 4, size - 8, (size - 8) * 0.38, 5);
+  roundRect(g, x + 4, y + 4, w - 8, (h - 8) * 0.38, 5);
   g.fill();
   g.strokeStyle = 'rgba(255,255,255,.14)';
   g.lineWidth = 2;
   g.beginPath();
-  g.moveTo(x + size * 0.3, y + size * 0.3);
-  g.lineTo(x + size * 0.7, y + size * 0.7);
-  g.moveTo(x + size * 0.7, y + size * 0.3);
-  g.lineTo(x + size * 0.3, y + size * 0.7);
+  g.moveTo(x + w * 0.3, y + h * 0.3);
+  g.lineTo(x + w * 0.7, y + h * 0.7);
+  g.moveTo(x + w * 0.7, y + h * 0.3);
+  g.lineTo(x + w * 0.3, y + h * 0.7);
   g.stroke();
   g.restore();
 }
 
 /* ============================================================
-   АДАПТИВНОЕ ПОЛЕ — подгоняем под контейнер stage
+   АДАПТИВНОЕ ПОЛЕ
    ============================================================ */
 function resizeBoard() {
-  if (!stageEl || !boardWrap) return;
-  const rect = stageEl.getBoundingClientRect();
-  const cs = getComputedStyle(stageEl);
-  const padX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
-  const padY = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
-  const availW = Math.max(0, rect.width - padX);
-  const availH = Math.max(0, rect.height - padY);
-  if (availW < 40 || availH < 80) return; /* ещё не размечен */
+  if (!boardWrap) return;
+  const rect = boardWrap.getBoundingClientRect();
+  // Минимальные размеры, чтобы не рисовать ерунду при скрытом экране
+  if (rect.width < 40 || rect.height < 80) return;
 
-  let w = availW;
-  let h = w * (ROWS / COLS);
-  if (h > availH) { h = availH; w = h * (COLS / ROWS); }
-  w = Math.floor(w);
-  h = Math.floor(h);
-  if (w < 40 || h < 80) return;
-  if (w === lastBoardW && h === lastBoardH) return;
+  // Устанавливаем физический размер канваса с учетом Retina
+  const cw = Math.floor(rect.width * DPR);
+  const ch = Math.floor(rect.height * DPR);
 
-  lastBoardW = w;
-  lastBoardH = h;
-  boardWrap.style.width = w + 'px';
-  boardWrap.style.height = h + 'px';
-  CELL_PX = w / COLS;
-  render();
+  if (canvas.width !== cw || canvas.height !== ch) {
+    canvas.width = cw;
+    canvas.height = ch;
+    CELL_W = canvas.width / COLS / DPR;
+    CELL_H = canvas.height / ROWS / DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    render();
+  }
 }
 
 /* ============================================================
@@ -938,10 +930,10 @@ function applyClear(clearSet, colorCounts, bonuses) {
     if (v === null) continue;
     if (v === STONE) {
       stones++;
-      burst(x * CELL + CELL / 2, y * CELL + CELL / 2, '#8a90a8', 7);
+      burst(x * CELL_W + CELL_W / 2, y * CELL_H + CELL_H / 2, '#8a90a8', 7);
     } else {
       cleared++;
-      burst(x * CELL + CELL / 2, y * CELL + CELL / 2, ALL_COLORS[v], 3);
+      burst(x * CELL_W + CELL_W / 2, y * CELL_H + CELL_H / 2, ALL_COLORS[v], 3);
     }
     board[y][x] = null;
   }
@@ -952,7 +944,7 @@ function applyClear(clearSet, colorCounts, bonuses) {
   let nBomb = 0, nLight = 0, nRain = 0;
   for (const b of bonuses) {
     gained += 100 * chain;
-    const px = b.x * CELL + CELL / 2, py = b.y * CELL + CELL / 2;
+    const px = b.x * CELL_W + CELL_W / 2, py = b.y * CELL_H + CELL_H / 2;
     if (b.type === 'bomb') {
       nBomb++;
       popup('БОМБА', px, py, '#ff9f43', 22);
@@ -989,7 +981,7 @@ function applyClear(clearSet, colorCounts, bonuses) {
   }
 
   if (chain > 1) {
-    popup('×' + chain, COLS * CELL / 2, ROWS * CELL * 0.35, '#ffd166', 28);
+    popup('×' + chain, COLS * CELL_W / 2, ROWS * CELL_H * 0.35, '#ffd166', 28);
   }
 
   if (sfxOn) {
@@ -1038,7 +1030,7 @@ function updateResolving(dt) {
         if (nl > level) {
           level = nl;
           updateHUD();
-          popup('УРОВЕНЬ ' + level, COLS * CELL / 2, ROWS * CELL * 0.4, '#ffd166', 26);
+          popup('УРОВЕНЬ ' + level, COLS * CELL_W / 2, ROWS * CELL_H * 0.4, '#ffd166', 26);
           sfx.levelUp();
           placeStones(2);
         }
@@ -1297,24 +1289,24 @@ function showToast(a) {
    РЕНДЕР
    ============================================================ */
 function render() {
-  const W = COLS * CELL, H = ROWS * CELL;
+  const W = COLS * CELL_W, H = ROWS * CELL_H;
   ctx.clearRect(0, 0, W, H);
 
   ctx.strokeStyle = 'rgba(255,255,255,.035)';
   ctx.lineWidth = 1;
   for (let x = 1; x < COLS; x++) {
-    ctx.beginPath(); ctx.moveTo(x * CELL + .5, 0); ctx.lineTo(x * CELL + .5, H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x * CELL_W + .5, 0); ctx.lineTo(x * CELL_W + .5, H); ctx.stroke();
   }
   for (let y = 1; y < ROWS; y++) {
-    ctx.beginPath(); ctx.moveTo(0, y * CELL + .5); ctx.lineTo(W, y * CELL + .5); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, y * CELL_H + .5); ctx.lineTo(W, y * CELL_H + .5); ctx.stroke();
   }
 
   for (let y = 0; y < ROWS; y++) {
     for (let x = 0; x < COLS; x++) {
       const v = board[y][x];
       if (v === null) continue;
-      if (v === STONE) drawStone(ctx, x * CELL, y * CELL, CELL);
-      else paintCell(ctx, x * CELL, y * CELL, CELL, ALL_COLORS[v], 1, 9, 2);
+      if (v === STONE) drawStone(ctx, x * CELL_W, y * CELL_H, CELL_W, CELL_H);
+      else paintCell(ctx, x * CELL_W, y * CELL_H, CELL_W, CELL_H, ALL_COLORS[v], 1, 9, 2);
     }
   }
 
@@ -1326,7 +1318,7 @@ function render() {
     ctx.fillStyle = 'rgba(255,255,255,' + alpha + ')';
     for (const key of resolve.pendingClear) {
       const x = key % COLS, y = (key / COLS) | 0;
-      ctx.fillRect(x * CELL, y * CELL, CELL, CELL);
+      ctx.fillRect(x * CELL_W, y * CELL_H, CELL_W, CELL_H);
     }
     ctx.restore();
   }
@@ -1334,8 +1326,8 @@ function render() {
   if (piece && (state === 'playing' || state === 'paused')) {
     const p = piece.pulse || 0;
     for (const c of piece.cells) {
-      paintCell(ctx, (piece.x + c.x) * CELL, (piece.y + c.y) * CELL,
-                CELL, ALL_COLORS[c.c], 1, 14 + p * 22, 2);
+      paintCell(ctx, (piece.x + c.x) * CELL_W, (piece.y + c.y) * CELL_H,
+                CELL_W, CELL_H, ALL_COLORS[c.c], 1, 14 + p * 22, 2);
     }
   }
 
@@ -1375,7 +1367,7 @@ function drawNext() {
   const oy = (NEXT_H - h) / 2 * NEXT_CELL;
   for (const c of cells) {
     paintCell(nctx, ox + (c.x - minX) * NEXT_CELL, oy + (c.y - minY) * NEXT_CELL,
-      NEXT_CELL, ALL_COLORS[c.c], 1, 7, 2);
+      NEXT_CELL, NEXT_CELL, ALL_COLORS[c.c], 1, 7, 2);
   }
 }
 
@@ -1625,7 +1617,7 @@ function showGameOverEndless() {
 }
 
 /* ============================================================
-   НАСТРОЙКИ / МОДАЛКА
+   НАСТРОЙКИ
    ============================================================ */
 let prevStateBeforeSettings = null;
 let settingsView = 'main';
@@ -1751,9 +1743,9 @@ function renderSettings() {
    СЕНСОРНОЕ УПРАВЛЕНИЕ (СВАЙПЫ)
    ============================================================ */
 let touch = null;
-
-function touchMoveThreshold() { return Math.max(14, CELL_PX * 0.5); }
-function touchDropThreshold() { return Math.max(18, CELL_PX * 0.7); }
+const getMinCell = () => Math.min(CELL_W, CELL_H);
+function touchMoveThreshold() { return Math.max(14, getMinCell() * 0.5); }
+function touchDropThreshold() { return Math.max(18, getMinCell() * 0.7); }
 
 canvas.addEventListener('touchstart', (e) => {
   if (state !== 'playing') return;
@@ -1836,7 +1828,7 @@ canvas.addEventListener('touchcancel', () => { touch = null; }, { passive: false
 canvas.addEventListener('contextmenu', e => e.preventDefault());
 
 /* ============================================================
-   КЛАВИАТУРА (десктоп)
+   КЛАВИАТУРА
    ============================================================ */
 window.addEventListener('keydown', (e) => {
   const tag = e.target && e.target.tagName;
@@ -1968,29 +1960,25 @@ updateHUD();
 showMenu();
 requestAnimationFrame(loop);
 
-/* Первичная подгонка поля: несколько попыток на случай,
-   когда safe-area ещё не применилась (iOS standalone) */
 requestAnimationFrame(resizeBoard);
 setTimeout(resizeBoard, 50);
 setTimeout(resizeBoard, 150);
 setTimeout(resizeBoard, 400);
-setTimeout(resizeBoard, 900);
 
-/* Реакция на изменения размеров (в т.ч. safe-area в standalone) */
 if (window.ResizeObserver) {
   const ro = new ResizeObserver(() => resizeBoard());
-  ro.observe(stageEl);
+  ro.observe(boardWrap);
 }
 
-window.addEventListener('resize', () => { resizeBoard(); });
+window.addEventListener('resize', resizeBoard);
 window.addEventListener('orientationchange', () => {
   setTimeout(resizeBoard, 150);
   setTimeout(resizeBoard, 400);
 });
 
 if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', () => resizeBoard());
-  window.visualViewport.addEventListener('scroll', () => resizeBoard());
+  window.visualViewport.addEventListener('resize', resizeBoard);
+  window.visualViewport.addEventListener('scroll', resizeBoard);
 }
 
 window.addEventListener('pageshow', (e) => {
