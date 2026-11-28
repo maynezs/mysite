@@ -18,13 +18,15 @@
     height:100%;width:100%;
     overflow:hidden;overscroll-behavior:none;
     -webkit-text-size-adjust:100%;
+    background:#08080f; /* Убирает белые/черные артефакты */
   }
   body{
     font-family:'Inter',system-ui,-apple-system,sans-serif;
-    background:#08080f;color:#eaeaf5;
+    color:#eaeaf5;
     position:fixed;inset:0;
   }
-  /* фон */
+  
+  /* Фон */
   body::before{
     content:'';position:absolute;inset:-25%;z-index:-1;
     background:
@@ -42,12 +44,13 @@
      КОРНЕВОЙ КОНТЕЙНЕР
      ================================================== */
   .app-shell{
-    position:fixed;inset:0;
+    position:fixed;inset:0;z-index:10;
     display:flex;justify-content:center;
     overflow:hidden;
-    /* Гарантируем отступ от статус-бара и Dynamic Island */
-    padding-top:max(44px, env(safe-area-inset-top));
-    padding-bottom:max(10px, env(safe-area-inset-bottom));
+    /* Жесткий отступ сверху: защищает от Dynamic Island и статус-бара */
+    padding-top:max(68px, env(safe-area-inset-top));
+    /* Отступ снизу: защищает от полосы Home Indicator */
+    padding-bottom:max(20px, env(safe-area-inset-bottom));
     padding-left:env(safe-area-inset-left);
     padding-right:env(safe-area-inset-right);
   }
@@ -59,13 +62,13 @@
   }
 
   /* ==================================================
-     ВЕРХНИЙ HUD
+     ВЕРХНИЙ HUD (Опаковый фон, чтобы не было размытия)
      ================================================== */
   .top-hud{
     flex:0 0 auto;
     display:flex;gap:6px;
     padding:0 8px;
-    margin-bottom:6px;
+    margin-bottom:8px;
     align-items:stretch;
     min-height:56px;
   }
@@ -74,9 +77,10 @@
     display:flex;flex-direction:column;justify-content:center;
     gap:4px;
     padding:6px 10px;
-    background:rgba(255,255,255,.045);
-    border:1px solid rgba(255,255,255,.08);
+    background:#141422; /* Плотный фон */
+    border:1px solid rgba(255,255,255,.1);
     border-radius:11px;
+    box-shadow:0 4px 12px rgba(0,0,0,.2);
   }
   .goal-head{
     display:flex;align-items:baseline;justify-content:space-between;
@@ -94,7 +98,7 @@
     white-space:nowrap;flex:none;
   }
   .goal-bar{
-    height:4px;background:rgba(255,255,255,.08);
+    height:4px;background:rgba(255,255,255,.1);
     border-radius:99px;overflow:hidden;
   }
   .goal-fill{
@@ -117,10 +121,11 @@
     flex:0 0 auto;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     gap:2px;padding:4px 6px;
-    background:rgba(255,255,255,.045);
-    border:1px solid rgba(255,255,255,.08);
+    background:#141422; /* Плотный фон */
+    border:1px solid rgba(255,255,255,.1);
     border-radius:11px;
     min-width:76px;
+    box-shadow:0 4px 12px rgba(0,0,0,.2);
   }
   .next-label{
     font-size:8px;letter-spacing:.14em;text-transform:uppercase;
@@ -131,13 +136,14 @@
   .settings-btn{
     flex:0 0 auto;align-self:center;
     width:36px;height:36px;border-radius:11px;
-    border:1px solid rgba(255,255,255,.12);
-    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.1);
+    background:#141422; /* Плотный фон */
     color:#fff;font-size:16px;cursor:pointer;
     display:flex;align-items:center;justify-content:center;
     transition:.15s;touch-action:manipulation;
+    box-shadow:0 4px 12px rgba(0,0,0,.2);
   }
-  .settings-btn:active{transform:scale(.94);background:rgba(255,255,255,.14)}
+  .settings-btn:active{transform:scale(.94);background:rgba(255,255,255,.1)}
 
   /* ==================================================
      ИГРОВОЕ ПОЛЕ
@@ -146,22 +152,20 @@
     flex:1 1 0;
     min-height:0;
     position:relative;
-    display:flex;
+    display:flex;align-items:center;justify-content:center;
     padding:0 8px;
     overflow:hidden;
   }
   .board-wrap{
-    flex:1;
     position:relative;
-    width:100%;height:100%;
     border-radius:12px;
     overflow:hidden;
-    background:rgba(255,255,255,.03);
-    border:1px solid rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.1);
+    background:rgba(10, 10, 16, 0.8);
+    box-shadow:0 10px 30px rgba(0,0,0,.5);
   }
   #board{
-    width:100%;height:100%;display:block;
-    background:transparent;
+    display:block;
     touch-action:none;user-select:none;-webkit-user-select:none;
   }
 
@@ -187,8 +191,8 @@
      ================================================== */
   .overlay{
     position:absolute;inset:0;
-    background:rgba(8,8,16,.88);
-    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    background:rgba(8,8,16,.92);
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
     display:none;
     align-items:center;justify-content:center;
     padding:14px;z-index:5;overflow-y:auto;
@@ -341,7 +345,7 @@
 
   /* тосты */
   #toasts{
-    position:fixed;top:calc(94px + env(safe-area-inset-top,0px));
+    position:fixed;top:calc(110px + env(safe-area-inset-top,0px));
     left:50%;transform:translateX(-50%);
     z-index:80;display:flex;flex-direction:column;gap:6px;
     pointer-events:none;max-width:min(300px,90vw);
@@ -362,7 +366,8 @@
   @keyframes toastOut{to{opacity:0;transform:translateX(60px) scale(.92)}}
 
   @media (max-height:620px){
-    .top-hud{min-height:50px;margin-bottom:4px}
+    .app-shell{padding-top:max(50px, env(safe-area-inset-top))}
+    .top-hud{min-height:50px;margin-bottom:6px}
     .goal-title{font-size:10.5px}
     .goal-progress{font-size:10.5px}
     .goal-meta{font-size:9.5px}
@@ -539,7 +544,6 @@ function roundRect(g, x, y, w, h, r) {
   g.closePath();
 }
 
-// Универсальная отрисовка клетки с учетом ширины и высоты
 function paintCell(g, x, y, w, h, color, alpha = 1, glow = 10, pad = 2) {
   const px = x + pad, py = y + pad;
   const sw = w - pad * 2, sh = h - pad * 2;
@@ -581,23 +585,38 @@ function drawStone(g, x, y, w, h) {
 }
 
 /* ============================================================
-   АДАПТИВНОЕ ПОЛЕ
+   АДАПТИВНОЕ ПОЛЕ (Идеально квадратные клетки)
    ============================================================ */
 function resizeBoard() {
-  if (!boardWrap) return;
-  const rect = boardWrap.getBoundingClientRect();
-  // Минимальные размеры, чтобы не рисовать ерунду при скрытом экране
-  if (rect.width < 40 || rect.height < 80) return;
+  if (!stageEl || !boardWrap) return;
+  const rect = stageEl.getBoundingClientRect();
+  const cs = getComputedStyle(stageEl);
+  const padX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+  const padY = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+  const availW = rect.width - padX;
+  const availH = rect.height - padY;
+  if (availW < 40 || availH < 80) return;
 
-  // Устанавливаем физический размер канваса с учетом Retina
-  const cw = Math.floor(rect.width * DPR);
-  const ch = Math.floor(rect.height * DPR);
+  // Находим идеальный квадратный размер клетки
+  const cellW = availW / COLS;
+  const cellH = availH / ROWS;
+  const CELL = Math.min(cellW, cellH);
+
+  const boardW = Math.floor(CELL * COLS);
+  const boardH = Math.floor(CELL * ROWS);
+
+  // Устанавливаем точные размеры обертки и канваса
+  boardWrap.style.width = boardW + 'px';
+  boardWrap.style.height = boardH + 'px';
+
+  const cw = Math.floor(boardW * DPR);
+  const ch = Math.floor(boardH * DPR);
 
   if (canvas.width !== cw || canvas.height !== ch) {
     canvas.width = cw;
     canvas.height = ch;
-    CELL_W = canvas.width / COLS / DPR;
-    CELL_H = canvas.height / ROWS / DPR;
+    CELL_W = cw / COLS / DPR;
+    CELL_H = ch / ROWS / DPR;
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     render();
   }
@@ -1292,7 +1311,7 @@ function render() {
   const W = COLS * CELL_W, H = ROWS * CELL_H;
   ctx.clearRect(0, 0, W, H);
 
-  ctx.strokeStyle = 'rgba(255,255,255,.035)';
+  ctx.strokeStyle = 'rgba(255,255,255,.04)';
   ctx.lineWidth = 1;
   for (let x = 1; x < COLS; x++) {
     ctx.beginPath(); ctx.moveTo(x * CELL_W + .5, 0); ctx.lineTo(x * CELL_W + .5, H); ctx.stroke();
