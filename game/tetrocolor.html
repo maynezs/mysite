@@ -1150,7 +1150,7 @@ function makeLevel(L){
   else{const need=Math.min(5,2+Math.floor(L/30));objs.push({type:'combo',need:need});moves=22+need*2;}
   if(L>=20&&rnd()<.35){
     if(rnd()<.5)objs.push({type:'total',need:Math.round(12+L*.45)});
-    else objs.push({type:'score',need:Math.round(500+L*100)});
+    else objs.push({type:'score',need:Math.round(500+L*30)});
     moves+=6;
   }
   moves=clamp(Math.round(moves),12,60);
