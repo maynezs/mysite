@@ -18,17 +18,17 @@
     height:100%;width:100%;
     overflow:hidden;overscroll-behavior:none;
     -webkit-text-size-adjust:100%;
-    background:#08080f; /* Убирает белые/черные артефакты */
+    background:#08080f; /* Убирает черную полосу */
   }
   body{
     font-family:'Inter',system-ui,-apple-system,sans-serif;
     color:#eaeaf5;
-    position:fixed;inset:0;
+    position:relative;
   }
   
   /* Фон */
   body::before{
-    content:'';position:absolute;inset:-25%;z-index:-1;
+    content:'';position:fixed;inset:-25%;z-index:-1;
     background:
       radial-gradient(circle at 18% 18%, rgba(255,77,109,.20), transparent 45%),
       radial-gradient(circle at 82% 28%, rgba(179,136,255,.20), transparent 45%),
@@ -48,11 +48,12 @@
     display:flex;justify-content:center;
     overflow:hidden;
     /* Жесткий отступ сверху: защищает от Dynamic Island и статус-бара */
-    padding-top:max(68px, env(safe-area-inset-top));
+    padding-top:max(64px, env(safe-area-inset-top));
     /* Отступ снизу: защищает от полосы Home Indicator */
-    padding-bottom:max(20px, env(safe-area-inset-bottom));
+    padding-bottom:max(16px, env(safe-area-inset-bottom));
     padding-left:env(safe-area-inset-left);
     padding-right:env(safe-area-inset-right);
+    background:transparent;
   }
   .app{
     position:relative;
@@ -62,7 +63,7 @@
   }
 
   /* ==================================================
-     ВЕРХНИЙ HUD (Опаковый фон, чтобы не было размытия)
+     ВЕРХНИЙ HUD (Опаковый фон)
      ================================================== */
   .top-hud{
     flex:0 0 auto;
@@ -77,7 +78,7 @@
     display:flex;flex-direction:column;justify-content:center;
     gap:4px;
     padding:6px 10px;
-    background:#141422; /* Плотный фон */
+    background:#141422; 
     border:1px solid rgba(255,255,255,.1);
     border-radius:11px;
     box-shadow:0 4px 12px rgba(0,0,0,.2);
@@ -121,7 +122,7 @@
     flex:0 0 auto;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     gap:2px;padding:4px 6px;
-    background:#141422; /* Плотный фон */
+    background:#141422;
     border:1px solid rgba(255,255,255,.1);
     border-radius:11px;
     min-width:76px;
@@ -137,7 +138,7 @@
     flex:0 0 auto;align-self:center;
     width:36px;height:36px;border-radius:11px;
     border:1px solid rgba(255,255,255,.1);
-    background:#141422; /* Плотный фон */
+    background:#141422;
     color:#fff;font-size:16px;cursor:pointer;
     display:flex;align-items:center;justify-content:center;
     transition:.15s;touch-action:manipulation;
@@ -158,13 +159,21 @@
   }
   .board-wrap{
     position:relative;
+    /* Главное исправление: сохраняем пропорции 1:2 */
+    aspect-ratio: 1 / 2;
+    max-width:100%;
+    max-height:100%;
+    margin:auto;
     border-radius:12px;
-    overflow:hidden;
     border:1px solid rgba(255,255,255,.1);
     background:rgba(10, 10, 16, 0.8);
     box-shadow:0 10px 30px rgba(0,0,0,.5);
+    overflow:hidden;
   }
   #board{
+    /* Возвращаем растягивание на весь контейнер */
+    width:100%;
+    height:100%;
     display:block;
     touch-action:none;user-select:none;-webkit-user-select:none;
   }
@@ -201,7 +210,7 @@
   .overlay.show{display:flex}
   .overlay::-webkit-scrollbar{width:5px}
   .overlay::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:9px}
-  .overlay-card{width:100%;max-width:300px;text-align:center;margin:auto}
+  .overlay-card{width:100%;max-width:280px;text-align:center;margin:auto}
   .overlay-card h2{
     font-family:'Unbounded',sans-serif;
     font-size:17px;letter-spacing:.04em;
@@ -585,39 +594,23 @@ function drawStone(g, x, y, w, h) {
 }
 
 /* ============================================================
-   АДАПТИВНОЕ ПОЛЕ (Идеально квадратные клетки)
+   АДАПТИВНОЕ ПОЛЕ
    ============================================================ */
 function resizeBoard() {
-  if (!stageEl || !boardWrap) return;
-  const rect = stageEl.getBoundingClientRect();
-  const cs = getComputedStyle(stageEl);
-  const padX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
-  const padY = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
-  const availW = rect.width - padX;
-  const availH = rect.height - padY;
-  if (availW < 40 || availH < 80) return;
+  if (!boardWrap) return;
+  const rect = boardWrap.getBoundingClientRect();
+  if (rect.width < 10 || rect.height < 10) return;
 
-  // Находим идеальный квадратный размер клетки
-  const cellW = availW / COLS;
-  const cellH = availH / ROWS;
-  const CELL = Math.min(cellW, cellH);
-
-  const boardW = Math.floor(CELL * COLS);
-  const boardH = Math.floor(CELL * ROWS);
-
-  // Устанавливаем точные размеры обертки и канваса
-  boardWrap.style.width = boardW + 'px';
-  boardWrap.style.height = boardH + 'px';
-
-  const cw = Math.floor(boardW * DPR);
-  const ch = Math.floor(boardH * DPR);
+  const cw = Math.floor(rect.width * DPR);
+  const ch = Math.floor(rect.height * DPR);
 
   if (canvas.width !== cw || canvas.height !== ch) {
     canvas.width = cw;
     canvas.height = ch;
+    // Принудительно задаем трансформацию заново после изменения размера
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     CELL_W = cw / COLS / DPR;
     CELL_H = ch / ROWS / DPR;
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     render();
   }
 }
